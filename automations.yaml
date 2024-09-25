@@ -1,0 +1,13 @@
+- id: log_weather_forecast
+  alias: Log Weather Forecast
+  trigger:
+  - platform: time
+    at: 08:00:00
+  action:
+  - service: system_log.write
+    data:
+      message: '{{ state_attr(''weather.met_no_next_6_hours_forecast_home'', ''forecast_json'')
+        }}
+
+        '
+

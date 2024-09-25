@@ -1,0 +1,66 @@
+# Entity which is updated by the Heating energy automation
+energy_consumption_heating:
+  name: "Energy Consumption Heating"
+  min: 0
+  max: 100000 
+
+# Entity which is updated by the Hot water energy automation
+total_energy_usage_hot_water:
+  name: "Total Energy Use Hot Water"
+  min: 0
+  max: 100000
+
+# Entity which is updated by the lighting energy automation
+total_energy_usage_lighting:
+  name: "Total Energy Use Lighting"
+  min: 0
+  max: 100000
+
+# Entity which is updated by the others energy automation
+total_energy_usage_others:
+  name: "Total Energy Use Others"
+  min: 0
+  max: 100000
+
+# Entity which is updated by the Update Daily Energy automation
+total_daily_energy:
+  name: "Total Daily Energy"
+  min: 0
+  max: 100000
+
+# Entity which is updated by Update Morning Energy Use automation
+total_energy_usage_morning:
+  name: "Total Energy Usage Morning"
+  initial: 0
+  min: 0
+  max: 100000
+  unit_of_measurement: 'Wh'
+  icon: mdi:weather-sunset
+
+# Entity which is updated by Update Afternoon Energy Use automation
+total_energy_usage_afternoon:
+  name: "Total Energy Usage Afternoon"
+  initial: 0
+  min: 0
+  max: 100000
+  unit_of_measurement: 'Wh'
+  icon: mdi:weather-sunny
+
+# Entity which is updated by Update Evening Energy Use automation
+total_energy_usage_evening:
+  name: "Total Energy Usage Evening"
+  initial: 0
+  min: 0
+  max: 100000
+  unit_of_measurement: 'Wh'
+  icon: mdi:weather-sunset-down
+
+# Entity which is updated by Update Night Energy Use automation
+total_energy_usage_night:
+  name: "Total Energy Usage Night"
+  initial: 0
+  min: 0
+  max: 100000
+  unit_of_measurement: 'Wh'
+  icon: mdi:weather-night
+

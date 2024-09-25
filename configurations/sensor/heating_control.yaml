@@ -1,0 +1,177 @@
+
+- platform: template
+  sensors:
+    tomorrow_prices:
+      friendly_name: "Tomorrow Electric Stock Market Prices"
+      value_template: >
+        {% set prices = state_attr('sensor.nordpool_kwh_fi_eur_2_10_024', 'tomorrow') %}
+        {% if prices %}
+          {{ prices | tojson }}
+        {% else %}
+          -1
+        {% endif %}
+    
+    average_tomorrow_price:
+      friendly_name: "Average Tomorrow Electric Stock Market Price"
+      value_template: >
+        {% set prices = state_attr('sensor.nordpool_kwh_fi_eur_2_10_024', 'tomorrow') %}
+        {% if prices and prices | length > 0 %}
+          {% set total = prices | map('float') | sum %}
+          {% set count = prices | length %}
+          {{ (total / count) | round(2) }}
+        {% else %}
+          -1
+        {% endif %}
+      
+    cheap_tomorrow_prices:
+      friendly_name: "Cheap Tomorrow Electric Stock Market Prices"
+      value_template: >
+        {% set prices = state_attr('sensor.nordpool_kwh_fi_eur_2_10_024', 'tomorrow') %}
+        {% set average_price = states('sensor.average_tomorrow_price') | float %}
+        {% set cheap_prices = namespace(prices=[]) %}
+        
+        {% if prices and average_price > 0 %}
+          {% for price in prices %}
+            {% if price | float <= average_price %}
+              {% set cheap_prices.prices = cheap_prices.prices + [price | float] %}
+            {% endif %}
+          {% endfor %}
+          {{ cheap_prices.prices | tojson }}
+        {% else %}
+          -1
+        {% endif %}
+
+    kitchen_heat_loss:
+      friendly_name: "Kitchen Heat Loss Calculation Sensor"
+      value_template: >
+        {% set current_room_temperature = states('sensor.kitchen_temperature_and_humidity_sensor_temperature') | float %}
+        {% set outdoor_temperature = state_attr('weather.forecast_home', 'temperature') | float %}
+        {% set room_heat_space = states('input_number.kitchen_heat_space') | float %}
+
+        {% set month = now().month %}
+        {% if month >= 5 and month <= 9 %}
+          {% set heat_loss_coefficient = 0.35 %}
+        {% else %}
+          {% set heat_loss_coefficient = 0.75 %}
+        {% endif %}
+
+        {% set room_heat_loss = (current_room_temperature - outdoor_temperature) * room_heat_space * heat_loss_coefficient %}
+        {{ room_heat_loss | round(2) }}
+
+    bedroom_heat_loss:
+      friendly_name: "Bedroom Heat Loss Calculation Sensor"
+      value_template: >
+        {% set current_room_temperature = states('sensor.bedroom_temperature_and_humisity_sensor_temperature') | float %}
+        {% set outdoor_temperature = state_attr('weather.forecast_home', 'temperature') | float %}
+        {% set room_heat_space = states('input_number.bedroom_heat_space') | float %}
+
+        {% set month = now().month %}
+        {% if month >= 5 and month <= 9 %}
+          {% set heat_loss_coefficient = 0.35 %}
+        {% else %}
+          {% set heat_loss_coefficient = 0.75 %}
+        {% endif %}
+
+        {% set room_heat_loss = (current_room_temperature - outdoor_temperature) * room_heat_space * heat_loss_coefficient %}
+        {{ room_heat_loss | round(2) }}
+
+    living_room_heat_loss:
+      friendly_name: "Living Room Heat Loss Calculation Sensor"
+      value_template: >
+        {% set current_room_temperature = states('sensor.living_room_temperature_and_humidity_sensor_temperature') | float %}
+        {% set outdoor_temperature = state_attr('weather.forecast_home', 'temperature') | float %}
+        {% set room_heat_space = states('input_number.living_room_heat_space') | float %}
+
+        {% set month = now().month %}
+        {% if month >= 5 and month <= 9 %}
+          {% set heat_loss_coefficient = 0.35 %}
+        {% else %}
+          {% set heat_loss_coefficient = 0.75 %}
+        {% endif %}
+
+        {% set room_heat_loss = (current_room_temperature - outdoor_temperature) * room_heat_space * heat_loss_coefficient %}
+        {{ room_heat_loss | round(2) }}
+
+    main_bedroom_heat_loss:
+      friendly_name: "Main Bedroom Heat Loss Calculation Sensor"
+      value_template: >
+        {% set current_room_temperature = states('sensor.main_bedroom_temperature_and_humidity_sensor_temperature') | float %}
+        {% set outdoor_temperature = state_attr('weather.forecast_home', 'temperature') | float %}
+        {% set room_heat_space = states('input_number.main_bedroom_heat_space') | float %}
+
+        {% set month = now().month %}
+        {% if month >= 5 and month <= 9 %}
+          {% set heat_loss_coefficient = 0.35 %}
+        {% else %}
+          {% set heat_loss_coefficient = 0.75 %}
+        {% endif %}
+
+        {% set room_heat_loss = (current_room_temperature - outdoor_temperature) * room_heat_space * heat_loss_coefficient %}
+        {{ room_heat_loss | round(2) }}
+
+    guest_bedroom_heat_loss:
+      friendly_name: "Guest Bedroom Heat Loss Calculation Sensor"
+      value_template: >
+        {% set current_room_temperature = states('sensor.guest_bedroom_temperature_and_humidity_sensor_temperature') | float %}
+        {% set outdoor_temperature = state_attr('weather.forecast_home', 'temperature') | float %}
+        {% set room_heat_space = states('input_number.guest_bedroom_heat_space') | float %}
+
+        {% set month = now().month %}
+        {% if month >= 5 and month <= 9 %}
+          {% set heat_loss_coefficient = 0.35 %}
+        {% else %}
+          {% set heat_loss_coefficient = 0.75 %}
+        {% endif %}
+
+        {% set room_heat_loss = (current_room_temperature - outdoor_temperature) * room_heat_space * heat_loss_coefficient %}
+        {{ room_heat_loss | round(2) }}
+
+    kitchen_heat_requirement:
+      friendly_name: "Kitchen Heat Requirement Calculation Sensor"
+      value_template: >
+        {% set target_temperature = states('input_number.target_temperature') | float %}
+        {% set current_room_temperature = states('sensor.kitchen_temperature_and_humidity_sensor_temperature') | float %}
+        {% set heat_loss = states('sensor.kitchen_heat_loss') | float %}
+
+        {% set heat_requirement = (target_temperature - current_room_temperature) + heat_loss %}
+        {{ heat_requirement }}
+
+    bedroom_heat_requirement:
+      friendly_name: "Bedroom Heat Requirement Calculation Sensor"
+      value_template: >
+        {% set target_temperature = states('input_number.target_temperature') | float %}
+        {% set current_room_temperature = states('sensor.bedroom_temperature_and_humisity_sensor_temperature') | float %}
+        {% set heat_loss = states('sensor.bedroom_heat_loss') | float %}
+
+        {% set heat_requirement = (target_temperature - current_room_temperature) + heat_loss %}
+        {{ heat_requirement }}
+
+    living_room_heat_requirement:
+      friendly_name: "Living Room Heat Requirement Calculation Sensor"
+      value_template: >
+        {% set target_temperature = states('input_number.target_temperature') | float %}
+        {% set current_room_temperature = states('sensor.living_room_temperature_and_humidity_sensor_temperature') | float %}
+        {% set heat_loss = states('sensor.living_room_heat_loss') | float %}
+
+        {% set heat_requirement = (target_temperature - current_room_temperature) + heat_loss %}
+        {{ heat_requirement }}
+
+    main_bedroom_heat_requirement:
+      friendly_name: "Main Bedroom Heat Requirement Calculation Sensor"
+      value_template: >
+        {% set target_temperature = states('input_number.target_temperature') | float %}
+        {% set current_room_temperature = states('sensor.main_bedroom_temperature_and_humidity_sensor_temperature') | float %}
+        {% set heat_loss = states('sensor.main_bedroom_heat_loss') | float %}
+
+        {% set heat_requirement = (target_temperature - current_room_temperature) + heat_loss %}
+        {{ heat_requirement }}
+
+    guest_bedroom_heat_requirement:
+      friendly_name: "Guest Bedroom Heat Requirement Calculation Sensor"
+      value_template: >
+        {% set target_temperature = states('input_number.target_temperature') | float %}
+        {% set current_room_temperature = states('sensor.guest_bedroom_temperature_and_humidity_sensor_temperature') | float %}
+        {% set heat_loss = states('sensor.guest_bedroom_heat_loss') | float %}
+
+        {% set heat_requirement = (target_temperature - current_room_temperature) + heat_loss %}
+        {{ heat_requirement }}

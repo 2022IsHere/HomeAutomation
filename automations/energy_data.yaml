@@ -1,0 +1,287 @@
+# Name: Adax API Token
+# INFO: Automation to get new API token
+# WARNING: -
+# RESTRICTION: - 
+- id: adax_api_token_123
+  alias: Adax API Token
+  trigger:
+  - platform: time
+    at: 00:01:00
+  action:
+  - service: rest_command.rest_adax_api_token
+    data: {}
+    response_variable: api_response_token
+  - service: system_log.write
+    data:
+      message: 'Token: {{ api_response }}'
+  - variables:
+      access_token: '{% set json_response = api_response_token.content | from_json
+        %} {{ json_response.access_token }}
+
+        '
+  - service: input_text.set_value
+    data:
+      value: '{{ access_token }}'
+    target:
+      entity_id: input_text.rest_adax_token
+
+# Name: Adax Rooms Energy Data
+# INFO: Automation to get update to energy data spent on heating
+# WARNING: -
+# RESTRICTION: -
+- id: adax_rooms_energy_data_123
+  alias: Adax Rooms Energy Data
+  trigger:
+    - platform: time_pattern
+      minutes: /5
+  action:
+    - service: rest_command.rest_adax_rooms_energy_data
+      data: {}
+      response_variable: api_response_energy
+
+    # Check if the API response is valid
+    - condition: template
+      value_template: >
+        {{ api_response_energy.content is not none and api_response_energy.status == 200 }}
+
+    # If the check passes, proceed with the calculation
+    - variables:
+        total_energyWh: '{{ api_response_energy.content.devices | map(attribute=''energyWh'') | sum }}'
+
+    # Update the input number with the total energy if the check passes
+    - service: input_number.set_value
+      data:
+        value: '{{ total_energyWh }}'
+      target:
+        entity_id: input_number.energy_consumption_heating
+
+
+# Name: Hot Water Energy Data
+# INFO: Automation to reset the energy data spent on heating hot water every hour
+# WARNING: -
+# RESTRICTION: -
+- id: hot_water_energy_data
+  alias: Hot Water Energy Data
+  trigger:
+  - platform: time_pattern
+    minutes: 59
+  action:
+    service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_hot_water
+
+# Name: Lighting Energy Data
+# INFO: Automation to reset the energy data spent on lighting every hour
+# WARNING: -
+# RESTRICTION: -
+- id: lighting_energy_data
+  alias: Lighting Energy Data
+  trigger:
+  - platform: time_pattern
+    minutes: 59
+  action:
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_lighting
+
+# Name: Others Energy Data
+# INFO: Automation to reset the energy data spent on other devices every hour
+# WARNING: -
+# RESTRICTION: -
+- id: others_energy_data
+  alias: Others Energy Data
+  trigger:
+  - platform: time_pattern
+    minutes: 59
+  action:
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_others
+
+# Name: Reset Energy Consumption Sensor
+# INFO: Automation to reset the energy consumption sensor value for heating to zero at the end of each day
+# WARNING: -
+# RESTRICTION: This automation resets the daily energy consumption data at 23:59:00
+- id: reset_energy_consumption_sensor
+  alias: Reset Energy Consumption Sensor
+  trigger:
+  - platform: time
+    at: '23:59:00'
+  action:
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.energy_consumption_heating
+
+# Name: Update Total Daily Energy
+# INFO: Automation to update the total daily energy consumption by summing up the energy usage from heating, hot water, lighting, and other devices every hour
+# WARNING: -
+# RESTRICTION:      
+- id: update_total_daily_energy
+  alias: Update Total Daily Energy
+  trigger:
+  - platform: time_pattern
+    minutes: 59
+  action:
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.total_daily_energy
+      value: '{{ states(''input_number.total_daily_energy'') | float(0) + states(''input_number.energy_consumption_heating'')
+        | float(0) + states(''input_number.total_energy_usage_hot_water'') | float(0)
+        + states(''input_number.total_energy_usage_lighting'' ) | float(0) + states(''input_number.total_energy_usage_others'')
+        | float(0) }}'
+
+# Name: Reset Total Daily Energy
+# INFO: Automation to reset the total daily energy consumption value to zero at the end of each day
+# WARNING: -
+# RESTRICTION: This automation resets the daily total energy usage at 23:59:00
+- id: reset_total_daily_energy
+  alias: Reset Total Daily Energy
+  trigger:
+  - platform: time
+    at: '23:59:00'
+  action:
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_daily_energy      
+
+# Name: Update Night Energy Usage
+# INFO: Updates the total energy usage for the night period at 06:00:00, based on the total daily energy consumed.
+# WARNING: -
+# RESTRICTION: Requires the sensor for total daily energy to be properly configured.
+- id: update_night_energy_use
+  alias: Update Night Energy Usage
+  trigger:
+    platform: time
+    at: 06:00:00
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.total_energy_usage_night
+      value: '{{ states(''sensor.total_daily_energy'') | float }}
+
+        '
+
+# Name: Update Morning Energy Use
+# INFO: Calculates and updates the total energy usage for the morning period at 12:00:00 by subtracting night usage from total daily usage.
+# WARNING: -
+# RESTRICTION: Ensure night energy usage is correctly set before this update for accurate calculation.
+- id: update_morning_energy_use
+  alias: Update Morning Energy Use
+  trigger:
+    platform: time
+    at: '12:00:00'
+  action:
+    service: input_number.set_value
+    data_template:
+      entity_id: input_number.total_energy_usage_morning
+      value: '{{ states(''input_number.total_daily_energy'') | float - states(''input_number.total_energy_usage_night'')
+        | float  }}
+
+        '
+
+# Name: Update Afternoon Energy Usage
+# INFO: Calculates and updates the total energy usage for the afternoon period at 18:00:00 by subtracting night and morning usages from total daily usage.
+# WARNING: -
+# RESTRICTION: Morning and night energy usages must be updated before this time for accurate calculation.
+- id: update_afternoon_energy_use
+  alias: Update Afternoon Energy Usage
+  trigger:
+    platform: time
+    at: '18:00:00'
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.total_energy_usage_afternoon
+      value: '{{ states(''input_number.total_daily_energy'') | float - (states(''input_number.total_energy_usage_night'')
+        | float + states(''input_number.total_energy_usage_morning'') | float) }}'
+
+# Name: Update Evening Energy Usage
+# INFO: Calculates and updates the total energy usage for the evening period at 00:00:00 by subtracting night, morning, and afternoon usages from total daily usage.
+# WARNING: -
+# RESTRICTION: Ensure all previous time period usages are updated correctly for accurate calculation.
+- id: update_evening_energy_use
+  alias: Update Evening Energy Usage
+  trigger:
+    platform: time
+    at: 00:00:00
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.total_energy_usage_evening
+      value: '{{ states(''input_number.total_daily_energy'') | float - (states(''input_number.total_energy_usage_night'')
+        | float + states(''input_number.total_energy_usage_morning'') | float + states(''input_number.total_energy_usage_afternoon'')
+        | float) }}'
+
+# Name: Reset Night Energy Usage
+# INFO: Resets the night energy usage counter to zero at 23:59:00 each day.
+# WARNING: -
+# RESTRICTION: This action should be performed at the end of each day to prepare for new day calculations.
+- id: reset_night_energy_usage
+  alias: Reset Night Energy Usage
+  trigger:
+    platform: time
+    at: '23:59:00'
+  action:
+    service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_night
+
+# Name: Reset Morning Energy Usage
+# INFO: Resets the morning energy usage counter to zero at 23:59:00 each day.
+# WARNING: -
+# RESTRICTION: This action should be performed at the end of each day to prepare for new day calculations.
+- id: reset_morning_energy_usage
+  alias: Reset Morning Energy Usage
+  trigger:
+    platform: time
+    at: '23:59:00'
+  action:
+    service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_morning
+
+# Name: Reset Afternoon Energy Usage
+# INFO: Resets the afternoon energy usage counter to zero at 23:59:00 each day.
+# WARNING: -
+# RESTRICTION: This action should be performed at the end of each day to prepare for new day calculations.
+- id: reset_afternoon_energy_usage
+  alias: Reset Afternoon Energy Usage
+  trigger:
+    platform: time
+    at: '23:59:00'
+  action:
+    service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_afternoon
+
+# Name: Reset Evening Energy Usage
+# INFO: Resets the evening energy usage counter to zero at 23:59:00 each day.
+# WARNING: -
+# RESTRICTION: This action should be performed at the end of each day to prepare for new day calculations.
+- id: reset_evening_energy_usage
+  alias: Reset Evening Energy Usage
+  trigger:
+    platform: time
+    at: '23:59:00'
+  action:
+    service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.total_energy_usage_evening      

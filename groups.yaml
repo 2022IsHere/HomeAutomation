@@ -1,0 +1,4 @@
+Home:
+  Name: Home
+  Entities:
+    - input_number.control_heating_button 

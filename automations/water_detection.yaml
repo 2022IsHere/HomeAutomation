@@ -1,0 +1,571 @@
+# Name: Bathroom toilet water leak detection automation
+# INFO: Keep track of moisture and alarm when necessary
+# WARNING: -
+# RESTRICTION: Does not send notification 'Vesivuoto ratkaistu', jos aiempi tila oli 'unavailable' eikä 'on'
+- id: Bathroom_Toilet_sensor
+  alias: Bathroom Toilet Sensor
+  trigger:
+    - platform: state 
+      entity_id: binary_sensor.vesivuotoanturi_wc_pontto_moisture
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_pontto_moisture
+      to: 'off'
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_wc_pontto_moisture
+              state: 'on'
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Vessa WC Pytty.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Vessa WC Pytty.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Vessa WC Pytty.
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_wc_pontto_moisture
+              state: 'off'
+            - condition: template
+              value_template: "{{ trigger.from_state.state == 'on' }}"
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+
+# Name: Bathroom toilet battery level
+# INFO: Keep track of battery level and alarm when necessary
+# WARNING: -
+# RESTRICTION: -
+- id: Bathroom_Toilet_sensor_Battery
+  alias: Bathroom Toilet Sensor Battery
+  trigger:
+    - platform: state
+      entity_id: sensor.vesivuotoanturi_wc_pontto_battery_level
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.vesivuotoanturi_wc_pontto_battery_level
+      below: 10
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Alhainen virta"
+        message: >
+          Vesivuoto anturi: Vessa WC Pytty. Paristotaso alle 10%: {{ states('sensor.vesivuotoanturi_wc_pontto_battery_level') }}%.
+
+# Name: Bathroom toilet sensor Unavailable
+# INFO: Keep track of bathroom toiler water leak sensor availability and alarm when necessary
+# WARNING: -
+# RESTRICTION: Wait for 5 minutes to avoid false alarms
+- id: Bathroom_Toilet_sensor_Unavailable
+  alias: Bathroom Toilet Sensor Unavailable
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_pontto_moisture
+      to: 'unavailable'
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Anturi Epäkunnossa"
+        message: >
+          Vessan WC Pytyn vesivuotoanturi on ollut 'unavailable' tilassa viimeiset 5 minuuttia. Tarkasta laitteen yhteys.
+
+# Name: Bathroom toilet sensor. Is Firmware up-to-date?
+# INFO: Keep track of bathroom toiler water leak sensor firmware version and alarm when necessary
+# WARNING: -
+# RESTRICTION: This is beta version. May not work as expected because there is no data how the entity state changes and what are the different states.
+- id: Bathroom_Toilet_sensor_Update
+  alias: Bathroom Toilet Sensor Update
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_pontto_update
+      to: 'on'
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: 'Päivitys tarjolla'
+        message: >
+          Vessa WC pytyn vesivuotoanturi
+
+# Name: Kitchen Sink water leak detection automation
+# INFO: Keep track of moisture and alarm when necessary
+# WARNING: -
+# RESTRICTION: Does not send notification 'Vesivuoto ratkaistu', jos aiempi tila oli 'unavailable' eikä 'on'
+- id: Kitchen_Sink_sensor
+  alias: Kitchen Sink Sensor
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_keittio_hana_moisture
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_keittio_hana_moisture
+      to: 'off'
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_keittio_hana_moisture
+              state: 'on'
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Keittiön hana.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Keittiön hana.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Keittiön hana.
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_keittio_hana_moisture
+              state: 'off'
+            - condition: template
+              value_template: "{{ trigger.from_state.state == 'on' }}"
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+
+# Name: Kitchen Sink battery level
+# INFO: Keep track of battery level and alarm when necessary
+# WARNING: -
+# RESTRICTION: -
+- id: Kitchen_Sink_sensor_Battery
+  alias: Kitchen Sink Sensor Battery
+  trigger:
+    - platform: state
+      entity_id: sensor.vesivuotoanturi_keittio_hana_battery_level
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.vesivuotoanturi_keittio_hana_battery_level
+      below: 10
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Alhainen virta"
+        message: >
+          Vesivuoto anturi: Keittiön hana. Paristotaso alle 10%: {{ states('sensor.vesivuotoanturi_keittio_hana_battery_level') }}%.
+
+# Name: Kitchen Sink sensor Unavailable
+# INFO: Keep track of kitchen sink water leak sensor availability and alarm when necessary
+# WARNING: -
+# RESTRICTION: Wait for 5 minutes to avoid false alarms
+- id: Kitchen_Sink_sensor_Unavailable
+  alias: Kitchen Sink Sensor Unavailable
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_keittio_hana_moisture
+      to: 'unavailable'
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Anturi Epäkunnossa"
+        message: >
+          Keittiön hanan vesivuotoanturi on ollut 'unavailable' tilassa viimeiset 5 minuuttia. Tarkasta laitteen yhteys.
+
+# Name: Kitchen Sink sensor. Is Firmware up-to-date?
+# INFO: Keep track of kitchen sink water leak sensor firmware version and alarm when necessary
+# WARNING: -
+# RESTRICTION: This is beta version. May not work as expected because there is no data how the entity state changes and what are the different states.
+- id: Kitchen_Sink_sensor_Update
+  alias: Kitchen Sink Sensor Update
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_keittio_hana_update
+      to: 'on'
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: 'Päivitys tarjolla'
+        message: >
+          Keittiön hana vesivuotoanturi
+
+# Name: Bathroom Sink Sensor water leak detection automation
+# INFO: Keep track of moisture and alarm when necessary
+# WARNING: -
+# RESTRICTION: Does not send notification 'Vesivuoto ratkaistu', jos aiempi tila oli 'unavailable' eikä 'on'
+- id: Bathroom_Sink_sensor
+  alias: Bathroom Sink Sensor
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_hana_moisture
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_hana_moisture
+      to: 'off'
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_wc_hana_moisture
+              state: 'on'
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Vessan hana.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Vessan hana.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Vessan hana.
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_wc_hana_moisture
+              state: 'off'
+            - condition: template
+              value_template: "{{ trigger.from_state.state == 'on' }}"
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+
+# Name: Bathroom Sink Sensor battery level
+# INFO: Keep track of battery level and alarm when necessary
+# WARNING: -
+# RESTRICTION: -
+- id: Bathroom_Sink_sensor_Battery
+  alias: Bathroom Sink Sensor Battery
+  trigger:
+    - platform: state
+      entity_id: sensor.vesivuotoanturi_wc_hana_battery_level
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.vesivuotoanturi_wc_hana_battery_level
+      below: 10
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Alhainen virta"
+        message: >
+          Vesivuoto anturi: Vessan hana. Paristotaso alle 10%: {{ states('sensor.vesivuotoanturi_wc_hana_battery_level') }}%.
+
+# Name: Bathroom Sink sensor Unavailable
+# INFO: Keep track of Vessa WC Hana water leak sensor availability and alarm when necessary
+# WARNING: -
+# RESTRICTION: Wait for 5 minutes to avoid false alarms
+- id: Bathroom_Sink_sensor_Unavailable
+  alias: Bathroom Sink Sensor Unavailable
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_hana_moisture
+      to: 'unavailable'
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Anturi Epäkunnossa"
+        message: >
+          Vessan hanan vesivuotoanturi on ollut 'unavailable' tilassa viimeiset 5 minuuttia. Tarkasta laitteen yhteys.
+
+# Name: Bathroom Sink sensor. Is Firmware up-to-date?
+# INFO: Keep track of Vessa WC Hana water leak sensor firmware version and alarm when necessary
+# WARNING: -
+# RESTRICTION: This is beta version. May not work as expected because there is no data how the entity state changes and what are the different states.
+- id: Bathroom_Sink_sensor_Update
+  alias: Bathroom Sink Sensor Update
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_wc_hana_update
+      to: 'on'
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: 'Päivitys tarjolla'
+        message: >
+          Vessan hana vesivuotoanturi.
+
+# Name: Laundry Machine Sensor Water Leak Detection Automation
+# INFO: Keep track of moisture and alarm when necessary
+# WARNING: -
+# RESTRICTION: Does not send notification 'Vesivuoto ratkaistu', if previous state was 'unavailable' and not 'on'
+- id: Laundry_Machine_sensor
+  alias: Laundry Machine Sensor
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_pyykkikone_moisture
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_pyykkikone_moisture
+      to: 'off'
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_pyykkikone_moisture
+              state: 'on'
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Pyykkikone.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Pyykkikone.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Pyykkikone.
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_pyykkikone_moisture
+              state: 'off'
+            - condition: template
+              value_template: "{{ trigger.from_state.state == 'on' }}"
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+
+# Name: Laundry Machine Sensor Battery Level
+# INFO: Keep track of battery level and alarm when necessary
+# WARNING: -
+# RESTRICTION: -
+- id: Laundry_Machine_sensor_Battery
+  alias: Laundry Machine Sensor Battery
+  trigger:
+    - platform: state
+      entity_id: sensor.vesivuotoanturi_pyykkikone_battery_level
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.vesivuotoanturi_pyykkikone_battery_level
+      below: 10
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Alhainen virta"
+        message: >
+          Vesivuoto anturi: Pyykkikone. Paristotaso alle 10%: {{ states('sensor.vesivuotoanturi_pyykkikone_battery_level') }}%.
+
+# Name: Laundry Machine Sensor Unavailable
+# INFO: Keep track of Laundry Machine water leak sensor availability and alarm when necessary
+# WARNING: -
+# RESTRICTION: Wait for 5 minutes to avoid false alarms
+- id: Laundry_Machine_sensor_Unavailable
+  alias: Laundry Machine Sensor Unavailable
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_pyykkikone_moisture
+      to: 'unavailable'
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Anturi Epäkunnossa"
+        message: >
+          Pyykkikoneen vesivuotoanturi on ollut 'unavailable' tilassa viimeiset 5 minuuttia. Tarkasta laitteen yhteys.
+
+# Name: Laundry Machine Sensor. Is Firmware Up-to-date?
+# INFO: Keep track of Laundry Machine water leak sensor firmware version and alarm when necessary
+# WARNING: -
+# RESTRICTION: This is a beta version. May not work as expected because there is no data on how the entity state changes and what are the different states.
+- id: Laundry_Machine_sensor_Update
+  alias: Laundry Machine Sensor Update
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_pyykkikone_update
+      to: 'on'
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: 'Päivitys tarjolla'
+        message: >
+          Pyykkikoneen vesivuotoanturi.
+
+# Name: Dishwasher Sensor Water Leak Detection Automation
+# INFO: Keep track of moisture and alarm when necessary
+# WARNING: -
+# RESTRICTION: Does not send notification 'Vesivuoto ratkaistu', if previous state was 'unavailable' and not 'on'
+- id: Dishwasher_Sensor
+  alias: Dishwasher Sensor
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_tiskikone_moisture
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_tiskikone_moisture
+      to: 'off'
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_tiskikone_moisture
+              state: 'on'
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Tiskikone.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Tiskikone.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto havaittu"
+                message: >
+                  {{ now().strftime('%H:%M:%S %d-%m-%Y') }}: Tiskikone.
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.vesivuotoanturi_tiskikone_moisture
+              state: 'off'
+            - condition: template
+              value_template: "{{ trigger.from_state.state == 'on' }}"
+          sequence:
+            - service: notify.mobile_app_sebastians_iphone
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_isabel
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+            - service: notify.mobile_app_iphone_simo
+              data:
+                title: "Vesivuoto ratkaistu"
+                message: >
+                  Vesivuoto ratkaistiin klo {{ now().strftime('%H:%M:%S') }}.
+
+# Name: Dishwasher Sensor Battery Level
+# INFO: Keep track of battery level and alarm when necessary
+# WARNING: -
+# RESTRICTION: -
+- id: Dishwasher_Sensor_Battery
+  alias: Dishwasher Sensor Battery
+  trigger:
+    - platform: state
+      entity_id: sensor.vesivuotoanturi_tiskikone_battery_level
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.vesivuotoanturi_tiskikone_battery_level
+      below: 10
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Alhainen virta"
+        message: >
+          Vesivuoto anturi: Tiskikone. Paristotaso alle 10%: {{ states('sensor.vesivuotoanturi_tiskikone_battery_level') }}%.
+
+# Name: Dishwasher Sensor Unavailable
+# INFO: Keep track of Dishwasher water leak sensor availability and alarm when necessary
+# WARNING: -
+# RESTRICTION: Wait for 5 minutes to avoid false alarms
+- id: Dishwasher_Sensor_Unavailable
+  alias: Dishwasher Sensor Unavailable
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_tiskikone_moisture
+      to: 'unavailable'
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: "Anturi Epäkunnossa"
+        message: >
+          Tiskikoneen vesivuotoanturi on ollut 'unavailable' tilassa viimeiset 5 minuuttia. Tarkasta laitteen yhteys.
+
+# Name: Dishwasher Sensor. Is Firmware Up-to-date?
+# INFO: Keep track of Dishwasher water leak sensor firmware version and alarm when necessary
+# WARNING: -
+# RESTRICTION: This is a beta version. May not work as expected because there is no data on how the entity state changes and what are the different states.
+- id: Dishwasher_Sensor_Update
+  alias: Dishwasher Sensor Update
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vesivuotoanturi_tiskikone_update
+      to: 'on'
+  action:
+    - service: notify.mobile_app_sebastians_iphone
+      data:
+        title: 'Päivitys tarjolla'
+        message: >
+          Tiskikoneen vesivuotoanturi.
+
+

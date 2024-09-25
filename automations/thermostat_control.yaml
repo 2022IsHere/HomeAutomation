@@ -1,0 +1,28 @@
+# Name: Adjust Actual Thermostats
+# INFO: Automation to change electric heater thermostat states through UI with single thermostat
+# WARNING: -
+# RESTRICTION: -
+- id: adjust_actual_thermostats
+  alias: Adjust Actual Thermostats
+  trigger:
+  - platform: state
+    entity_id: climate.virtual_thermostat
+  action:
+  - wait_template: >
+      {{ state_attr('climate.virtual_thermostat', 'temperature') is not none }}
+    timeout: '00:00:15' # Wait for up to 1 minute
+    continue_on_timeout: 'false' # Stop automation if temperature doesn't become available
+  - service: climate.set_temperature
+    data_template:
+      temperature: '{{ state_attr(''climate.virtual_thermostat'', ''temperature'') }}'
+    entity_id:
+    - climate.olohuone_vasen
+    - climate.olohuone_oikea
+    - climate.keittio
+    - climate.vierashuone
+    - climate.makuuhuone
+    - climate.paamakuuhuone
+  - service: system_log.write
+    data_template:
+      message: "Virtual thermostat is set to: {{ state_attr('climate.virtual_thermostat', 'temperature') }}."
+      level: info

@@ -1,0 +1,11 @@
+light_fading:
+  name: Fade lights
+  description: Fade lights based on specific time (minutes)
+  fields:
+    entity_id:
+      description: The light that will be faded.
+      example: light.bedroom #?
+    sleep_time:
+      description: Minutes over which you might want to fade a light
+      example: 5
+      
