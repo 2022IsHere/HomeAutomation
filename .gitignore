@@ -1,0 +1,24 @@
+Ignore all
+*
+
+
+Do not ignore these
+!.gitignore
+!*.md
+!automations/**
+!configurations/**
+!blueprints/**
+!scripts/**
+!groups/**
+
+
+
+Ignore these
+.storage
+.cloud
+.google.token
+.node-red
+custom_components
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
