@@ -10,7 +10,7 @@
   action:
   - wait_template: >
       {{ state_attr('climate.virtual_thermostat', 'temperature') is not none }}
-    timeout: '00:00:15' # Wait for up to 1 minute
+    timeout: '00:00:15' # Wait for up to 15 seconds
     continue_on_timeout: 'false' # Stop automation if temperature doesn't become available
   - service: climate.set_temperature
     data_template:
