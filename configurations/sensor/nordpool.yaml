@@ -1,7 +1,0 @@
-- platform: nordpool
-  VAT: true
-  currency: "EUR"
-  price_in_cents: true
-  region: "FI"
-  precision: 2
-  price_type: kWh 

@@ -10,4 +10,31 @@
         }}
 
         '
-
+- id: '1728223142621'
+  alias: Set thermostats
+  description: Set thermostat based on 3 block such as Evaluate room conditions, Evaluate
+    financial situation and Actions
+  trigger: []
+  condition: []
+  action: []
+  mode: restart
+- id: '1728224929925'
+  alias: Set thermostats
+  description: Set thermostat based on 3 block such as Evaluate room conditions, Evaluate
+    financial situation and Actions
+  trigger:
+  - platform: time_pattern
+    minutes: 0
+  condition: []
+  action: []
+  mode: restart
+- id: '1728224942436'
+  alias: Set thermostats
+  description: Set thermostat based on 3 block such as Evaluate room conditions, Evaluate
+    financial situation and Actions
+  trigger:
+  - platform: time_pattern
+    minutes: 0
+  condition: []
+  action: []
+  mode: restart
