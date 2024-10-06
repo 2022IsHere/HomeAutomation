@@ -1,0 +1,13 @@
+# Name: Set thermostat
+# INFO: Automation to set thermostats based on 3 blocks: Evaluate room conditions, Evaluate financial situation and Actions
+# WARNING: - 
+# RESTRICTION: -
+- id: set_thermostat
+  alias: Set thermostats
+  description: Set thermostat based on 3 block such as Evaluate room conditions, Evaluate financial situation and Actions
+  mode: restart
+  trigger: 
+    - platform: time_pattern
+      minutes: 0
+  condition: []
+  action: []

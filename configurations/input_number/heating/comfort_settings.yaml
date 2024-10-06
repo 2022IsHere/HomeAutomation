@@ -1,0 +1,150 @@
+entrance_min_temperature:
+  name: Entrace min temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-low
+entrance_max_temperature:
+  name: Entrance max temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-high
+entrance_target_temperature:
+  name: Entrance target temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-auto
+
+kitchen_min_temperature:
+  name: Kitchen min temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-low
+kitchen_max_temperature:
+  name: Kitchen max temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-high
+kitchen_target_temperature:
+  name: Kitchen target temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-auto
+
+
+bedroom_min_temperature:
+  name: Bedroom min temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-low
+bedroom_max_temperature:
+  name: Bedroom max temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-high
+bedroom_target_temperature:
+  name: Bedroom target temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-auto
+
+living_room_min_temperature:
+  name: Living Room min temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-low
+living_room_max_temperature:
+  name: Living Room max temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-high
+living_room_target_temperature:
+  name: Living Room target temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-auto
+
+main_bedroom_min_temperature:
+  name: Main Bedroom min temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-low
+main_bedroom_max_temperature:
+  name: Main Bedroom max temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-high
+main_bedroom_target_temperature:
+  name: Main Bedroom target temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-auto
+
+guest_bedroom_min_temperature:
+  name: Guest Bedroom min temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-low
+guest_bedroom_max_temperature:
+  name: Guest Bedroom max temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-high
+guest_bedroom_target_temperature:
+  name: Guest Bedroom target temperature
+  min: 5
+  max: 35
+  step: 1
+  initial: 21
+  mode: slider
+  icon: mdi:thermometer-auto

@@ -1,0 +1,77 @@
+entrance_start_time:
+  name: Entrance heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+entrance_end_time:
+  name: Entrance heating schedule end
+  initial: 00:00:00
+  icon: mdi:clock-end
+  has_date: false
+  has_time: true
+
+kitchen_start_time:
+  name: Kitchen heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+kitchen_end_time:
+  name: Kitchen heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+
+bedroom_start_time:
+  name: Bedroom heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+bedroom_end_time:
+  name: Bedroom heating schedule end time
+  initial: 00:00:00
+  icon: mdi:clock-end
+  has_date: false
+  has_time: true
+
+living_room_start_time:
+  name: Living Room heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+living_room_end_time:
+  name: Living Room heating schedule end time
+  initial: 00:00:00
+  icon: mdi:clock-end
+  has_date: false
+  has_time: true
+
+main_bedroom_start_time:
+  name: Main Bedroom heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+main_bedroom_end_time:
+  name: Main Bedroom heating schedule end time
+  initial: 00:00:00
+  icon: mdi:clock-end
+  has_date: false
+  has_time: true
+
+guest_bedroom_start_time:
+  name: Guest Bedroom heating schedule start time
+  initial: 00:00:00
+  icon: mdi:clock-start
+  has_date: false
+  has_time: true
+guest_bedroom_end_time:
+  name: Guest Bedroom heating schedule end time
+  initial: 00:00:00
+  icon: mdi:clock-end
+  has_date: false
+  has_time: true
