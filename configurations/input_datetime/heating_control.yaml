@@ -1,6 +1,0 @@
-
-
-heat_control_estimation_moment:
-  name: "Heating Trigger Time"
-  has_date: false
-  has_time: true
