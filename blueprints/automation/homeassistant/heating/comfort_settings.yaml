@@ -28,8 +28,8 @@ blueprint:
               filter:
                 domain: input_number
 
-mode: parallel # Multiple instances at once at run
-max_exceeded: silent 
+mode: restart # Multiple instances at once at run
+max_exceeded: silent
 
 trigger_variables:
   min_temperature: !input min_temperature
@@ -39,29 +39,33 @@ trigger_variables:
 trigger:
   - platform: state
     entity_id: !input min_temperature
-    attribute: value
     id: min_temperature_ID
 
   - platform: state
     entity_id: !input max_temperature
-    attribute: value
     id: max_temperature_ID
 
   - platform: state
     entity_id: !input target_temperature
-    attribute: value
     id: target_temperature_ID
 
 action:
+  - service: system_log.write
+    data:
+      message: "Min Temperature: {{ min_temperature }}, Max Temperature: {{ max_temperature }}, Target Temperature: {{ target_temperature }}"
+  - service: system_log.write
+    data:
+      message: "Min Temperature: {{ states(min_temperature) }}, Max Temperature: {{ states(max_temperature) }}, Target Temperature: {{ states(target_temperature) }}" 
+      
   - service: input_number.set_value
-    target: 
+    target:
       entity_id: !input min_temperature
-    data: 
+    data:
       value: >
-        {% if min_temperature > max_temperature %}
-          {{ max_temperature }}
+        {% if states(min_temperature) | float > states(max_temperature) | float %}
+          {{ states(max_temperature) }}
         {% else %}
-          {{ min_temperature }}
+          {{ states(min_temperature) }}
         {% endif %}
 
   - service: input_number.set_value
@@ -69,10 +73,10 @@ action:
       entity_id: !input max_temperature
     data:
       value: >
-        {% if max_temperature < min_temperature %}
-          {{ min_temperature }}
+        {% if states(max_temperature) | float < states(min_temperature) | float %}
+          {{ states(min_temperature) }}
         {% else %}
-          {{ max_temperature }}
+          {{ states(max_temperature) }}
         {% endif %}
 
   - service: input_number.set_value
@@ -80,10 +84,10 @@ action:
       entity_id: !input target_temperature
     data:
       value: >
-        {% if target_temperature < min_temperature %}
-          {{ min_temperature }}
-        {% elif target_temperature > max_temperature %}
-          {{ max_temperature }}
+        {% if states(target_temperature) | float < states(min_temperature) | float %}
+          {{ states(min_temperature) }}
+        {% elif states(target_temperature) | float > states(max_temperature) | float %}
+          {{ states(max_temperature) }}
         {% else %}
-          {{ target_temperature }}
+          {{ states(target_temperature) }}
         {% endif %}
