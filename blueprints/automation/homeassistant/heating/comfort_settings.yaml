@@ -6,14 +6,14 @@ blueprint:
   input:
     comfort_settings: # Create input section to make input groups
       name: Provide min, max and target tmp
-      icon: mdi:cog
+      icon: mdi:controller-classic
       description: These inputs control the comfort settings for specific room in the heating system
       input:
         min_temperature:
           name: Input number min temperature
           selector: # declare rules of this input
             entity: # input must be entity in home assistant
-              filter: # check light_target!! Perhaps target: keyword use?
+              filter: # filter to allow only types described below
                 domain: input_number  # entity type of this entity
         max_temperature:
           name:  Input number max temperature
