@@ -31,7 +31,7 @@ max_exceeded: silent
 trigger_variables:
   min_temperature: !input min_temperature
   max_temperature: !input max_temperature
-  target_temperature: !input target_temperature  
+  target_temperature: !input target_temperature
 
 trigger:
   - platform: state
@@ -55,12 +55,10 @@ action:
       entity_id: !input min_temperature
     data: 
       value: >
-        {% set current_value = states(!input.min_temperature) %}
-        {% set max_value = states(!input.max_temperature) %}
-        {% if current_value > max_value %}
-          {{ max_value }}
+        {% if min_temperature > max_temperature %}
+          {{ max_temperature }}
         {% else %}
-          {{ current_value }}
+          {{ min_temperature }}
         {% endif %}
 
   - service: input_number.set_value
@@ -68,12 +66,10 @@ action:
       entity_id: !input max_temperature
     data:
       value: >
-        {% set current_value = states(!input.max_temperature) | float %}
-        {% set min_value = states(!input.min_temperature) | float %}
-        {% if current_value < min_value %}
-          {{ min_value }}
+        {% if max_temperature < min_temperature %}
+          {{ min_temperature }}
         {% else %}
-          {{ current_value }}
+          {{ max_temperature }}
         {% endif %}
 
   - service: input_number.set_value
@@ -81,15 +77,10 @@ action:
       entity_id: !input target_temperature
     data:
       value: >
-        {% set current_value = states(!input.target_temperature) | float %}
-        {% set max_value = states(!input.max_temperature) | float %}
-        {% set min_value = states(!input.min_temperature) | float %}
-        {% if current_value > max_value %}
-          {{ max_value }}
-        {% elseif current_value < min_value %}
-          {{ min_value }}
+        {% if target_temperature < min_temperature %}
+          {{ min_temperature }}
+        {% elif target_temperature > max_temperature %}
+          {{ max_temperature }}
         {% else %}
-          {{ current_value }}
+          {{ target_temperature }}
         {% endif %}
-
-      
