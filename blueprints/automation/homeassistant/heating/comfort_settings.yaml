@@ -1,0 +1,81 @@
+blueprint:
+  name: Control comfort settings
+  description:  Control room's comfort settings. Enforce rules upon comfort settings.
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    comfort_settings: # Create input section to make input groups
+      name: Provide min, max and target tmp
+      icon: mdi:cog
+      description: These inputs control the comfort settings for specific room in the heating system
+      input:
+        min_temperature:
+          name: Input number min temperature
+          selector: # declare rules of this input
+            entity: # input must be entity in home assistant
+              domain: input_number  # entity type of this entity
+        max_temperature:
+          name:  Input number max temperature
+          selector:
+            entity:
+              domain: input_number
+        target_temperature:
+          name: Input number target temperature
+          selector:
+            entity:
+              domain: input_number
+mode: parallel # Multiple instances at once at run
+max_exceeded: silent # Add newest instance to queue while remove oldest when max instances is exceeded
+
+triggers:
+  - trigger: state
+    entity_id: !input min_temperature
+  - trigger: state
+    entity_id: !input max_temperature
+  - trigger: state
+    entity_id: !input target_temperature
+
+actions:
+  - service: input_number.set_value
+    target: 
+      entity_id: !input min_temperature
+    data: 
+      value: >
+        {% set current_value = states(!input.min_temperature) %}
+        {% set max_value = states(!input.max_temperature) %}
+        {% if current_value > max_value %}
+          {{ max_value }}
+        {% else %}
+          {{ current_value }}
+        {% endif %}
+
+  - service: input_number.set_value
+    target:
+      entity_id: !input max_temperature
+    data:
+      value: >
+        {% set current_value = states(!input.max_temperature) | float %}
+        {% set min_value = states(!input.min_temperature) | float %}
+        {% if current_value < min_value %}
+          {{ min_value }}
+        {% else %}
+          {{ current_value }}
+        {% endif %}
+
+  - service: input_number.set_value
+    target:
+      entity_id: !input target_temperature
+    data:
+      value: >
+        {% set current_value = states(!input.target_temperature) | float %}
+        {% set max_value = states(!input.max_temperature) | float %}
+        {% set min_value = states(!input.min_temperature) | float %}
+        {% if current_value > max_value %}
+          {{ max_value }}
+        {% elseif current_value < min_value %}
+          {{ min_value }}
+        {% else %}
+          {{ current_value }}
+        {% endif %}
+
+      
