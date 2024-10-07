@@ -13,17 +13,20 @@ blueprint:
           name: Input number min temperature
           selector: # declare rules of this input
             entity: # input must be entity in home assistant
-              domain: input_number  # entity type of this entity
+              filter: # check light_target!! Perhaps target: keyword use?
+                domain: input_number  # entity type of this entity
         max_temperature:
           name:  Input number max temperature
           selector:
             entity:
-              domain: input_number
+              filter:
+                domain: input_number
         target_temperature:
           name: Input number target temperature
           selector:
             entity:
-              domain: input_number
+              filter:
+                domain: input_number
 
 mode: parallel # Multiple instances at once at run
 max_exceeded: silent 
