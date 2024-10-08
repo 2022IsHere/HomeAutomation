@@ -1,3 +1,9 @@
+# Name: comfort_cettings.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to control comfort settings in UI. Enforcing rules utilizing blueprint Control comfort settings.
+
+
+
 blueprint:
   name: Control comfort settings
   description:  Control room's comfort settings. Enforce rules upon comfort settings.
