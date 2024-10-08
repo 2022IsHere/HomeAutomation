@@ -1,0 +1,80 @@
+# Name: room_conditions.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to provide logic to evaluate room conditions
+
+
+
+blueprint:
+  name: Evaluate room conditions
+  description: Evaluate room conditions. Output will be true to one of the options; heating_required, no_heating or withing_range
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    room_conditions:
+      name: Provide room_temperature, min_temperature and max_temperatuer
+      icon: mdi:magnify
+      description: These inputs allow to evaluate room conditions
+      input:  
+        room_temperature:
+          name: Input sensor min temperature 
+          selector: # declare rules of this input
+            entity: # input must be entity in home assistant
+              filter: # filter to allow only types described below
+                domain: sensor  
+        min_temperature:
+          name: Input number min temperature
+          selector:
+            entity:
+              filter:
+                domain: input_number
+        max_temperature:
+          name: Input number max temperature
+          selector:
+            entity:
+              filter:
+                domain: input_number
+        evaluate_condition:
+          name: Input boolean evaluate condition
+          selector: 
+            entity: 
+              filter:
+                domain: input_boolean
+
+mode: restart
+max_exceeded: silent
+
+trigger_variables:
+  room_temperature: !input room_temperature
+  min_temperature: !input min_temperature
+  max_temperature: !input max_temperature
+  evaluate_condition: !input evaluate_condition
+
+trigger:
+  - platform: state
+    entity_id: !input evaluate_condition
+    to: 'on'
+    id: evaluate_condition_ID  
+
+action:
+  # Debug: Check entities, entities' values
+  # ALSO NEED TO ADD PIPELINE FROM BLOCK 1 to BLOCK 2. INPUT BOOLEAN PERHAPS.
+
+  - service: system_log.write
+    data:
+      message: "Room temperature: {{ room_temperature }}, Min temperature: {{ min_temperature }}, Max temperature: {{ max_temperature }}, Evaluate condition: {{ evaluate_condition }}"
+  - service: system_log.write
+    data:
+      message: "Room temperature: {{ states(room_temperature) }}, Min temperature: {{ states(min_temperature) }}, Max temperature: {{ states(max_temperature) }}, Evaluate condition: {{ states(evaluate_condition) }}"
+
+  - service: input_boolean.set_value
+    target:
+      entity_id: !input PIPELINE_BLOCK_2
+    data:
+      value: >
+        {% if states(room_temperature) >= states(max_temperature) %}
+          {{ Case 1 | string }}
+        {% elif states(room_temperature) <= states(min_temperature) %}
+          {{ Case 2  string }}
+        {% else %}
+          {{ Case 3 | string }}
+        {% endif %}
