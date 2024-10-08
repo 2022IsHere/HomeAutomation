@@ -13,3 +13,6 @@
       minutes: 0
   condition: []
   action: []
+
+  # Not possible to dynamically fetch a list of areas. => Hardcode the list to iterate over.
+  # 
