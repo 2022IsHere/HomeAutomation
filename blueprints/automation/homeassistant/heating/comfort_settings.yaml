@@ -28,7 +28,7 @@ blueprint:
               filter:
                 domain: input_number
 
-mode: restart # Multiple instances at once at run
+mode: restart
 max_exceeded: silent
 
 trigger_variables:
@@ -50,6 +50,7 @@ trigger:
     id: target_temperature_ID
 
 action:
+  # Debug: Check entities, entities' values
   - service: system_log.write
     data:
       message: "Min Temperature: {{ min_temperature }}, Max Temperature: {{ max_temperature }}, Target Temperature: {{ target_temperature }}"
@@ -68,6 +69,11 @@ action:
           {{ states(min_temperature) }}
         {% endif %}
 
+  # Force UI update for min_temperature
+  - service: homeassistant.update_entity
+    target:
+      entity_id: !input min_temperature
+
   - service: input_number.set_value
     target:
       entity_id: !input max_temperature
@@ -78,6 +84,11 @@ action:
         {% else %}
           {{ states(max_temperature) }}
         {% endif %}
+
+  # Force UI update for max_temperature
+  - service: homeassistant.update_entity
+    target:
+      entity_id: !input max_temperature
 
   - service: input_number.set_value
     target:
@@ -91,3 +102,8 @@ action:
         {% else %}
           {{ states(target_temperature) }}
         {% endif %}
+        
+  # Force UI update for target_temperature
+  - service: homeassistant.update_entity
+    target:
+      entity_id: !input target_temperature
