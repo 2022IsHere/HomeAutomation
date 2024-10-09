@@ -1,0 +1,40 @@
+# Name: pipeline.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing pipeline blocks' states.
+
+
+
+kitchen_block_0:
+  name: "Provide Block 0 state"
+  initial: false
+  icon: mdi:state-machine
+
+kitchen_block_1:
+  name: "Provide Block 2 state"
+  initial: false
+  icon: mdi:state-machine
+
+kitchen_block_2_case_1:
+  name: "Provide Block 2 state"
+  initial: false
+  icon: mdi:state-machine
+
+kitchen_block_2_case_2:
+  name: "Provide Block 2 state"
+  initial: false
+  icon: mdi:state-machine
+
+kitchen_block_2_case_3:
+  name: "Provide Block 2 state"
+  initial: false
+  icon: mdi:state-machine
+
+kitchen_block_3:
+  name: "Provide Block 3 state"
+  initial: false
+  icon: mdi:state-machine
+
+kitchen_block_4:
+  name: "Provide Block 4 state"
+  initial: false
+  icon: mdi:state-machine

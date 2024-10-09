@@ -1,0 +1,92 @@
+# Name: pipeline.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing pipeline logic to move onto from block to another.
+
+
+
+- platform: template
+  sensors:
+    entrance_pipeline:
+        friendly_name: "Heating system pipeline for entrance"
+        value_template: >
+          {
+            "Block 0": "{{ states('input_boolean.entrance_block_0') }}", 
+            "Block 1": "{{ states('input_boolean.entrance_block_1') }}", 
+            "Block 2": {
+              "case_1": "{{ states('input_boolean.entrance_block_2_case_1') }}", 
+              "case_2": "{{ states('input_boolean.entrance_block_2_case_2') }}", 
+              "case_3": "{{ states('input_boolean.entrance_block_2_case_3') }}"
+            }, 
+            "Block 3": "{{ states('input_boolean.entrance_block_3') }}", 
+            "Block 4": "{{ states('input_boolean.entrance_block_4') }}"
+          }
+    kitchen_pipeline:
+      friendly_name: "Heating system pipeline for kitchen"
+      value_template: >
+        {
+          "Block 0": "{{ states('input_boolean.kitchen_block_0') }}", 
+          "Block 1": "{{ states('input_boolean.kitchen_block_1') }}", 
+          "Block 2": {
+            "case_1": "{{ states('input_boolean.kitchen_block_2_case_1') }}", 
+            "case_2": "{{ states('input_boolean.kitchen_block_2_case_2') }}", 
+            "case_3": "{{ states('input_boolean.kitchen_block_2_case_3') }}"
+          }, 
+          "Block 3": "{{ states('input_boolean.kitchen_block_3') }}", 
+          "Block 4": "{{ states('input_boolean.kitchen_block_4') }}"
+        }
+    bedroom_pipeline:
+        friendly_name: "Heating system pipeline for bedroom"
+        value_template: >
+          {
+            "Block 0": "{{ states('input_boolean.bedroom_block_0') }}", 
+            "Block 1": "{{ states('input_boolean.bedroom_block_1') }}", 
+            "Block 2": {
+              "case_1": "{{ states('input_boolean.bedroom_block_2_case_1') }}", 
+              "case_2": "{{ states('input_boolean.bedroom_block_2_case_2') }}", 
+              "case_3": "{{ states('input_boolean.bedroom_block_2_case_3') }}"
+            }, 
+            "Block 3": "{{ states('input_boolean.bedroom_block_3') }}", 
+            "Block 4": "{{ states('input_boolean.bedroom_block_4') }}"
+          }
+    living_room_pipeline:
+        friendly_name: "Heating system pipeline for living room"
+        value_template: >
+          {
+            "Block 0": "{{ states('input_boolean.living_room_block_0') }}", 
+            "Block 1": "{{ states('input_boolean.living_room_block_1') }}", 
+            "Block 2": {
+              "case_1": "{{ states('input_boolean.living_room_block_2_case_1') }}", 
+              "case_2": "{{ states('input_boolean.living_room_block_2_case_2') }}", 
+              "case_3": "{{ states('input_boolean.living_room_block_2_case_3') }}"
+            }, 
+            "Block 3": "{{ states('input_boolean.living_room_block_3') }}", 
+            "Block 4": "{{ states('input_boolean.living_room_block_4') }}"
+          }
+    main_bedroom_pipeline:
+        friendly_name: "Heating system pipeline for main bedroom"
+        value_template: >
+          {
+            "Block 0": "{{ states('input_boolean.main_bedroom_block_0') }}", 
+            "Block 1": "{{ states('input_boolean.main_bedroom_block_1') }}", 
+            "Block 2": {
+              "case_1": "{{ states('input_boolean.main_bedroom_block_2_case_1') }}", 
+              "case_2": "{{ states('input_boolean.main_bedroom_block_2_case_2') }}", 
+              "case_3": "{{ states('input_boolean.main_bedroom_block_2_case_3') }}"
+            }, 
+            "Block 3": "{{ states('input_boolean.main_bedroom_block_3') }}", 
+            "Block 4": "{{ states('input_boolean.main_bedroom_block_4') }}"
+          }
+    guest_bedroom_pipeline:
+        friendly_name: "Heating system pipeline for guest bedroom"
+        value_template: >
+          {
+            "Block 0": "{{ states('input_boolean.guest_bedroom_block_0') }}", 
+            "Block 1": "{{ states('input_boolean.guest_bedroom_block_1') }}", 
+            "Block 2": {
+              "case_1": "{{ states('input_boolean.guest_bedroom_block_2_case_1') }}", 
+              "case_2": "{{ states('input_boolean.guest_bedroom_block_2_case_2') }}", 
+              "case_3": "{{ states('input_boolean.guest_bedroom_block_2_case_3') }}"
+            }, 
+            "Block 3": "{{ states('input_boolean.guest_bedroom_block_3') }}", 
+            "Block 4": "{{ states('input_boolean.guest_bedroom_block_4') }}"
+          }

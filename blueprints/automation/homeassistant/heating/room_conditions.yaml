@@ -16,7 +16,7 @@ blueprint:
       description: These inputs allow to evaluate room conditions
       input:  
         room_temperature:
-          name: Input sensor min temperature 
+          name: Input sensor room temperature 
           selector: # declare rules of this input
             entity: # input must be entity in home assistant
               filter: # filter to allow only types described below
@@ -33,12 +33,52 @@ blueprint:
             entity:
               filter:
                 domain: input_number
-        evaluate_condition:
-          name: Input boolean evaluate condition
+    pipeline_settings: # Create pipeline section for input booleans
+      name: Provide input booleans representing blocks' states
+      icon: mdi:magnify
+      description: These inputs represent program flow
+      input:
+        pipeline:
+          name: Input sensor pipeline
           selector: 
             entity: 
               filter:
-                domain: input_boolean
+                domain: sensor
+        block_0:
+          name: Block 0 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_1:
+          name: Block 1 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_1:
+          name: Block 2 Case 1 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_2:
+          name: Block 2 Case 2 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_3:
+          name: Block 2 Case 3 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_3:
+          name: Block 3 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_4:
+          name: Block 4 state
+          selector:
+            entity:
+              domain: input_boolean
 
 mode: restart
 max_exceeded: silent
@@ -47,34 +87,85 @@ trigger_variables:
   room_temperature: !input room_temperature
   min_temperature: !input min_temperature
   max_temperature: !input max_temperature
-  evaluate_condition: !input evaluate_condition
+  pipeline: !input pipeline
+  block_0: !input block_0
+  block_1: !input block_1
+  block_2_case_1: !input block_2_case_1
+  block_2_case_2: !input block_2_case_2
+  block_2_case_3: !input block_2_case_3
+  block_3: !input block_3
+  block_4: !input block_4
 
-trigger:
-  - platform: state
-    entity_id: !input evaluate_condition
-    to: 'on'
-    id: evaluate_condition_ID  
+trigger: # This logic is not done. Next this trigger field.
+  - platform: template
+    value_template: >
+      {% set pipeline_JSON = states('sensor.pipeline') %}
+      {% if pipeline_JSON %}
+        {{ true }}
+      {% endif %}
+    id: pipeline_ID
+
 
 action:
-  # Debug: Check entities, entities' values
-  # ALSO NEED TO ADD PIPELINE FROM BLOCK 1 to BLOCK 2. INPUT BOOLEAN PERHAPS.
-
+  # Debug: Check entities entities' values
   - service: system_log.write
     data:
-      message: "Room temperature: {{ room_temperature }}, Min temperature: {{ min_temperature }}, Max temperature: {{ max_temperature }}, Evaluate condition: {{ evaluate_condition }}"
+      message: >
+        Room temperature: {{ room_temperature }}, 
+        Min temperature: {{ min_temperature }}, 
+        Max temperature: {{ max_temperature }}, 
+        Pipeline: {{ pipeline }}, 
+        Input Boolean States: 
+        Block 0: {{ block_0 }}, 
+        Block 1: {{ block_1 }}, 
+        Block 2 Case 1: {{ block_2_case_1 }}, 
+        Block 2 Case 2: {{ block_2_case_2 }}, 
+        Block 2 Case 3: {{ block_2_case_3 }}, 
+        Block 3: {{ block_3 }}, 
+        Block 4: {{ block_4 }}
+
+  # Debug: Check entities' values
   - service: system_log.write
     data:
-      message: "Room temperature: {{ states(room_temperature) }}, Min temperature: {{ states(min_temperature) }}, Max temperature: {{ states(max_temperature) }}, Evaluate condition: {{ states(evaluate_condition) }}"
+      message: >
+        Room temperature: {{ states(room_temperature) }}, 
+        Min temperature: {{ states(min_temperature) }}, 
+        Max temperature: {{ states(max_temperature) }}, 
+        Pipeline: {{ states(pipeline) }},
+        Input boolean states:
+        Block 0: {{ states(block_0) }},
+        Block 1: {{ states(block_1) }},
+        Block 2 Case 1: {{ states(block_2_case_1) }},
+        Block 2 Case 2: {{ states(block_2_case_2) }},
+        Block 2 Case 3: {{ states(block_2_case_3) }},
+        Block 3: {{ states(block_3) }}, 
+        Block 4: {{ states(block_4) }}
+        
 
-  - service: input_boolean.set_value
-    target:
-      entity_id: !input PIPELINE_BLOCK_2
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ states(room_temperature) >= states(max_temperature) }}"
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: !input block_2_case_1
+      - conditions:
+          - condition: template
+            value_template: "{{ states(room_temperature) <= states(min_temperature) }}"
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: !input block_2_case_2
+      - conditions:
+          - condition: template
+            value_template: "{{ states(room_temperature) < states(max_temperature) and states(room_temperature) > states(min_temperature) }}"
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: !input block_2_case_3
+
+  # Debug: provide updated JSON 
+  - service: system_log.write
     data:
-      value: >
-        {% if states(room_temperature) >= states(max_temperature) %}
-          {{ Case 1 | string }}
-        {% elif states(room_temperature) <= states(min_temperature) %}
-          {{ Case 2  string }}
-        {% else %}
-          {{ Case 3 | string }}
-        {% endif %}
+      message: "Updated pipeline: {{ states(pipeline) }}"

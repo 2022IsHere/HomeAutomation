@@ -12,8 +12,8 @@ input_datetime: !include_dir_merge_named configurations/input_datetime/
 
 
 climate: !include configurations/climate/adax.yaml
-input_boolean: !include configurations/input_boolean/alarm_system.yaml
-input_text: !include  configurations/input_text/adax.yaml
+input_boolean: !include_dir_merge_named configurations/input_boolean/
+input_text: !include_dir_merge_named configurations/input_text/
 rest_command: !include configurations/rest_command/adax.yaml
 sensor: !include_dir_merge_list  configurations/sensor/
 

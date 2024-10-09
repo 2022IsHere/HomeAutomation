@@ -1,0 +1,40 @@
+# Name: pipeline.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing pipeline blocks' states.
+
+
+
+entrance_block_0:
+  name: "Provide Entrance Block 0 state"
+  initial: false
+  icon: mdi:state-machine
+
+entrance_block_1:
+  name: "Provide Entrance Block 1 state"
+  initial: false
+  icon: mdi:state-machine
+
+entrance_block_2_case_1:
+  name: "Provide Entrance Block 2 Case 1 state"
+  initial: false
+  icon: mdi:state-machine
+
+entrance_block_2_case_2:
+  name: "Provide Entrance Block 2 Case 2 state"
+  initial: false
+  icon: mdi:state-machine
+
+entrance_block_2_case_3:
+  name: "Provide Entrance Block 2 Case 3 state"
+  initial: false
+  icon: mdi:state-machine
+
+entrance_block_3:
+  name: "Provide Entrance Block 3 state"
+  initial: false
+  icon: mdi:state-machine
+
+entrance_block_4:
+  name: "Provide Entrance Block 4 state"
+  initial: false
+  icon: mdi:state-machine

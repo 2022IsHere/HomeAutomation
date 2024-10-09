@@ -1,0 +1,40 @@
+# Name: pipeline.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing pipeline blocks' states.
+
+
+
+living_room_block_0:
+  name: "Provide Living Room Block 0 state"
+  initial: false
+  icon: mdi:state-machine
+
+living_room_block_1:
+  name: "Provide Living Room Block 1 state"
+  initial: false
+  icon: mdi:state-machine
+
+living_room_block_2_case_1:
+  name: "Provide Living Room Block 2 Case 1 state"
+  initial: false
+  icon: mdi:state-machine
+
+living_room_block_2_case_2:
+  name: "Provide Living Room Block 2 Case 2 state"
+  initial: false
+  icon: mdi:state-machine
+
+living_room_block_2_case_3:
+  name: "Provide Living Room Block 2 Case 3 state"
+  initial: false
+  icon: mdi:state-machine
+
+living_room_block_3:
+  name: "Provide Living Room Block 3 state"
+  initial: false
+  icon: mdi:state-machine
+
+living_room_block_4:
+  name: "Provide Living Room Block 4 state"
+  initial: false
+  icon: mdi:state-machine

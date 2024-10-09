@@ -1,3 +1,9 @@
+# Name: electric_stock_prices.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing accessibility to nordpool integration providing electric stock market prices.
+
+
+
 - platform: nordpool
   VAT: true
   currency: "EUR"

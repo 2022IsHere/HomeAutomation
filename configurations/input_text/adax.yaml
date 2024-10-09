@@ -1,6 +1,14 @@
+# Name: adax.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the entity which is updated by newly discovered adax API token
+
+
+
 rest_adax_token:
   name: "Rest Adax API Token"
   min: 1
   max: 255
   initial: "No token"
   icon: mdi:api 
+  mode: password
+  
