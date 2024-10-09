@@ -1,3 +1,10 @@
+# Name: coefficients.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration providing energy loss coefficient for heating calculations
+
+
+
+
 - platform: template
   sensors:
     coefficient:

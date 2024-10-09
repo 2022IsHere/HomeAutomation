@@ -1,3 +1,9 @@
+# Name: heating_schedule.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration providing heating schedule control for users for each room
+
+
+
 entrance_start_time:
   name: Entrance heating schedule start time
   initial: 00:00:00

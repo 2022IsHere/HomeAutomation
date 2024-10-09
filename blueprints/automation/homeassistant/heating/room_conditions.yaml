@@ -99,9 +99,11 @@ trigger_variables:
 trigger: # This logic is not done. Next this trigger field.
   - platform: template
     value_template: >
-      {% set pipeline_JSON = states('sensor.pipeline') %}
-      {% if pipeline_JSON %}
-        {{ true }}
+      {% set pipeline_JSON = states('sensor.kitchen_pipeline') %}
+      {% if pipeline_JSON | from_json %}
+        {{ pipeline_JSON['Block 1'] == 'on' }}
+      {% else %}
+        {{ off }}
       {% endif %}
     id: pipeline_ID
 

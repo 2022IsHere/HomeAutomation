@@ -1,3 +1,9 @@
+# Name: comfort_settings.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration providing min, max and target temperature controllers which provide comfort and financial settings for heating system functionality
+
+
+
 entrance_min_temperature:
   name: Entrace min temperature
   min: 5
