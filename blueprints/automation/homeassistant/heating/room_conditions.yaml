@@ -96,16 +96,17 @@ trigger_variables:
   block_3: !input block_3
   block_4: !input block_4
 
-trigger: # This logic is not done. Next this trigger field.
+trigger:
   - platform: template
     value_template: >
-      {% set pipeline_JSON = states('sensor.kitchen_pipeline') %}
-      {% if pipeline_JSON | from_json %}
-        {{ pipeline_JSON['Block 1'] == 'on' }}
+      {% set pipeline_JSON = states(pipeline) %}
+      {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
+        {{ (pipeline_JSON | from_json)['Block 1'] == 'on' }}
       {% else %}
-        {{ off }}
+        false
       {% endif %}
     id: pipeline_ID
+
 
 
 action:
@@ -170,4 +171,11 @@ action:
   # Debug: provide updated JSON 
   - service: system_log.write
     data:
-      message: "Updated pipeline: {{ states(pipeline) }}"
+      message: >
+        {% set pipeline_JSON = states(pipeline) %}
+        {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
+          {% set parsed_json = pipeline_JSON | from_json %}
+          Updated pipeline: {{ parsed_json }} Block 1: {{ parsed_json['Block 1'] == 'on' }}
+        {% else %}
+          Updated pipeline: {{ pipeline_JSON }} Block 1: Error - JSON is not valid
+        {% endif %}
