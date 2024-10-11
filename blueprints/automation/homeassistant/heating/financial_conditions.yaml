@@ -33,6 +33,18 @@ blueprint:
             entity:
               filter:
                 domain: input_number
+        heating_start_time:
+          name: Input number end time
+          selector:
+            entity: 
+              filter:
+                domain: input_datetime
+        heating_end_time:
+            name: Input number end time
+            selector:
+              entity: 
+                filter:
+                  domain: input_datetime
     pipeline_settings: # Create pipeline section for input booleans
       name: Provide input booleans representing blocks' states
       icon: mdi:magnify
@@ -87,12 +99,14 @@ trigger_variables:
   nordpool_prices: !input nordpool_prices
   min_temperature: !input min_temperature
   max_temperature: !input max_temperature
+  heating_start_time: !input heating_start_time
+  heating_end_time: !input heating_end_time
   pipeline: !input pipeline
   block_0: !input block_0
   block_1: !input block_1
-  block_2_case_1: !input block_2_case_1
-  block_2_case_2: !input block_2_case_2
-  block_2_case_3: !input block_2_case_3
+  block_2_case_1: !input block_2_case_1 
+  block_2_case_2: !input block_2_case_2 
+  block_2_case_3: !input block_2_case_3 
   block_3: !input block_3
   block_4: !input block_4 
 
@@ -152,7 +166,26 @@ action:
   - choose:
     - conditions:
       - condition: 
-        value_template: "{{  }}"
+        value_template: "{{ states(pipeline) | from_json['Block 2']['case_1'] == on }}"
+      sequence: # No heat, pass this block. How to handle it?
+
+    - conditions: 
+      - condition: 
+          value_template: "{{ states(pipeline) | from_json['Block 2']['case_2'] == on }}"
+                # Heat. 
+                # Now the progam needs to determine whether to preheat. 
+                # Decision will be made on price trend for the day from this moment to the end of the day. 
+                # Outcomes are Rising, steady of decreasing. Use nordpool prices input which has an attribute 
+                # called today which has prices for every hour. In this trend calculation consider the current
+                # starting hour to last hour (last price) or 
+                # to last hour based on heating schedule i.e. heating_end_time
+                # 
+
+    
+    - conditions: 
+      - condition: 
+          value_template: "{{ states(pipeline) | from_json['Block 2']['case_2'] == on }}"
+      sequence: # Heat? Expensive right now.
 
   # Debug: provide updated JSON 
   - service: system_log.write
