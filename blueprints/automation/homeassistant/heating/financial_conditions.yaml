@@ -99,5 +99,69 @@ trigger_variables:
 trigger:
   - platform: template
     value_template: >
-      "{{ something }}"
-    id: something_ID
+      {% set pipeline_JSON = states(pipeline) %}
+      {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
+        {{ 'on' in [(pipeline_JSON | from_json)['Block 2']['case_1'], (pipeline_JSON | from_json)['Block 2']['case_2'], (pipeline_JSON | from_json)['Block 2']['case_3']] }}
+      {% else %}
+        false
+      {% endif %}
+    id: pipeline_ID
+
+action:
+  # Debug: Check entities entities' values
+  - service: system_log.write
+    data:
+      message: >
+        Nordpool_prices: {{ nordpool_prices }}
+        Min temperature: {{ min_temperature }}, 
+        Max temperature: {{ max_temperature }},
+        Pipeline: {{ pipeline }}, 
+        Input Boolean States: 
+        Block 0: {{ block_0 }}, 
+        Block 1: {{ block_1 }}, 
+        Block 2 Case 1: {{ block_2_case_1 }}, 
+        Block 2 Case 2: {{ block_2_case_2 }}, 
+        Block 2 Case 3: {{ block_2_case_3 }}, 
+        Block 3: {{ block_3 }}, 
+        Block 4: {{ block_4 }}
+
+  # Debug: Check entities' values
+  - service: system_log.write
+    data:
+      message: >
+        Nordpool_prices: {{ nordpool_prices }}
+        Min temperature: {{ states(min_temperature) }}, 
+        Max temperature: {{ states(max_temperature) }}, 
+        Pipeline: {{ states(pipeline) }},
+        Input boolean states:
+        Block 0: {{ states(block_0) }},
+        Block 1: {{ states(block_1) }},
+        Block 2 Case 1: {{ states(block_2_case_1) }},
+        Block 2 Case 2: {{ states(block_2_case_2) }},
+        Block 2 Case 3: {{ states(block_2_case_3) }},
+        Block 3: {{ states(block_3) }}, 
+        Block 4: {{ states(block_4) }}   
+
+  # Init 
+  - service: input_boolean.turn_off
+    target:
+      entity_id:
+        - !input block_3
+        - !input block_4   
+
+  - choose:
+    - conditions:
+      - condition: 
+        value_template: "{{  }}"
+
+  # Debug: provide updated JSON 
+  - service: system_log.write
+    data:
+      message: >
+        {% set pipeline_JSON = states(pipeline) %}
+        {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
+          {% set parsed_json = pipeline_JSON | from_json %}
+          Updated pipeline: {{ parsed_json }
+        {% else %}
+          Updated pipeline: {{ pipeline_JSON }} Error - JSON is not valid
+        {% endif %}                
