@@ -1,0 +1,103 @@
+# Name: financial_conditions.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to provide logic to evaluate financial conditions
+
+
+
+blueprint:
+  name: Evaluate financial conditions
+  description: Evaluate financial conditions. Output will be one of the following options; delay, preheat or agressive heat 
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    financial_conditions:
+      name: Provide electric stock market prices, min_temperature and max_temperature
+      icon: mdi:magnify
+      description: These inputs allow to evaluate financial conditions and determine heating strategy. 
+      input:  
+        nordpool_prices:
+          name: Input sensor nordpool prices 
+          selector: # declare rules of this input
+            entity: # niput must be entity in home assistant
+              filter: # filter to allow only types described below
+                domain: sensor
+        min_temperature:
+          name: Input number min temperature
+          selector:
+            entity:
+              filter:
+                domain: input_number
+        max_temperature:
+          name: Input number max temperature
+          selector:
+            entity:
+              filter:
+                domain: input_number
+    pipeline_settings: # Create pipeline section for input booleans
+      name: Provide input booleans representing blocks' states
+      icon: mdi:magnify
+      description: These inputs represent program flow
+      input:
+        pipeline:
+          name: Input sensor pipeline
+          selector: 
+            entity: 
+              filter:
+                domain: sensor
+        block_0:
+          name: Block 0 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_1:
+          name: Block 1 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_1:
+          name: Block 2 Case 1 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_2:
+          name: Block 2 Case 2 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_3:
+          name: Block 2 Case 3 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_3:
+          name: Block 3 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_4:
+          name: Block 4 state
+          selector:
+            entity:
+              domain: input_boolean
+
+mode: restart
+max_exceeded: silent
+
+trigger_variables:
+  nordpool_prices: !input nordpool_prices
+  min_temperature: !input min_temperature
+  max_temperature: !input max_temperature
+  pipeline: !input pipeline
+  block_0: !input block_0
+  block_1: !input block_1
+  block_2_case_1: !input block_2_case_1
+  block_2_case_2: !input block_2_case_2
+  block_2_case_3: !input block_2_case_3
+  block_3: !input block_3
+  block_4: !input block_4 
+
+trigger:
+  - platform: template
+    value_template: >
+      "{{ something }}"
+    id: something_ID

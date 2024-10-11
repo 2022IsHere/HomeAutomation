@@ -10,7 +10,7 @@ kitchen_block_0:
   icon: mdi:state-machine
 
 kitchen_block_1:
-  name: "Provide Block 2 state"
+  name: "Provide Block 1 state"
   initial: false
   icon: mdi:state-machine
 

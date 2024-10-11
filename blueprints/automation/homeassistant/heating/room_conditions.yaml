@@ -11,7 +11,7 @@ blueprint:
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
     room_conditions:
-      name: Provide room_temperature, min_temperature and max_temperatuer
+      name: Provide room_temperature, min_temperature and max_temperature
       icon: mdi:magnify
       description: These inputs allow to evaluate room conditions
       input:  
@@ -143,7 +143,17 @@ action:
         Block 2 Case 3: {{ states(block_2_case_3) }},
         Block 3: {{ states(block_3) }}, 
         Block 4: {{ states(block_4) }}
-        
+
+  # Init 
+  - service: input_boolean.turn_off
+    target:
+      entity_id:
+        - !input block_2_case_1
+        - !input block_2_case_2
+        - !input block_2_case_3
+        - !input block_3
+        - !input block_4
+      
 
   - choose:
       - conditions:
