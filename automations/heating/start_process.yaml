@@ -1,0 +1,59 @@
+# Name: start_process.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to start process for heating at any hour
+
+
+
+- id: entrance_start_process
+  alias: Start heating process at every hour for entrance
+  description: Start heating process at every hour. Use blueprint to provide standardised logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input: # no input sections needed when using blueprints
+      room_name: "Entrance"  # Providing the room name
+      block_0: input_boolean.entrance_block_0  # Specify the corresponding Block 0 input_boolean
+
+- id: kitchen_start_process
+  alias: Start heating process at every hour for kitchen
+  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input:
+      room_name: "Kitchen"
+      block_0: input_boolean.kitchen_block_0
+
+- id: bedroom_start_process
+  alias: Start heating process at every hour for bedroom
+  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input:
+      room_name: "Bedroom"
+      block_0: input_boolean.bedroom_block_0
+
+- id: living_room_start_process
+  alias: Start heating process at every hour for living room
+  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input:
+      room_name: "Living Room"
+      block_0: input_boolean.living_room_block_0
+
+- id: main_bedroom_start_process
+  alias: Start heating process at every hour for main bedroom
+  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input:
+      room_name: "Main Bedroom"
+      block_0: input_boolean.main_bedroom_block_0
+
+- id: guest_bedroom_start_process
+  alias: Start heating process at every hour for guest bedroom
+  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input:
+      room_name: "Guest Bedroom"
+      block_0: input_boolean.guest_bedroom_block_0

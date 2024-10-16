@@ -1,0 +1,34 @@
+# Name: start_process.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to start process which evaluates rooms conditions, financial conditions, heating strategy and performs actions if needed
+
+# RENAME electric_heaters.yaml => start_process.yaml
+
+blueprint:
+  name: Start heating process
+  description: Start process which evaluates rooms conditions, financial conditions, heating strategy and performs actions if needed
+  domain: automation
+  input:
+    room_name:
+      name: Room Name
+      description: The name of the room for which the process should be conducted
+      selector:
+        text:
+    block_0:
+      name: Block 0 State
+      description: Input boolean to manage the state of the block.
+      selector:
+        entity:
+          domain: input_boolean
+
+trigger_variables:
+  block_0: !input block_0
+
+trigger:
+  - platform: time_pattern
+    minutes: 0  # Trigger at the start of every hour
+
+action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: !input block_0
