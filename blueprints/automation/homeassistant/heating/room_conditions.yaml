@@ -110,22 +110,6 @@ trigger:
 
 
 action:
-  # Debug: Check entities entities' values
-  - service: system_log.write
-    data:
-      message: >
-        Room temperature: {{ room_temperature }}, 
-        Min temperature: {{ min_temperature }}, 
-        Max temperature: {{ max_temperature }}, 
-        Pipeline: {{ pipeline }}, 
-        Input Boolean States: 
-        Block 0: {{ block_0 }}, 
-        Block 1: {{ block_1 }}, 
-        Block 2 Case 1: {{ block_2_case_1 }}, 
-        Block 2 Case 2: {{ block_2_case_2 }}, 
-        Block 2 Case 3: {{ block_2_case_3 }}, 
-        Block 3: {{ block_3 }}, 
-        Block 4: {{ block_4 }}
 
   # Debug: Check entities' values
   - service: system_log.write
