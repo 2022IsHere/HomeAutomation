@@ -10,10 +10,10 @@ blueprint:
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
-    financial_conditions:
-      name: Provide electric stock market prices, min_temperature and max_temperature
+    nordpool:
+      name: Provide nordpool integration
       icon: mdi:magnify
-      description: These inputs allow to evaluate financial conditions and determine heating strategy. 
+      description: These input provide information to make financial and heating strategy decisions
       input:  
         nordpool_prices:
           name: Input sensor nordpool prices 
@@ -21,6 +21,11 @@ blueprint:
             entity: # niput must be entity in home assistant
               filter: # filter to allow only types described below
                 domain: sensor
+    room_conditions:
+      name: Provide min_temperature, max_temperature and heating schedule start and end times
+      icon: mdi:magnify
+      description: These inputs provide information to make financial and heating strategy decisions
+      input:  
         min_temperature:
           name: Input number min temperature
           selector:
