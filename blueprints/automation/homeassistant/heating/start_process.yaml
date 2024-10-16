@@ -2,7 +2,7 @@
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the blueprint to start process which evaluates rooms conditions, financial conditions, heating strategy and performs actions if needed
 
-# RENAME electric_heaters.yaml => start_process.yaml
+
 
 blueprint:
   name: Start heating process

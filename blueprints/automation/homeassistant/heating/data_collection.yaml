@@ -1,0 +1,177 @@
+# Name: data_collection.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to check that all necessary data is available
+
+
+
+blueprint:
+  name: Data collection phase
+  description: Check that all data is available before proceeding to data processing
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    general_data:
+      name: Coefficient for heat calculations, outdoor temperature, Nordpool prices, Room environment sensors
+      icon: mdi:import
+      description: These inputs are essential for proceeding with heating process
+      input:  
+        coefficient: 
+          name: Heat transfer coefficient
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        outdoor_temperature:
+          name: Outdoor temperature sensor
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        nordpool:
+          name: Nordpool integration sensor
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    room_control_parameters:
+      name: Room Control Parameters
+      icon: mdi:import
+      description: Provide essential room sensor data and settings
+      input:
+        room_temperature:
+          name: Room Temperature Sensor
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        room_size:
+          name: Room Size
+          description: Input boolean for room size management
+          selector:
+            entity:
+              domain: input_boolean
+        min_temperature:
+          name: Minimum Temperature
+          description: Input boolean for minimum temperature setting
+          selector:
+            entity:
+              domain: input_boolean
+        max_temperature:
+          name: Maximum Temperature
+          description: Input boolean for maximum temperature setting
+          selector:
+            entity:
+              domain: input_boolean
+        heating_schedule_start_time:
+          name: Heating Schedule Start Time
+          description: Input datetime for the heating schedule start time
+          selector:
+            entity:
+              domain: input_datetime
+        heating_schedule_end_time:
+          name: Heating Schedule End Time
+          description: Input datetime for the heating schedule end time
+          selector:
+            entity:
+              domain: input_datetime
+        year_avg_price:
+          name: Current Year Average Electric Stock Market Price
+          description: Sensor for the current year's average electric stock market price
+          selector:
+            entity:
+              domain: sensor
+    pipeline_settings: # Create pipeline section for input booleans
+      name: Provide input booleans representing blocks' states
+      icon: mdi:magnify
+      description: These inputs represent program flow
+      input:
+        pipeline:
+          name: Input sensor pipeline
+          selector: 
+            entity: 
+              filter:
+                domain: sensor
+        block_0:
+          name: Block 0 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_1:
+          name: Block 1 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_1:
+          name: Block 2 Case 1 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_2:
+          name: Block 2 Case 2 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_2_case_3:
+          name: Block 2 Case 3 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_3:
+          name: Block 3 state
+          selector:
+            entity:
+              domain: input_boolean
+        block_4:
+          name: Block 4 state
+          selector:
+            entity:
+              domain: input_boolean
+
+
+mode: restart
+max_exceeded: silent
+
+trigger_variables:
+  coefficient: !input coefficient
+  outdoor_temperature: !input outdoor_temperature
+  nordpool: !input nordpool
+  room_temperature: !input room_temperature
+  room_size: !input room_size
+  min_temperature: !input min_temperature
+  max_temperature: !input max_temperature
+  heating_schedule_start_time: !input heating_schedule_start_time
+  heating_schedule_end_time: !input heating_schedule_end_time
+  year_avg_price: !input year_avg_price
+  pipeline: !input pipeline
+  block_0: !input block_0
+  block_1: !input block_1
+  block_2_case_1: !input block_2_case_1
+  block_2_case_2: !input block_2_case_2
+  block_2_case_3: !input block_2_case_3
+  block_3: !input block_3
+  block_4: !input block_4
+
+
+trigger:
+  - platform: template
+    value_template: >
+      {% set invalid_values = ['unknown', 'undefined', '', None] %}
+      
+      {% set coefficient_valid = states(coefficient) not in invalid_values %}
+      {% set outdoor_temperature_valid = states(outdoor_temperature) not in invalid_values %}
+      {% set nordpool_valid = states(nordpool) not in invalid_values %}
+      {% set room_temperature_valid = states(room_temperature) not in invalid_values %}
+      {% set room_size_valid = states(room_size) not in invalid_values %}
+      {% set min_temperature_valid = states(min_temperature) not in invalid_values %}
+      {% set max_temperature_valid = states(max_temperature) not in invalid_values %}
+      {% set heating_schedule_start_time_valid = states(heating_schedule_start_time) not in invalid_values %}
+      {% set heating_schedule_end_time_valid = states(heating_schedule_end_time) not in invalid_values %}
+      {% set year_avg_price_valid = states(year_avg_price) not in invalid_values %}
+
+      {{ coefficient_valid and outdoor_temperature_valid and nordpool_valid and room_temperature_valid and room_size_valid and min_temperature_valid and max_temperature_valid and heating_schedule_start_time_valid and heating_schedule_end_time_valid and year_avg_price_valid }}
+
+action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id:
+        - !input block_1
