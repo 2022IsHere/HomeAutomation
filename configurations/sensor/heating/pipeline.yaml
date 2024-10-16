@@ -17,7 +17,7 @@
               "case_2": "{{ states('input_boolean.entrance_block_2_case_2') }}", 
               "case_3": "{{ states('input_boolean.entrance_block_2_case_3') }}"
             }, 
-            "Block 3": "{{ states('input_boolean.entrance_block_3') }}", 
+            "Block 3": "{{ states('input_boolean.entrance_block_3') }}",         
             "Block 4": "{{ states('input_boolean.entrance_block_4') }}"
           }
     kitchen_pipeline:

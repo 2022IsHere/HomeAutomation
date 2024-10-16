@@ -184,17 +184,8 @@ action:
     
     - conditions: 
       - condition: 
-          value_template: "{{ states(pipeline) | from_json['Block 2']['case_2'] == on }}"
+          value_template: "{{ states(pipeline) | from_json['Block 2']['case_3'] == on }}"
       sequence: # Heat? Expensive right now.
 
   # Debug: provide updated JSON 
-  - service: system_log.write
-    data:
-      message: >
-        {% set pipeline_JSON = states(pipeline) %}
-        {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
-          {% set parsed_json = pipeline_JSON | from_json %}
-          Updated pipeline: {{ parsed_json }
-        {% else %}
-          Updated pipeline: {{ pipeline_JSON }} Error - JSON is not valid
-        {% endif %}                
+               
