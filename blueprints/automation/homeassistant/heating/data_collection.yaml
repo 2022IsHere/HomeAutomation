@@ -74,7 +74,7 @@ blueprint:
           selector:
             entity:
               domain: input_datetime
-        year_avg_price:
+        current_year_average_price:
           name: Current Year Average Electric Stock Market Price
           description: Sensor for the current year's average electric stock market price
           selector:
@@ -141,7 +141,7 @@ trigger_variables:
   max_temperature: !input max_temperature
   heating_schedule_start_time: !input heating_schedule_start_time
   heating_schedule_end_time: !input heating_schedule_end_time
-  year_avg_price: !input year_avg_price
+  current_year_average_price: !input current_year_average_price
   pipeline: !input pipeline
   block_0: !input block_0
   block_1: !input block_1
@@ -166,9 +166,9 @@ trigger:
       {% set max_temperature_valid = states(max_temperature) not in invalid_values %}
       {% set heating_schedule_start_time_valid = states(heating_schedule_start_time) not in invalid_values %}
       {% set heating_schedule_end_time_valid = states(heating_schedule_end_time) not in invalid_values %}
-      {% set year_avg_price_valid = states(year_avg_price) not in invalid_values %}
+      {% set current_year_average_price_valid = states(current_year_average_price) not in invalid_values %}
 
-      {{ coefficient_valid and outdoor_temperature_valid and nordpool_valid and room_temperature_valid and room_size_valid and min_temperature_valid and max_temperature_valid and heating_schedule_start_time_valid and heating_schedule_end_time_valid and year_avg_price_valid }}
+      {{ coefficient_valid and outdoor_temperature_valid and nordpool_valid and room_temperature_valid and room_size_valid and min_temperature_valid and max_temperature_valid and heating_schedule_start_time_valid and heating_schedule_end_time_valid and current_year_average_price_valid }}
 
 action:
   - service: input_boolean.turn_on
