@@ -171,6 +171,22 @@ trigger:
       {{ coefficient_valid and outdoor_temperature_valid and nordpool_valid and room_temperature_valid and room_size_valid and min_temperature_valid and max_temperature_valid and heating_schedule_start_time_valid and heating_schedule_end_time_valid and current_year_average_price_valid }}
 
 action:
+
+  # Debug message: Show entity state and status in log
+  - service: system_log.write
+    data:
+      message: >
+        Coefficient: {{ states(coefficient) }} (valid: {{ coefficient_valid }}), 
+        Outdoor Temperature: {{ states(outdoor_temperature) }} (valid: {{ outdoor_temperature_valid }}), 
+        Nordpool Price: {{ states(nordpool) }} (valid: {{ nordpool_valid }}), 
+        Room Temperature: {{ states(room_temperature) }} (valid: {{ room_temperature_valid }}), 
+        Room Size: {{ states(room_size) }} (valid: {{ room_size_valid }}), 
+        Min Temperature: {{ states(min_temperature) }} (valid: {{ min_temperature_valid }}), 
+        Max Temperature: {{ states(max_temperature) }} (valid: {{ max_temperature_valid }}), 
+        Heating Schedule Start Time: {{ states(heating_schedule_start_time) }} (valid: {{ heating_schedule_start_time_valid }}), 
+        Heating Schedule End Time: {{ states(heating_schedule_end_time) }} (valid: {{ heating_schedule_end_time_valid }}), 
+        Current Year Average Price: {{ states(current_year_average_price) }} (valid: {{ current_year_average_price_valid }})
+
   - service: input_boolean.turn_on
     target:
       entity_id:
