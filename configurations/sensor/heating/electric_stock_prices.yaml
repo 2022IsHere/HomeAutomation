@@ -1,6 +1,6 @@
 # Name: electric_stock_prices.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
-# Description: This file containts the configuration for providing accessibility to nordpool integration providing electric stock market prices.
+# Description: This file containts the configuration for providing nordpool integration to access electric stock market data, current year price average, etc
 
 
 
@@ -11,3 +11,23 @@
   region: "FI"
   precision: 2
   price_type: kWh 
+
+- platform: template
+  sensors:
+    current_year_average_price:
+      friendly_name: "Current year average electric stock market price" # ADD LOGIC TO ACTUALLY CALCULATE IT AT SOME POINT
+      value_template: "{{10}}"
+
+    electric_price_classification_8hr:
+      friendly_name: "Classification for 8 next hours of electric stock market prices"
+      value_template: >
+        {
+          "{{ states('input_number.hour_1') }}": "{{ states('input_number.value_1') }}", 
+          "{{ states('input_number.hour_2') }}": "{{ states('input_number.value_2') }}", 
+          "{{ states('input_number.hour_3') }}": "{{ states('input_number.value_3') }}",
+          "{{ states('input_number.hour_4') }}": "{{ states('input_number.value_4') }}",
+          "{{ states('input_number.hour_5') }}": "{{ states('input_number.value_5') }}", 
+          "{{ states('input_number.hour_6') }}": "{{ states('input_number.value_6') }}", 
+          "{{ states('input_number.hour_7') }}": "{{ states('input_number.value_7') }}",
+          "{{ states('input_number.hour_8') }}": "{{ states('input_number.value_8') }}",
+        }

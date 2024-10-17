@@ -3,6 +3,7 @@
 # Description: This file containts the automations to evaluate rooms conditions. Utilizing rules provided by blueprint.
 
 
+
 - id: entrance_rooms_conditions
   alias: Evaluate entrance room conditions
   description: Evaluate entrance room conditions. Use rules provided by blueprint rooms conditions 

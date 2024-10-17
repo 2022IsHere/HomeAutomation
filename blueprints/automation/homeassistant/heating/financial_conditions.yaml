@@ -10,6 +10,17 @@ blueprint:
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
+    current_average_price:
+      name: Current year average electric stock market price
+      icon: mdi:database
+      description: Provide current year average electric stock market price sensor
+      input:
+        current_year_average_price:
+          name: Input current year average price sensor
+          selector:
+            entity:
+              filter:
+                domain: sensor
     nordpool:
       name: Provide nordpool integration
       icon: mdi:magnify
@@ -101,6 +112,7 @@ mode: restart
 max_exceeded: silent
 
 trigger_variables:
+  current_year_average_price: !input current_year_average_price
   nordpool_prices: !input nordpool_prices
   min_temperature: !input min_temperature
   max_temperature: !input max_temperature
@@ -127,28 +139,13 @@ trigger:
     id: pipeline_ID
 
 action:
-  # Debug: Check entities entities' values
-  - service: system_log.write
-    data:
-      message: >
-        Nordpool_prices: {{ nordpool_prices }}
-        Min temperature: {{ min_temperature }}, 
-        Max temperature: {{ max_temperature }},
-        Pipeline: {{ pipeline }}, 
-        Input Boolean States: 
-        Block 0: {{ block_0 }}, 
-        Block 1: {{ block_1 }}, 
-        Block 2 Case 1: {{ block_2_case_1 }}, 
-        Block 2 Case 2: {{ block_2_case_2 }}, 
-        Block 2 Case 3: {{ block_2_case_3 }}, 
-        Block 3: {{ block_3 }}, 
-        Block 4: {{ block_4 }}
 
   # Debug: Check entities' values
   - service: system_log.write
     data:
       message: >
-        Nordpool_prices: {{ nordpool_prices }}
+        current_average_price: {{ states(current_year_average_price) }}
+        Nordpool_prices: {{ states(nordpool_prices) }}
         Min temperature: {{ states(min_temperature) }}, 
         Max temperature: {{ states(max_temperature) }}, 
         Pipeline: {{ states(pipeline) }},
@@ -166,29 +163,30 @@ action:
     target:
       entity_id:
         - !input block_3
-        - !input block_4   
-
+        - !input block_4  
+        
   - choose:
+      # Heat is at max
+      - conditions:
+          - condition: template
+            value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_1'] == 'on' }}"
+        sequence: 
+          # Define actions for this condition here
 
-    # Heat is at max
-    - conditions:
-        - condition: 
-          value_template: "{{ states(pipeline) | from_json['Block 2']['case_1'] == on }}"
-      sequence: 
+      # Heat at min or below
+      - conditions:
+          - condition: template
+            value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_2'] == 'on' }}"
+        sequence:
+          # Define actions for this condition here
 
-    - conditions: 
+      # Heat between min and max
+      - conditions:
+          - condition: template
+            value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_3'] == 'on' }}"
+        sequence:
+          # Define actions for this condition here
 
-        # Heat at min or below
-        - condition: 
-            value_template: "{{ states(pipeline) | from_json['Block 2']['case_2'] == on }}"
-      sequence:
-    
-    - conditions: 
-
-        # Heat between min and max
-        - condition: 
-            value_template: "{{ states(pipeline) | from_json['Block 2']['case_3'] == on }}"
-      sequence: # Heat? Expensive right now.
 
   # Debug: provide updated JSON 
                
