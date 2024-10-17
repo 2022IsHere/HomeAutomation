@@ -1,0 +1,264 @@
+# Name: electric_price_classification.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to calculate price trend for the upcoming 8 hours and sort the hours for finance decision-making
+
+
+
+
+blueprint:
+  name: Price Classification, trend check, etc
+  description: Collect data from the Nordpool sensor and generate a classification of electric prices for the next 8 hours.
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    nordpool:
+      name: Nordpool Integration Sensor
+      description: The sensor providing the electric stock market prices.
+      selector:
+        entity:
+          domain: sensor
+    current_year_average_price:
+      name: Current year average price in electric stock market
+      description: The sensor state is accurate value on current year average price in electric stock market
+      selector:
+        entity:
+          filter:  
+            domain: sensor
+    classification_JSON:
+      name: Classified Price Data in JSON Format
+      icon: mdi:import
+      description: JSON entity containing the classified price data.
+      input:
+        hour_1:
+          name: Hour 1
+          description: The first hour in the classification (e.g., 22:00).
+          selector:
+            entity:
+              domain: input_number
+        value_1:
+          name: Value 1
+          description: The price value associated with hour 1.
+          selector:
+            entity:
+              domain: input_number
+        hour_2:
+          name: Hour 2
+          description: The second hour in the classification (e.g., 23:00).
+          selector:
+            entity:
+              domain: input_number
+        value_2:
+          name: Value 2
+          description: The price value associated with hour 2.
+          selector:
+            entity:
+              domain: input_number
+        hour_3:
+          name: Hour 3
+          description: The third hour in the classification (e.g., 00:00).
+          selector:
+            entity:
+              domain: input_number
+        value_3:
+          name: Value 3
+          description: The price value associated with hour 3.
+          selector:
+            entity:
+              domain: input_number
+        hour_4:
+          name: Hour 4
+          description: The fourth hour in the classification (e.g., 01:00).
+          selector:
+            entity:
+              domain: input_number
+        value_4:
+          name: Value 4
+          description: The price value associated with hour 4.
+          selector:
+            entity:
+              domain: input_number
+        hour_5:
+          name: Hour 5
+          description: The fifth hour in the classification (e.g., 02:00).
+          selector:
+            entity:
+              domain: input_number
+        value_5:
+          name: Value 5
+          description: The price value associated with hour 5.
+          selector:
+            entity:
+              domain: input_number
+        hour_6:
+          name: Hour 6
+          description: The sixth hour in the classification (e.g., 03:00).
+          selector:
+            entity:
+              domain: input_number
+        value_6:
+          name: Value 6
+          description: The price value associated with hour 6.
+          selector:
+            entity:
+              domain: input_number
+        hour_7:
+          name: Hour 7
+          description: The seventh hour in the classification (e.g., 04:00).
+          selector:
+            entity:
+              domain: input_number
+        value_7:
+          name: Value 7
+          description: The price value associated with hour 7.
+          selector:
+            entity:
+              domain: input_number
+        hour_8:
+          name: Hour 8
+          description: The eighth hour in the classification (e.g., 05:00).
+          selector:
+            entity:
+              domain: input_number
+        value_8:
+          name: Value 8
+          description: The price value associated with hour 8.
+          selector:
+            entity:
+              domain: input_number
+
+trigger_variables:
+  nordpool: !input nordpool
+  current_year_average_price: !input current_year_average_price
+  hour_1: !input hour_1
+  value_1: !input value_1
+  hour_2: !input hour_2
+  value_2: !input value_2
+  hour_3: !input hour_3
+  value_3: !input value_3
+  hour_4: !input hour_4
+  value_4: !input value_4
+  hour_5: !input hour_5
+  value_5: !input value_5
+  hour_6: !input hour_6
+  value_6: !input value_6
+  hour_7: !input hour_7
+  value_7: !input value_7
+  hour_8: !input hour_8
+  value_8: !input value_8
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: time_pattern
+    minutes: 0  # Trigger every hour to refresh the classification data
+
+action:
+  # Fetch prices and update {"hour": price} dictionary
+  - repeat:
+      count: 8
+      sequence:
+        - variables:
+           current_hour: "{{ ((now().hour + repeat.index) % 24)  }}"
+           price_value: >              
+              {% set hour_offset = (now().hour + repeat.index) %}
+              {% if hour_offset < 24 %}
+                {{ (state_attr(nordpool, 'today')[hour_offset]) }}  
+              {% else %}
+                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) }}  
+                {% else %}
+                  100  
+                {% endif %}
+              {% endif %}
+
+        # Update the hour input_number[n] entity
+        - service: input_number.set_value
+          target:
+            entity_id: "input_number.hour_{{ repeat.index }}"
+          data:
+            value: "{{ current_hour }}"
+
+        # Update the corresponding value input_number[n] entity
+        - service: input_number.set_value
+          target:
+            entity_id: "input_number.value_{{ repeat.index }}"
+          data:
+            value: "{{ price_value }}"
+
+  # PROBABLY REMOVE THE ABOVE CODE AND CHANGE THE USE OF JSON TO {"hour": "type"} => {"21.00": "cheap"}
+
+  # Loop through the 8 hours and compare with the average price to determine the trend
+  - repeat:
+    count: 8
+    sequence:
+      - variables:
+          increasing: 0
+          steady: 0
+          decreasing: 0
+          current_year_average_price: "{{ states('sensor.current_year_avg_price') }}"
+          current_hour: "{{ ((now().hour + repeat.index) % 24) }}"
+          price_value: >              
+            {% set hour_offset = (now().hour + repeat.index) %}
+            {% if hour_offset < 24 %}
+              {{ (state_attr('sensor.nordpool', 'today')[hour_offset]) }}  
+            {% else %}
+              {% if state_attr('sensor.nordpool', 'tomorrow_valid') %}
+                {{ (state_attr('sensor.nordpool', 'tomorrow')[hour_offset - 24]) }}  
+              {% else %}
+                100  # Handle missing price data
+              {% endif %}
+            {% endif %}
+
+
+      # Skip any invalid prices (i.e., price_value == 100) to avoid counting them in trend
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ price_value != 100 }}"
+
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ price_value < current_year_average_price }}"
+                    sequence:
+                      - variables:
+                          decreasing: "{{ decreasing + 1 }}"
+
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ price_value > current_year_average_price }}"
+                    sequence:
+                      - variables:
+                          increasing: "{{ increasing + 1 }}"
+
+                  - default:
+                      - variables:
+                          steady: "{{ steady + 1 }}"
+
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ increasing > decreasing }}"
+            sequence:
+              - service: input_text.set_value # CREATE ENTITY WHICH TO UPDATE WITH THE TREND AS STR
+                target:                       # ADD THIS ENTITY TO INPUTS TO BLUEPRINT AND AUTOMATION
+                  entity_id: input_text.price_trend
+                data:
+                  value: "increasing"
+          - conditions:
+              - condition: template
+                value_template: "{{ decreasing > increasing }}"
+            sequence:
+              - service: input_text.set_value
+                target:
+                  entity_id: input_text.price_trend
+                data:
+                  value: "decreasing"
+          - default:
+              - service: input_text.set_value
+                target:
+                  entity_id: input_text.price_trend
+                data:
+                  value: "steady" 
