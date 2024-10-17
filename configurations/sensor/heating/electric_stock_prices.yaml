@@ -29,5 +29,5 @@
           "{{ states('input_number.hour_5') }}": "{{ states('input_number.value_5') }}", 
           "{{ states('input_number.hour_6') }}": "{{ states('input_number.value_6') }}", 
           "{{ states('input_number.hour_7') }}": "{{ states('input_number.value_7') }}",
-          "{{ states('input_number.hour_8') }}": "{{ states('input_number.value_8') }}",
+          "{{ states('input_number.hour_8') }}": "{{ states('input_number.value_8') }}"
         }
