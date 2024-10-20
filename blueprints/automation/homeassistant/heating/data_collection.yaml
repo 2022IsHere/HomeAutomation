@@ -173,19 +173,19 @@ trigger:
 action:
 
   # Debug message: Show entity state and status in log
-  - service: system_log.write
-    data:
-      message: >
-        Coefficient: {{ states(coefficient) }}), 
-        Outdoor Temperature: {{ states(outdoor_temperature) }}), 
-        Nordpool Price: {{ states(nordpool) }}), 
-        Room Temperature: {{ states(room_temperature) }}), 
-        Room Size: {{ states(room_size) }}), 
-        Min Temperature: {{ states(min_temperature) }}), 
-        Max Temperature: {{ states(max_temperature) }}), 
-        Heating Schedule Start Time: {{ states(heating_schedule_start_time) }}), 
-        Heating Schedule End Time: {{ states(heating_schedule_end_time) }}), 
-        Current Year Average Price: {{ states(current_year_average_price) }})
+  # - service: system_log.write
+  #  data:
+  #    message: >
+  #      Coefficient: {{ states(coefficient) }}), 
+  #      Outdoor Temperature: {{ states(outdoor_temperature) }}), 
+  #      Nordpool Price: {{ states(nordpool) }}), 
+  #      Room Temperature: {{ states(room_temperature) }}), 
+  #      Room Size: {{ states(room_size) }}), 
+  #      Min Temperature: {{ states(min_temperature) }}), 
+  #      Max Temperature: {{ states(max_temperature) }}), 
+  #      Heating Schedule Start Time: {{ states(heating_schedule_start_time) }}), 
+  #      Heating Schedule End Time: {{ states(heating_schedule_end_time) }}), 
+  #      Current Year Average Price: {{ states(current_year_average_price) }})
 
   - service: input_boolean.turn_on
     target:

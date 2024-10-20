@@ -112,21 +112,21 @@ trigger:
 action:
 
   # Debug: Check entities' values
-  - service: system_log.write
-    data:
-      message: >
-        Room temperature: {{ states(room_temperature) }}, 
-        Min temperature: {{ states(min_temperature) }}, 
-        Max temperature: {{ states(max_temperature) }}, 
-        Pipeline: {{ states(pipeline) }},
-        Input boolean states:
-        Block 0: {{ states(block_0) }},
-        Block 1: {{ states(block_1) }},
-        Block 2 Case 1: {{ states(block_2_case_1) }},
-        Block 2 Case 2: {{ states(block_2_case_2) }},
-        Block 2 Case 3: {{ states(block_2_case_3) }},
-        Block 3: {{ states(block_3) }}, 
-        Block 4: {{ states(block_4) }}
+  #- service: system_log.write
+  #  data:
+  #    message: >
+  #      Room temperature: {{ states(room_temperature) }}, 
+  #      Min temperature: {{ states(min_temperature) }}, 
+  #      Max temperature: {{ states(max_temperature) }}, 
+  #      Pipeline: {{ states(pipeline) }},
+  #      Input boolean states:
+  #      Block 0: {{ states(block_0) }},
+  #      Block 1: {{ states(block_1) }},
+  #      Block 2 Case 1: {{ states(block_2_case_1) }},
+  #      Block 2 Case 2: {{ states(block_2_case_2) }},
+  #      Block 2 Case 3: {{ states(block_2_case_3) }},
+  #      Block 3: {{ states(block_3) }}, 
+  #      Block 4: {{ states(block_4) }}
 
   # Init 
   - service: input_boolean.turn_off
@@ -163,13 +163,13 @@ action:
               entity_id: !input block_2_case_3
 
   # Debug: provide updated JSON 
-  - service: system_log.write
-    data:
-      message: >
-        {% set pipeline_JSON = states(pipeline) %}
-        {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
-          {% set parsed_json = pipeline_JSON | from_json %}
-          Updated pipeline: {{ parsed_json }} Block 1: {{ parsed_json['Block 1'] == 'on' }}
-        {% else %}
-          Updated pipeline: {{ pipeline_JSON }} Block 1: Error - JSON is not valid
-        {% endif %}
+  #- service: system_log.write
+  #  data:
+  #    message: >
+  #      {% set pipeline_JSON = states(pipeline) %}
+  #      {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
+  #        {% set parsed_json = pipeline_JSON | from_json %}
+  #        Updated pipeline: {{ parsed_json }} Block 1: {{ parsed_json['Block 1'] == 'on' }}
+  #      {% else %}
+  #        Updated pipeline: {{ pipeline_JSON }} Block 1: Error - JSON is not valid
+  #      {% endif %}

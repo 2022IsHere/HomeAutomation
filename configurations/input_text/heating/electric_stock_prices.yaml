@@ -1,0 +1,13 @@
+# Name: electric_stock_prices.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the entity which is updated to showcase price trend in electric stock market. Next 8 hours
+
+
+
+price_trend:
+  name: "Electric stock market price trend for next 8 hours"
+  min: 1
+  max: 255
+  initial: "Not calculated"
+  icon: mdi:import
+  mode: text

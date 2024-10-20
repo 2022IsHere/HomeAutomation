@@ -4,27 +4,15 @@
 
 
 
-- id: electric_price_classification
-  alias: Create JSON format with electric prices classified for next 8 hours for financial decision-making
-  description: Create JSON format with electric prices classified for next 8 hours for financial decision-making 
+- id: electric_price_calculations
+  alias: Electric Price Calculations
+  description: Calculates price trend for the next 8 hours
   use_blueprint:
     path: homeassistant/heating/electric_price_classification.yaml
     input:
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_024
       current_year_average_price: sensor.current_year_average_price
-      hour_1: input_number.hour_1
-      value_1: input_number.value_1
-      hour_2: input_number.hour_2
-      value_2: input_number.value_2
-      hour_3: input_number.hour_3
-      value_3: input_number.value_3
-      hour_4: input_number.hour_4
-      value_4: input_number.value_4
-      hour_5: input_number.hour_5
-      value_5: input_number.value_5
-      hour_6: input_number.hour_6
-      value_6: input_number.value_6
-      hour_7: input_number.hour_7
-      value_7: input_number.value_7
-      hour_8: input_number.hour_8
-      value_8: input_number.value_8
+      price_trend: input_text.price_trend
+      above_average_counter: counter.electric_price_trend_expensive
+      equal_to_average_counter: counter.electric_price_trend_average
+      below_average_counter: counter.electric_price_trend_cheap
