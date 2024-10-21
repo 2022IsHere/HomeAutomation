@@ -10,9 +10,25 @@
   use_blueprint:
     path: homeassistant/heating/electric_price_classification.yaml
     input:
-      nordpool: sensor.nordpool_kwh_fi_eur_2_10_024
+      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
       current_year_average_price: sensor.current_year_average_price
       price_trend: input_text.price_trend
       above_average_counter: counter.electric_price_trend_expensive
       equal_to_average_counter: counter.electric_price_trend_average
       below_average_counter: counter.electric_price_trend_cheap
+      hour_1: input_number.hour_1
+      hour_1_type: input_text.hour_1_type
+      hour_2: input_number.hour_2
+      hour_2_type: input_text.hour_2_type
+      hour_3: input_number.hour_3
+      hour_3_type: input_text.hour_3_type
+      hour_4: input_number.hour_4
+      hour_4_type: input_text.hour_4_type
+      hour_5: input_number.hour_5
+      hour_5_type: input_text.hour_5_type
+      hour_6: input_number.hour_6
+      hour_6_type: input_text.hour_6_type
+      hour_7: input_number.hour_7
+      hour_7_type: input_text.hour_7_type
+      hour_8: input_number.hour_8
+      hour_8_type: input_text.hour_8_type

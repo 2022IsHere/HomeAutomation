@@ -11,3 +11,59 @@ price_trend:
   initial: "Not calculated"
   icon: mdi:import
   mode: text
+
+hour_1_type:
+  name: "Hour 1 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_2_type:
+  name: "Hour 2 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_3_type:
+  name: "Hour 3 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_4_type:
+  name: "Hour 4 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_5_type:
+  name: "Hour 5 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_6_type:
+  name: "Hour 6 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_7_type:
+  name: "Hour 7 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text
+
+hour_8_type:
+  name: "Hour 8 Type"
+  min: 1
+  max: 100
+  initial: "initial"
+  mode: text

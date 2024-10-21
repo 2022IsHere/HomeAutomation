@@ -57,12 +57,12 @@ trigger:
 
 action:
   # Debug: Check entities, entities' values
-  - service: system_log.write
-    data:
-      message: "Min Temperature: {{ min_temperature }}, Max Temperature: {{ max_temperature }}, Target Temperature: {{ target_temperature }}"
-  - service: system_log.write
-    data:
-      message: "Min Temperature: {{ states(min_temperature) }}, Max Temperature: {{ states(max_temperature) }}, Target Temperature: {{ states(target_temperature) }}" 
+  #- service: system_log.write
+  #  data:
+  #    message: "Min Temperature: {{ min_temperature }}, Max Temperature: {{ max_temperature }}, Target Temperature: {{ target_temperature }}"
+  #- service: system_log.write
+  #  data:
+  #    message: "Min Temperature: {{ states(min_temperature) }}, Max Temperature: {{ states(max_temperature) }}, Target Temperature: {{ states(target_temperature) }}" 
       
   - service: input_number.set_value
     target:

@@ -10,6 +10,17 @@ blueprint:
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
+    price_trend:
+      name: Provide price trend
+      icon: mdi:trending-up
+      description: The price trend represents the price trend for next 8 hours
+      input:
+        price_trend:
+          name: Input price trend entity
+          selector:
+            entity:
+              filter:
+                domain: input_text
     current_average_price:
       name: Provide current year average electric stock market price
       icon: mdi:database
@@ -124,6 +135,7 @@ mode: restart
 max_exceeded: silent
 
 trigger_variables:
+  price_trend: !input price_trend
   current_year_average_price: !input current_year_average_price
   nordpool_prices: !input nordpool_prices
   min_temperature: !input min_temperature
@@ -154,23 +166,23 @@ trigger:
 action:
 
   # Debug: Check entities' values
-  - service: system_log.write
-    data:
-      message: >
-        current_average_price: {{ states(current_year_average_price) }}
-        Nordpool_prices: {{ states(nordpool_prices) }}
-        Min temperature: {{ states(min_temperature) }}, 
-        Max temperature: {{ states(max_temperature) }}, 
-        Pipeline: {{ states(pipeline) }},
-        Input boolean states:
-        Block 0: {{ states(block_0) }},
-        Block 1: {{ states(block_1) }},
-        Block 2 Case 1: {{ states(block_2_case_1) }},
-        Block 2 Case 2: {{ states(block_2_case_2) }},
-        Block 2 Case 3: {{ states(block_2_case_3) }},
-        Block 3: {{ states(block_3) }}, 
-        Block 4: {{ states(block_4) }},
-        Prices next 8 hrs: {{ states(classification_JSON) }}   
+  #- service: system_log.write
+  #  data:
+  #    message: >
+  #      current_average_price: {{ states(current_year_average_price) }}
+  #      Nordpool_prices: {{ states(nordpool_prices) }}
+  #      Min temperature: {{ states(min_temperature) }}, 
+  #      Max temperature: {{ states(max_temperature) }}, 
+  #      Pipeline: {{ states(pipeline) }},
+  #      Input boolean states:
+  #      Block 0: {{ states(block_0) }},
+  #      Block 1: {{ states(block_1) }},
+  #      Block 2 Case 1: {{ states(block_2_case_1) }},
+  #      Block 2 Case 2: {{ states(block_2_case_2) }},
+  #      Block 2 Case 3: {{ states(block_2_case_3) }},
+  #      Block 3: {{ states(block_3) }}, 
+  #      Block 4: {{ states(block_4) }},
+  #      Prices next 8 hrs: {{ states(classification_JSON) }}   
 
   # Init 
   - service: input_boolean.turn_off

@@ -149,7 +149,7 @@ action:
               entity_id: !input block_2_case_1
       - conditions:
           - condition: template
-            value_template: "{{ states(room_temperature) <= states(min_temperature) }}"
+            value_template: "{{ states(room_temperature) | float <= states(min_temperature) | float }}"
         sequence:
           - service: input_boolean.turn_on
             target:

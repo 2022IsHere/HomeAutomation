@@ -22,12 +22,12 @@
       friendly_name: "Classification for 8 next hours of electric stock market prices"
       value_template: >
         {
-          "{{ states('input_number.hour_1') }}": "{{ states('input_number.value_1') }}", 
-          "{{ states('input_number.hour_2') }}": "{{ states('input_number.value_2') }}", 
-          "{{ states('input_number.hour_3') }}": "{{ states('input_number.value_3') }}",
-          "{{ states('input_number.hour_4') }}": "{{ states('input_number.value_4') }}",
-          "{{ states('input_number.hour_5') }}": "{{ states('input_number.value_5') }}", 
-          "{{ states('input_number.hour_6') }}": "{{ states('input_number.value_6') }}", 
-          "{{ states('input_number.hour_7') }}": "{{ states('input_number.value_7') }}",
-          "{{ states('input_number.hour_8') }}": "{{ states('input_number.value_8') }}"
+          "{{ states('input_number.hour_1') }}": {{ states('input_text.hour_1_type') }}, 
+          "{{ states('input_number.hour_2') }}": {{ states('input_text.hour_2_type') }}, 
+          "{{ states('input_number.hour_3') }}": {{ states('input_text.hour_3_type') }},
+          "{{ states('input_number.hour_4') }}": {{ states('input_text.hour_4_type') }},
+          "{{ states('input_number.hour_5') }}": {{ states('input_text.hour_5_type') }}, 
+          "{{ states('input_number.hour_6') }}": {{ states('input_text.hour_6_type') }}, 
+          "{{ states('input_number.hour_7') }}": {{ states('input_text.hour_7_type') }},
+          "{{ states('input_number.hour_8') }}": {{ states('input_text.hour_8_type') }}
         }
