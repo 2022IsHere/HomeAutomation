@@ -45,15 +45,12 @@ trigger_variables:
 trigger:
   - platform: state
     entity_id: !input min_temperature
-    id: min_temperature_ID
 
   - platform: state
     entity_id: !input max_temperature
-    id: max_temperature_ID
 
   - platform: state
     entity_id: !input target_temperature
-    id: target_temperature_ID
 
 action:
   # Debug: Check entities, entities' values

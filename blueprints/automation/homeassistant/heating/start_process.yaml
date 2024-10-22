@@ -36,6 +36,24 @@ trigger:
 
 action:
 
+  # Init the program flow
+  - service: input_boolean.turn_off
+    target:
+      entity_id:
+        - "{{ 'input_boolean.' + room_name | lower + '_block_0' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_block_1' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_block_2_case_1' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_block_2_case_2' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_block_2_case_3' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_preheat_by_5' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_preheat_by_12' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_preheat_by_20' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_preheat_max' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_delay_heat' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_block_4' }}"
+
+
   - service: input_boolean.turn_on
     target:
       entity_id: >

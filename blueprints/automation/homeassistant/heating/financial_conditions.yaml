@@ -10,209 +10,188 @@ blueprint:
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
-    price_trend:
-      name: Provide price trend
-      icon: mdi:trending-up
-      description: The price trend represents the price trend for next 8 hours
+    housekeep:
+      name: House Keep Information
+      icon: mdi:hoop-house
+      description:  Inputs provide notifications services ot administrator
+      input:
+        user:
+          name: Housekeeper's phone
+          description: This user is administrator of heating system
+          selector:
+            entity:
+              filter:
+                domain: device_tracker
+    financial_information:
+      name: Financial Information
+      icon: mdi:finance
+      description: Inputs related to financial data and market price trends used for heating strategy decisions
       input:
         price_trend:
           name: Input price trend entity
+          description: Entity representing the calculated price trend for the next 8 hours
           selector:
             entity:
               filter:
                 domain: input_text
-    current_average_price:
-      name: Provide current year average electric stock market price
-      icon: mdi:database
-      description: This input allows decision-making and optimization
-      input:
         current_year_average_price:
           name: Input current year average price sensor
+          description: Sensor that provides the current year's average electric stock market price
           selector:
             entity:
               filter:
                 domain: sensor
-    nordpool:
-      name: Provide nordpool integration
-      icon: mdi:magnify
-      description: These input provide information to make financial and heating strategy decisions
-      input:  
-        nordpool_prices:
+        nordpool:
           name: Input sensor nordpool
-          selector: # declare rules of this input
-            entity: # niput must be entity in home assistant
-              filter: # filter to allow only types described below
+          description: Sensor that represents real-time electric stock market price data
+          selector: 
+            entity: 
+              filter: 
                 domain: sensor
-    room_conditions:
+    room_information:
       name: Provide min_temperature, max_temperature and heating schedule start and end times
       icon: mdi:magnify
       description: These inputs provide information to make financial and heating strategy decisions
       input:  
+        room_name:
+          name: Room Name
+          description: The name of the room for which the process should be conducted
+          selector:
+            text:
+        room_temperature:
+          name: Input sensor room temperature 
+          selector:
+            entity: 
+              filter: 
+                domain: sensor  
         min_temperature:
-          name: Input number room setting min temperature
+          name: Minimum allowed room temperature
           selector:
             entity:
               filter:
                 domain: input_number
         max_temperature:
-          name: Input number room setting max temperature
+          name: Maximum allowed room temperature
           selector:
             entity:
               filter:
                 domain: input_number
-        heating_start_time:
-          name: Input number heating schedule end time
+        heating_schedule_start_time:
+          name: Heating schedule start time
           selector:
             entity: 
               filter:
                 domain: input_datetime
-        heating_end_time:
+        heating_schedule_end_time:
             name: Input number heating schedule end time
             selector:
               entity: 
                 filter:
                   domain: input_datetime
-    pipeline_settings: # Create pipeline section for input booleans
-      name: Provide input booleans representing blocks' states
-      icon: mdi:magnify
-      description: These inputs represent program flow
-      input:
-        pipeline:
-          name: Input sensor pipeline
-          selector: 
-            entity: 
-              filter:
-                domain: sensor
-        block_0:
-          name: Block 0 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_1:
-          name: Block 1 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_1:
-          name: Block 2 Case 1 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_2:
-          name: Block 2 Case 2 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_3:
-          name: Block 2 Case 3 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_3:
-          name: Block 3 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_4:
-          name: Block 4 state
-          selector:
-            entity:
-              domain: input_boolean
-    classification_JSON:
-      name: Provide JSON which supports dynamic allocation and contains price data
-      icon: mdi:import
-      description: Provide sensor which contains classified price data
-      input:
-        classification_JSON:
-          name: Input price data in JSON format
-          selector:
-            entity:
-              filter:
-                domain: sensor
+    pipeline_settings:
+      name: Room Heating System Interface
+      description: This is a sensor configured with sensor attributes to control heating system program flow
+      selector:
+        entity:
+          domain: sensor
 
 
 mode: restart
 max_exceeded: silent
 
-trigger_variables:
+variables:
   price_trend: !input price_trend
   current_year_average_price: !input current_year_average_price
-  nordpool_prices: !input nordpool_prices
+  nordpool: !input nordpool
+  room_name: !input room_name
+  room_temperature: !input room_temperature
   min_temperature: !input min_temperature
   max_temperature: !input max_temperature
-  heating_start_time: !input heating_start_time
-  heating_end_time: !input heating_end_time
-  pipeline: !input pipeline
-  block_0: !input block_0
-  block_1: !input block_1
-  block_2_case_1: !input block_2_case_1 
-  block_2_case_2: !input block_2_case_2 
-  block_2_case_3: !input block_2_case_3 
-  block_3: !input block_3
-  block_4: !input block_4 
-  classification_JSON: !input classification_JSON
+  heating_schedule_start_time: !input heating_schedule_start_time
+  heating_schedule_end_time: !input heating_schedule_end_time
+
+trigger_variables:
+  pipeline_settings: !input pipeline_settings
 
 trigger:
   - platform: template
     value_template: >
-      {% set pipeline_JSON = states(pipeline) %}
-      {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
-        {{ 'on' in [(pipeline_JSON | from_json)['Block 2']['case_1'], (pipeline_JSON | from_json)['Block 2']['case_2'], (pipeline_JSON | from_json)['Block 2']['case_3']] }}
+      {% set case_1 = state_attr(pipeline_settings, 'block_2_case_1') %}
+      {% set case_2 = state_attr(pipeline_settings, 'block_2_case_2') %}
+      {% set case_3 = state_attr(pipeline_settings, 'block_2_case_3') %}
+
+      {% if case_1 == 'on' or case_2 == 'on' or case_3 == 'on' %}
+        true
       {% else %}
         false
       {% endif %}
-    id: pipeline_ID
 
-action:
+action: 
 
-  # Debug: Check entities' values
-  #- service: system_log.write
-  #  data:
-  #    message: >
-  #      current_average_price: {{ states(current_year_average_price) }}
-  #      Nordpool_prices: {{ states(nordpool_prices) }}
-  #      Min temperature: {{ states(min_temperature) }}, 
-  #      Max temperature: {{ states(max_temperature) }}, 
-  #      Pipeline: {{ states(pipeline) }},
-  #      Input boolean states:
-  #      Block 0: {{ states(block_0) }},
-  #      Block 1: {{ states(block_1) }},
-  #      Block 2 Case 1: {{ states(block_2_case_1) }},
-  #      Block 2 Case 2: {{ states(block_2_case_2) }},
-  #      Block 2 Case 3: {{ states(block_2_case_3) }},
-  #      Block 3: {{ states(block_3) }}, 
-  #      Block 4: {{ states(block_4) }},
-  #      Prices next 8 hrs: {{ states(classification_JSON) }}   
-
-  # Init 
-  - service: input_boolean.turn_off
-    target:
-      entity_id:
-        - !input block_3
-        - !input block_4  
-        
   - choose:
       # Heat is at max
       - conditions:
           - condition: template
-            value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_1'] == 'on' }}"
+            value_template: "{{ state_attr(pipeline_settings, 'block_2_case_1') == 'on'  }}"
         sequence: 
-          # Define actions for this condition here
-          #- service: input_boolean.turn_on
-          #  target:
-          #    entity_id: !input something
+          - service: input_boolean.turn_on
+            target:
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_delay_heat' }}
 
       # Heat at min or below
       - conditions:
           - condition: template
-            value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_2'] == 'on' }}"
+            value_template: "{{ state_attr(pipeline_settings, 'block_2_case_2') == 'on' }}"
         sequence:
-          # Define actions for this condition here
+          - choose:
+              - conditions:
+                  # Price is expensive and heating is necessary
+                  - condition: template
+                    value_template: "{{ if state_attr(nordpool, 'current_price') > current_year_average_price }}"
+                sequence:
+                  - service: notify.{{ user }}
+                    data:
+                      title: >
+                        {{room_name}} is at {{ states(room_temperature) }}°C
+                    message: >
+                      Nykyinen sähkön hinta on korkea. Hinta: {{ state_attr(nordpool, 'current_price') }}{{ state_attr(nordpool, 'unit_of_measuremen') }}
+                      Haluatko laskea lämpörajaa? Nykyinen: {{states(min_temperature)}}
+                      Reagoi seuraavan 5 minuutin aikana. Muuten lämmitys hoidetaan minimilämmöllä!
+                  - service: delay
+                    wait_for: 5 
+                  - conditions:
+                      - condition:
+                        value_template: "{{ if min_temperature < states(room_temperature) }}"
+                    # User does not wish to heat due to expensive price
+                    sequence:
+                      - service: input_boolean.turn_on
+                        target:
+                          entity_id: >
+                            {{ 'input_boolean.' + room_name | lower + '_delay_heat' }}
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ if min_temperature <= states(room_temperature) or min_temperature > states(room_temperature) }}"
+                    # Heat bare minimum because user did not update minimum temperature level
+                    sequence:
+                      - service: input_boolean.turn_on
+                        target:
+                          entity_id: >
+                            {{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}
+
+
+
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ if state_attr(nordpool, 'current_price') < current_year_average_price }}"
+                sequence: 
+
 
       # Heat between min and max
       - conditions:
           - condition: template
-            value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_3'] == 'on' }}"
+            value_template: "{{ state_attr(pipeline_settings, 'block_2_case_3') == 'on' }}"
         sequence:
           # Define actions for this condition here
 

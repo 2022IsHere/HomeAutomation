@@ -10,6 +10,11 @@ blueprint:
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
+    room_name:
+      name: Room Name
+      description: The name of the room for which the process should be conducted
+      selector:
+        text:
     room_conditions:
       name: Provide room_temperature, min_temperature and max_temperature
       icon: mdi:magnify
@@ -33,111 +38,36 @@ blueprint:
             entity:
               filter:
                 domain: input_number
-    pipeline_settings: # Create pipeline section for input booleans
-      name: Provide input booleans representing blocks' states
-      icon: mdi:magnify
-      description: These inputs represent program flow
-      input:
-        pipeline:
-          name: Input sensor pipeline
-          selector: 
-            entity: 
-              filter:
-                domain: sensor
-        block_0:
-          name: Block 0 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_1:
-          name: Block 1 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_1:
-          name: Block 2 Case 1 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_2:
-          name: Block 2 Case 2 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_3:
-          name: Block 2 Case 3 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_3:
-          name: Block 3 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_4:
-          name: Block 4 state
-          selector:
-            entity:
-              domain: input_boolean
+    pipeline_settings:
+      name: Room Heating System Interface
+      description: This is a sensor configured with sensor attributes to control heating system program flow
+      selector:
+        entity:
+          domain: sensor
 
 mode: restart
 max_exceeded: silent
 
-trigger_variables:
+variables:
+  room_name: !input room_name
   room_temperature: !input room_temperature
   min_temperature: !input min_temperature
   max_temperature: !input max_temperature
-  pipeline: !input pipeline
-  block_0: !input block_0
-  block_1: !input block_1
-  block_2_case_1: !input block_2_case_1
-  block_2_case_2: !input block_2_case_2
-  block_2_case_3: !input block_2_case_3
-  block_3: !input block_3
-  block_4: !input block_4
+
+trigger_variables:
+  pipeline_settings: !input pipeline_settings
 
 trigger:
   - platform: template
     value_template: >
-      {% set pipeline_JSON = states(pipeline) %}
-      {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
-        {{ (pipeline_JSON | from_json)['Block 1'] == 'on' }}
+      {% set state = state_attr(pipeline_settings, 'block_1') %}
+      {% if state not in ['unknown', 'undefined', '', None] %}
+        {{ state }}
       {% else %}
         false
       {% endif %}
-    id: pipeline_ID
-
-
 
 action:
-
-  # Debug: Check entities' values
-  #- service: system_log.write
-  #  data:
-  #    message: >
-  #      Room temperature: {{ states(room_temperature) }}, 
-  #      Min temperature: {{ states(min_temperature) }}, 
-  #      Max temperature: {{ states(max_temperature) }}, 
-  #      Pipeline: {{ states(pipeline) }},
-  #      Input boolean states:
-  #      Block 0: {{ states(block_0) }},
-  #      Block 1: {{ states(block_1) }},
-  #      Block 2 Case 1: {{ states(block_2_case_1) }},
-  #      Block 2 Case 2: {{ states(block_2_case_2) }},
-  #      Block 2 Case 3: {{ states(block_2_case_3) }},
-  #      Block 3: {{ states(block_3) }}, 
-  #      Block 4: {{ states(block_4) }}
-
-  # Init 
-  - service: input_boolean.turn_off
-    target:
-      entity_id:
-        - !input block_2_case_1 
-        - !input block_2_case_2 
-        - !input block_2_case_3 
-        - !input block_3
-        - !input block_4
-      
 
   - choose:
       - conditions:
@@ -146,30 +76,21 @@ action:
         sequence:
           - service: input_boolean.turn_on
             target:
-              entity_id: !input block_2_case_1
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_block_2_case_1' }}
       - conditions:
           - condition: template
             value_template: "{{ states(room_temperature) | float <= states(min_temperature) | float }}"
         sequence:
           - service: input_boolean.turn_on
             target:
-              entity_id: !input block_2_case_2
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_block_2_case_2' }}
       - conditions:
           - condition: template
             value_template: "{{ states(room_temperature) < states(max_temperature) and states(room_temperature) > states(min_temperature) }}"
         sequence:
           - service: input_boolean.turn_on
             target:
-              entity_id: !input block_2_case_3
-
-  # Debug: provide updated JSON 
-  #- service: system_log.write
-  #  data:
-  #    message: >
-  #      {% set pipeline_JSON = states(pipeline) %}
-  #      {% if pipeline_JSON not in ['unknown', 'undefined', '', None] %}
-  #        {% set parsed_json = pipeline_JSON | from_json %}
-  #        Updated pipeline: {{ parsed_json }} Block 1: {{ parsed_json['Block 1'] == 'on' }}
-  #      {% else %}
-  #        Updated pipeline: {{ pipeline_JSON }} Block 1: Error - JSON is not valid
-  #      {% endif %}
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_block_2_case_3' }}

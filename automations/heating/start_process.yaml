@@ -37,7 +37,7 @@
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
     input:
-      room_name: "Living Room"
+      room_name: "Living_Room"
       room_system_interface: sensor.living_room_pipeline
 
 - id: main_bedroom_start_process
@@ -46,7 +46,7 @@
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
     input:
-      room_name: "Main Bedroom"
+      room_name: "Main_Bedroom"
       room_system_interface: sensor.living_room_pipeline
 
 - id: guest_bedroom_start_process
@@ -55,5 +55,5 @@
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
     input:
-      room_name: "Guest Bedroom"
+      room_name: "Guest_Bedroom"
       room_system_interface: sensor.guest_bedroom_pipeline
