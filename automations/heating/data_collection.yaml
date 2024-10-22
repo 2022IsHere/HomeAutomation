@@ -10,6 +10,7 @@
   use_blueprint:
     path: homeassistant/heating/data_collection.yaml
     input:
+      room_name: "Entrance"
       coefficient: sensor.coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
@@ -17,17 +18,10 @@
       room_size: input_boolean.entrance_living_space
       min_temperature: input_boolean.entrance_min_temperature  
       max_temperature: input_boolean.entrance_max_temperature 
-      heating_schedule_start_time: input_datetime.entrance_start_time
-      heating_schedule_end_time: input_datetime.entrance_end_time 
+      heating_schedule_start_time: input_datetime.entrance_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.entrance_heating_schedule_end_time
       current_year_average_price: sensor.current_year_average_price 
-      pipeline: sensor.entrance_pipeline  
-      block_0: input_boolean.entrance_block_0 
-      block_1: input_boolean.entrance_block_1  
-      block_2_case_1: input_boolean.entrance_block_2_case_1  
-      block_2_case_2: input_boolean.entrance_block_2_case_2  
-      block_2_case_3: input_boolean.entrance_block_2_case_3  
-      block_3: input_boolean.entrance_block_3  
-      block_4: input_boolean.entrance_block_4 
+      pipeline_settings: sensor.entrance_pipeline  
 
 - id: kitchen_data_collection
   alias: Kitchen data collection
@@ -35,24 +29,18 @@
   use_blueprint:
     path: homeassistant/heating/data_collection.yaml
     input:
+      room_name: "Kitchen"
       coefficient: sensor.coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
       room_temperature: sensor.kitchen_temperature_and_humidity_sensor_temperature
       room_size: input_boolean.kitchen_living_space
-      min_temperature: input_number.kitchen_min_temperature
-      max_temperature: input_number.kitchen_max_temperature
-      heating_schedule_start_time: input_datetime.kitchen_start_time
-      heating_schedule_end_time: input_datetime.kitchen_end_time 
-      current_year_average_price: sensor.current_year_average_price
-      pipeline: sensor.kitchen_pipeline
-      block_0: input_boolean.kitchen_block_0 
-      block_1: input_boolean.kitchen_block_1  
-      block_2_case_1: input_boolean.kitchen_block_2_case_1  
-      block_2_case_2: input_boolean.kitchen_block_2_case_2  
-      block_2_case_3: input_boolean.kitchen_block_2_case_3  
-      block_3: input_boolean.kitchen_block_3  
-      block_4: input_boolean.kitchen_block_4  
+      min_temperature: input_boolean.kitchen_min_temperature  
+      max_temperature: input_boolean.kitchen_max_temperature 
+      heating_schedule_start_time: input_datetime.kitchen_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.kitchen_heating_schedule_end_time
+      current_year_average_price: sensor.current_year_average_price 
+      pipeline_settings: sensor.kitchen_pipeline
 
 - id: bedroom_data_collection
   alias: Bedroom data collection
@@ -60,6 +48,7 @@
   use_blueprint:
     path: homeassistant/heating/data_collection.yaml
     input:
+      room_name: "Bedroom"
       coefficient: sensor.coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
@@ -67,17 +56,10 @@
       room_size: input_boolean.bedroom_living_space
       min_temperature: input_boolean.bedroom_min_temperature  
       max_temperature: input_boolean.bedroom_max_temperature 
-      heating_schedule_start_time: input_datetime.bedroom_start_time
-      heating_schedule_end_time: input_datetime.bedroom_end_time 
+      heating_schedule_start_time: input_datetime.bedroom_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.bedroom_heating_schedule_end_time
       current_year_average_price: sensor.current_year_average_price 
-      pipeline: sensor.bedroom_pipeline  
-      block_0: input_boolean.bedroom_block_0 
-      block_1: input_boolean.bedroom_block_1  
-      block_2_case_1: input_boolean.bedroom_block_2_case_1  
-      block_2_case_2: input_boolean.bedroom_block_2_case_2  
-      block_2_case_3: input_boolean.bedroom_block_2_case_3  
-      block_3: input_boolean.bedroom_block_3  
-      block_4: input_boolean.bedroom_block_4  
+      pipeline_settings: sensor.bedroom_pipeline
 
 - id: living_room_data_collection
   alias: Living Room data collection
@@ -85,24 +67,18 @@
   use_blueprint:
     path: homeassistant/heating/data_collection.yaml
     input:
+      room_name: "Living_Room"
       coefficient: sensor.coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
       room_temperature: sensor.living_room_temperature_and_humidity_sensor_temperature
-      room_size: input_number.living_room_living_space
-      min_temperature: input_number.living_room_min_temperature 
-      max_temperature: input_number.living_room_max_temperature
-      heating_schedule_start_time: input_datetime.living_room_start_time
-      heating_schedule_end_time: input_datetime.living_room_end_time 
+      room_size: input_boolean.living_room_living_space
+      min_temperature: input_boolean.living_room_min_temperature  
+      max_temperature: input_boolean.living_room_max_temperature 
+      heating_schedule_start_time: input_datetime.living_room_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.living_room_heating_schedule_end_time
       current_year_average_price: sensor.current_year_average_price 
-      pipeline: sensor.living_room_pipeline  
-      block_0: input_boolean.living_room_block_0 
-      block_1: input_boolean.living_room_block_1  
-      block_2_case_1: input_boolean.living_room_block_2_case_1  
-      block_2_case_2: input_boolean.living_room_block_2_case_2  
-      block_2_case_3: input_boolean.living_room_block_2_case_3  
-      block_3: input_boolean.living_room_block_3  
-      block_4: input_boolean.living_room_block_4  
+      pipeline_settings: sensor.living_room_pipeline
 
 - id: main_bedroom_data_collection
   alias: Main Bedroom data collection
@@ -110,24 +86,18 @@
   use_blueprint:
     path: homeassistant/heating/data_collection.yaml
     input:
+      room_name: "Main_Bedroom"
       coefficient: sensor.coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
       room_temperature: sensor.main_bedroom_temperature_and_humidity_sensor_temperature
-      room_size: input_number.main_bedroom_living_space
-      min_temperature: input_number.main_bedroom_min_temperature
-      max_temperature: input_number.main_bedroom_max_temperature
-      heating_schedule_start_time: input_datetime.main_bedroom_start_time
-      heating_schedule_end_time: input_datetime.main_bedroom_end_time 
+      room_size: input_boolean.main_bedroom_living_space
+      min_temperature: input_boolean.main_bedroom_min_temperature  
+      max_temperature: input_boolean.main_bedroom_max_temperature 
+      heating_schedule_start_time: input_datetime.main_bedroom_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.main_bedroom_heating_schedule_end_time
       current_year_average_price: sensor.current_year_average_price 
-      pipeline: sensor.main_bedroom_pipeline  
-      block_0: input_boolean.main_bedroom_block_0 
-      block_1: input_boolean.main_bedroom_block_1  
-      block_2_case_1: input_boolean.main_bedroom_block_2_case_1  
-      block_2_case_2: input_boolean.main_bedroom_block_2_case_2  
-      block_2_case_3: input_boolean.main_bedroom_block_2_case_3  
-      block_3: input_boolean.main_bedroom_block_3  
-      block_4: input_boolean.main_bedroom_block_4  
+      pipeline_settings: sensor.main_bedroom_pipeline
 
 - id: guest_bedroom_data_collection
   alias: Guest Bedroom data collection
@@ -135,21 +105,15 @@
   use_blueprint:
     path: homeassistant/heating/data_collection.yaml
     input:
+      room_name: "Guest_Bedroom"
       coefficient: sensor.coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
       room_temperature: sensor.guest_bedroom_temperature_and_humidity_sensor_temperature
-      room_size: input_number.guest_bedroom_living_space
-      min_temperature: input_number.guest_bedroom_min_temperature
-      max_temperature: input_number.guest_bedroom_max_temperature
-      heating_schedule_start_time: input_datetime.guest_bedroom_start_time
-      heating_schedule_end_time: input_datetime.guest_bedroom_end_time 
+      room_size: input_boolean.guest_bedroom_living_space
+      min_temperature: input_boolean.guest_bedroom_min_temperature  
+      max_temperature: input_boolean.guest_bedroom_max_temperature 
+      heating_schedule_start_time: input_datetime.guest_bedroom_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.guest_bedroom_heating_schedule_end_time
       current_year_average_price: sensor.current_year_average_price 
-      pipeline: sensor.guest_bedroom_pipeline  
-      block_0: input_boolean.guest_bedroom_block_0 
-      block_1: input_boolean.guest_bedroom_block_1  
-      block_2_case_1: input_boolean.guest_bedroom_block_2_case_1  
-      block_2_case_2: input_boolean.guest_bedroom_block_2_case_2  
-      block_2_case_3: input_boolean.guest_bedroom_block_2_case_3  
-      block_3: input_boolean.guest_bedroom_block_3  
-      block_4: input_boolean.guest_bedroom_block_4  
+      pipeline_settings: sensor.guest_bedroom_pipeline

@@ -10,6 +10,11 @@ blueprint:
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
+    room_name:
+      name: Room Name
+      description: The name of the room for which the process should be conducted
+      selector:
+        text:
     general_data:
       name: Coefficient for heat calculations, outdoor temperature, Nordpool prices, Room environment sensors
       icon: mdi:import
@@ -80,56 +85,19 @@ blueprint:
           selector:
             entity:
               domain: sensor
-    pipeline_settings: # Create pipeline section for input booleans
-      name: Provide input booleans representing blocks' states
-      icon: mdi:magnify
-      description: These inputs represent program flow
-      input:
-        pipeline:
-          name: Input sensor pipeline
-          selector: 
-            entity: 
-              filter:
-                domain: sensor
-        block_0:
-          name: Block 0 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_1:
-          name: Block 1 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_1:
-          name: Block 2 Case 1 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_2:
-          name: Block 2 Case 2 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_2_case_3:
-          name: Block 2 Case 3 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_3:
-          name: Block 3 state
-          selector:
-            entity:
-              domain: input_boolean
-        block_4:
-          name: Block 4 state
-          selector:
-            entity:
-              domain: input_boolean
-
+    pipeline_settings:
+      name: Room Heating System Interface
+      description: This is a sensor configured with sensor attributes to control heating system program flow
+      selector:
+        entity:
+          domain: sensor
 
 mode: restart
 max_exceeded: silent
+
+variables:
+  room_name: !input room_name
+  pipeline_settings: !input pipeline_settings
 
 trigger_variables:
   coefficient: !input coefficient
@@ -142,15 +110,6 @@ trigger_variables:
   heating_schedule_start_time: !input heating_schedule_start_time
   heating_schedule_end_time: !input heating_schedule_end_time
   current_year_average_price: !input current_year_average_price
-  pipeline: !input pipeline
-  block_0: !input block_0
-  block_1: !input block_1
-  block_2_case_1: !input block_2_case_1
-  block_2_case_2: !input block_2_case_2
-  block_2_case_3: !input block_2_case_3
-  block_3: !input block_3
-  block_4: !input block_4
-
 
 trigger:
   - platform: template
@@ -185,9 +144,10 @@ action:
   #      Max Temperature: {{ states(max_temperature) }}), 
   #      Heating Schedule Start Time: {{ states(heating_schedule_start_time) }}), 
   #      Heating Schedule End Time: {{ states(heating_schedule_end_time) }}), 
-  #      Current Year Average Price: {{ states(current_year_average_price) }})
+  #      Current Year Average Price: {{ states(current_year_average_price) }}),
+  #      Pipeline: {{ states(pipeline_settings) }}
 
   - service: input_boolean.turn_on
     target:
-      entity_id:
-        - !input block_1
+      entity_id: >
+        {{ 'input_boolean.' + room_name | lower + '_block_1' }}
