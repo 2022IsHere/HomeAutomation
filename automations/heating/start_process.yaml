@@ -11,7 +11,7 @@
     path: homeassistant/heating/start_process.yaml
     input: # no input sections needed when using blueprints
       room_name: "Entrance"  # Providing the room name
-      block_0: input_boolean.entrance_block_0  # Specify the corresponding Block 0 input_boolean
+      room_system_interface: sensor.entrance_pipeline  # Specify the corresponding Block 0 input_boolean
 
 - id: kitchen_start_process
   alias: Start heating process at every hour for kitchen
@@ -20,7 +20,7 @@
     path: homeassistant/heating/start_process.yaml
     input:
       room_name: "Kitchen"
-      block_0: input_boolean.kitchen_block_0
+      room_system_interface: sensor.kitchen_pipeline
 
 - id: bedroom_start_process
   alias: Start heating process at every hour for bedroom
@@ -29,7 +29,7 @@
     path: homeassistant/heating/start_process.yaml
     input:
       room_name: "Bedroom"
-      block_0: input_boolean.bedroom_block_0
+      room_system_interface: sensor.bedroom_pipeline
 
 - id: living_room_start_process
   alias: Start heating process at every hour for living room
@@ -38,7 +38,7 @@
     path: homeassistant/heating/start_process.yaml
     input:
       room_name: "Living Room"
-      block_0: input_boolean.living_room_block_0
+      room_system_interface: sensor.living_room_pipeline
 
 - id: main_bedroom_start_process
   alias: Start heating process at every hour for main bedroom
@@ -47,7 +47,7 @@
     path: homeassistant/heating/start_process.yaml
     input:
       room_name: "Main Bedroom"
-      block_0: input_boolean.main_bedroom_block_0
+      room_system_interface: sensor.living_room_pipeline
 
 - id: guest_bedroom_start_process
   alias: Start heating process at every hour for guest bedroom
@@ -56,4 +56,4 @@
     path: homeassistant/heating/start_process.yaml
     input:
       room_name: "Guest Bedroom"
-      block_0: input_boolean.guest_bedroom_block_0
+      room_system_interface: sensor.guest_bedroom_pipeline

@@ -198,6 +198,9 @@ action:
             value_template: "{{ (states(pipeline) | from_json)['Block 2']['case_1'] == 'on' }}"
         sequence: 
           # Define actions for this condition here
+          #- service: input_boolean.turn_on
+          #  target:
+          #    entity_id: !input something
 
       # Heat at min or below
       - conditions:

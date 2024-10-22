@@ -31,3 +31,15 @@
           "{{ states('input_number.hour_7') }}": {{ states('input_text.hour_7_type') }},
           "{{ states('input_number.hour_8') }}": {{ states('input_text.hour_8_type') }}
         }
+        
+# Use this if sorting is done in classification phase
+#{
+#  "hour_1": { "type": "{{ states('input_text.hour_1_type') }}", "price": "{{ states('input_number.hour_1_price') | float }}" },
+#  "hour_2": { "type": "{{ states('input_text.hour_2_type') }}", "price": "{{ states('input_number.hour_2_price') | float }}" },
+#  "hour_3": { "type": "{{ states('input_text.hour_3_type') }}", "price": "{{ states('input_number.hour_3_price') | float }}" },
+#  "hour_4": { "type": "{{ states('input_text.hour_4_type') }}", "price": "{{ states('input_number.hour_4_price') | float }}" },
+#  "hour_5": { "type": "{{ states('input_text.hour_5_type') }}", "price": "{{ states('input_number.hour_5_price') | float }}" },
+#  "hour_6": { "type": "{{ states('input_text.hour_6_type') }}", "price": "{{ states('input_number.hour_6_price') | float }}" },
+#  "hour_7": { "type": "{{ states('input_text.hour_7_type') }}", "price": "{{ states('input_number.hour_7_price') | float }}" },
+#  "hour_8": { "type": "{{ states('input_text.hour_8_type') }}", "price": "{{ states('input_number.hour_8_price') | float }}" }
+#}

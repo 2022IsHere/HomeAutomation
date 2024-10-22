@@ -3,7 +3,11 @@
 # Description: This file containts the configuration for providing pipeline blocks' states.
 
 
-
+kitchen_pipeline_status:
+  name: "Provide kitchen pipeline status entity"
+  initial: true
+  icon: mdi:state-machine
+  
 kitchen_block_0:
   name: "Provide Block 0 state"
   initial: false
@@ -31,6 +35,30 @@ kitchen_block_2_case_3:
 
 kitchen_block_3:
   name: "Provide Block 3 state"
+  initial: false
+  icon: mdi:state-machine
+kitchen_preheat_by_5:
+  name: "Provide Block 3 preheat level 1"
+  initial: false
+  icon: mdi:state-machine
+kitchen_preheat_by_12:
+  name: "Provide Block 3 preheat level 2"
+  initial: false
+  icon: mdi:state-machine
+kitchen_preheat_by_20:
+  name: "Provide Block 3 preheat level 3"
+  initial: false
+  icon: mdi:state-machine
+kitchen_preheat_max:
+  name: "Provide Block 3 preheat level 4"
+  initial: false
+  icon: mdi:state-machine
+kitchen_maintain_heat:
+  name: "Provide Block 3 maintain heat boolean"
+  initial: false
+  icon: mdi:state-machine
+kitchen_delay_heat:
+  name: "Provide Block 3 delay to heat boolean"
   initial: false
   icon: mdi:state-machine
 

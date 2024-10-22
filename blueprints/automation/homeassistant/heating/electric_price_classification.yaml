@@ -281,34 +281,26 @@ action:
               {% endif %}
 
         # Debug hour and its state
-        - service: system_log.write
-          data: 
-            message: >
-              entity: input_number.hour_{{ repeat.index }}
-              price: {{ states('input_number.hour_' ~ repeat.index) }}
+        #- service: system_log.write
+        #  data: 
+        #    message: >
+        #      entity: input_number.hour_{{ repeat.index }}
+        #      price: {{ states('input_number.hour_' ~ repeat.index) }}
 
         # Debug price type
-        - service: system_log.write
-          data: 
-            message: >
-              entity_type: input_text.hour_{{ repeat.index }}_type
-              type: {{ states('input_text.hour_' ~ repeat.index ~ '_type') }}
-              type: {% if price > states(current_year_average_price) | float %}
-                      Expensive
-                    {% elif price < states(current_year_average_price) | float %}
-                      Cheap
-                    {% else %}
-                      Average
-                    {% endif %}
+        #- service: system_log.write
+        #  data: 
+        #    message: >
+        #      entity_type: input_text.hour_{{ repeat.index }}_type
+        #      type: {{ states('input_text.hour_' ~ repeat.index ~ '_type') }}
+        #      type: {% if price > states(current_year_average_price) | float %}
+        #              Expensive
+        #            {% elif price < states(current_year_average_price) | float %}
+        #              Cheap
+        #            {% else %}
+        #              Average
+        #            {% endif %}
           
-          # Populate sortedList with each price
-          
-
-    # Create a list of prices which hour is present in prices JSON. Then modify the JSON based on sorted list.
-  - service: system_log.write
-    data:
-      message: >
-        {% set sortedList = [ 1,2,3,4,5,6,7,8 ] %}   
 
   # After calculating the trends, update the input_text entity with the trend
   - choose:

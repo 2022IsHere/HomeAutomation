@@ -4,37 +4,72 @@
 
 
 
+bedroom_pipeline_status:
+  name: "Provide bedroom pipeline status entity"
+  initial: true
+  icon: mdi:state-machine
+
 bedroom_block_0:
-  name: "Provide Bedroom Block 0 state"
+  name: "Provide Block 0 state"
   initial: false
   icon: mdi:state-machine
 
 bedroom_block_1:
-  name: "Provide Bedroom Block 1 state"
+  name: "Provide Block 1 state"
   initial: false
   icon: mdi:state-machine
 
 bedroom_block_2_case_1:
-  name: "Provide Bedroom Block 2 Case 1 state"
+  name: "Provide Block 2 state"
   initial: false
   icon: mdi:state-machine
 
 bedroom_block_2_case_2:
-  name: "Provide Bedroom Block 2 Case 2 state"
+  name: "Provide Block 2 state"
   initial: false
   icon: mdi:state-machine
 
 bedroom_block_2_case_3:
-  name: "Provide Bedroom Block 2 Case 3 state"
+  name: "Provide Block 2 state"
   initial: false
   icon: mdi:state-machine
 
 bedroom_block_3:
-  name: "Provide Bedroom Block 3 state"
+  name: "Provide Block 3 state"
+  initial: false
+  icon: mdi:state-machine
+
+bedroom_preheat_by_5:
+  name: "Provide Block 3 preheat level 1"
+  initial: false
+  icon: mdi:state-machine
+
+bedroom_preheat_by_12:
+  name: "Provide Block 3 preheat level 2"
+  initial: false
+  icon: mdi:state-machine
+
+bedroom_preheat_by_20:
+  name: "Provide Block 3 preheat level 3"
+  initial: false
+  icon: mdi:state-machine
+
+bedroom_preheat_max:
+  name: "Provide Block 3 preheat level 4"
+  initial: false
+  icon: mdi:state-machine
+
+bedroom_maintain_heat:
+  name: "Provide Block 3 maintain heat boolean"
+  initial: false
+  icon: mdi:state-machine
+
+bedroom_delay_heat:
+  name: "Provide Block 3 delay to heat boolean"
   initial: false
   icon: mdi:state-machine
 
 bedroom_block_4:
-  name: "Provide Bedroom Block 4 state"
+  name: "Provide Block 4 state"
   initial: false
   icon: mdi:state-machine
