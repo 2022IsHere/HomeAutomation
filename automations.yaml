@@ -151,3 +151,20 @@
       min_temperature: input_number.kitchen_min_temperature
       max_temperature: input_number.kitchen_max_temperature
       target_temperature: input_number.kitchen_target_temperature
+- id: '1729676969576'
+  alias: Kitchen blueprint test
+  description: Test
+  use_blueprint:
+    path: homeassistant/heating/financial_conditions.yaml
+    input:
+      user: mobile_app_sebastians_iphone
+      price_trend: input_text.price_trend
+      current_year_average_price: sensor.current_year_average_price
+      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
+      room_name: Makkari
+      room_temperature: sensor.bedroom_temperature_and_humidity_sensor_temperature
+      min_temperature: input_number.kitchen_min_temperature
+      max_temperature: input_number.kitchen_max_temperature
+      heating_schedule_start_time: input_datetime.kitchen_heating_schedule_start_time
+      heating_schedule_end_time: input_datetime.kitchen_heating_schedule_end_time
+      pipeline_settings: sensor.kitchen_pipeline

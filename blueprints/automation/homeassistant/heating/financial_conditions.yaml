@@ -21,36 +21,35 @@ blueprint:
           selector:
             entity:
               filter:
-                domain: device_tracker
     financial_information:
       name: Financial Information
       icon: mdi:finance
       description: Inputs related to financial data and market price trends used for heating strategy decisions
       input:
         price_trend:
-          name: Input price trend entity
+          name: Price Trend
           description: Entity representing the calculated price trend for the next 8 hours
           selector:
             entity:
               filter:
                 domain: input_text
         current_year_average_price:
-          name: Input current year average price sensor
+          name: Current year 'saverage price
           description: Sensor that provides the current year's average electric stock market price
           selector:
             entity:
               filter:
                 domain: sensor
         nordpool:
-          name: Input sensor nordpool
+          name: Nordpool
           description: Sensor that represents real-time electric stock market price data
           selector: 
             entity: 
               filter: 
                 domain: sensor
     room_information:
-      name: Provide min_temperature, max_temperature and heating schedule start and end times
-      icon: mdi:magnify
+      name: Room information
+      icon: mdi:database
       description: These inputs provide information to make financial and heating strategy decisions
       input:  
         room_name:
@@ -59,7 +58,7 @@ blueprint:
           selector:
             text:
         room_temperature:
-          name: Input sensor room temperature 
+          name: Room temperature sensor 
           selector:
             entity: 
               filter: 
@@ -83,7 +82,7 @@ blueprint:
               filter:
                 domain: input_datetime
         heating_schedule_end_time:
-            name: Input number heating schedule end time
+            name: Heating schedule end time
             selector:
               entity: 
                 filter:
@@ -100,6 +99,7 @@ mode: restart
 max_exceeded: silent
 
 variables:
+  user: !input user
   price_trend: !input price_trend
   current_year_average_price: !input current_year_average_price
   nordpool: !input nordpool
@@ -126,14 +126,17 @@ trigger:
         false
       {% endif %}
 
-action: 
-
+action:
+  - service: system_log.write
+    data:
+      message: >
+        Entity: {{ user }}
   - choose:
       # Heat is at max
       - conditions:
           - condition: template
-            value_template: "{{ state_attr(pipeline_settings, 'block_2_case_1') == 'on'  }}"
-        sequence: 
+            value_template: "{{ state_attr(pipeline_settings, 'block_2_case_1') == 'on' }}"
+        sequence:
           - service: input_boolean.turn_on
             target:
               entity_id: >
@@ -148,43 +151,46 @@ action:
               - conditions:
                   # Price is expensive and heating is necessary
                   - condition: template
-                    value_template: "{{ if state_attr(nordpool, 'current_price') > current_year_average_price }}"
+                    #value_template: "{{ state_attr(nordpool, 'current_price') | float > states(current_year_average_price) | float }}"
+                    value_template: "{{ 15 | float > states(current_year_average_price) | float }}"
                 sequence:
                   - service: notify.{{ user }}
                     data:
                       title: >
-                        {{room_name}} is at {{ states(room_temperature) }}°C
-                    message: >
-                      Nykyinen sähkön hinta on korkea. Hinta: {{ state_attr(nordpool, 'current_price') }}{{ state_attr(nordpool, 'unit_of_measuremen') }}
-                      Haluatko laskea lämpörajaa? Nykyinen: {{states(min_temperature)}}
-                      Reagoi seuraavan 5 minuutin aikana. Muuten lämmitys hoidetaan minimilämmöllä!
-                  - service: delay
-                    wait_for: 5 
-                  - conditions:
-                      - condition:
-                        value_template: "{{ if min_temperature < states(room_temperature) }}"
-                    # User does not wish to heat due to expensive price
-                    sequence:
-                      - service: input_boolean.turn_on
-                        target:
-                          entity_id: >
-                            {{ 'input_boolean.' + room_name | lower + '_delay_heat' }}
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ if min_temperature <= states(room_temperature) or min_temperature > states(room_temperature) }}"
-                    # Heat bare minimum because user did not update minimum temperature level
-                    sequence:
-                      - service: input_boolean.turn_on
-                        target:
-                          entity_id: >
-                            {{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}
+                        Huom! Korkea sähkön hinta
+                      message: >
+                        Hinta: {{ state_attr(nordpool, 'current_price') }} {{ state_attr(nordpool, 'unit_of_measurement') }}. 
+                        Huone {{ room_name }} on {{ states(room_temperature) }}°C. 
+                        Laske lämmitysrajaa? Nykyinen minimi: {{ states(min_temperature) }}°C. 
+                        Reagoi 5 minuutin sisällä.
+                  - delay: "00:00:05"  # 5 minutes "00:05:00"
+                  - choose:
+                      - conditions:
+                          # User updated minimum temperature
+                          - condition: template
+                            value_template: "{{ states(min_temperature) | float < states(room_temperature) | float }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ 'input_boolean.' + room_name | lower + '_delay_heat' }}
+                      - conditions:
+                          # No user action, maintain heat at minimum
+                          - condition: template
+                            value_template: "{{ states(min_temperature) | float >= states(room_temperature) | float }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}
+
 
 
 
 
               - conditions:
                   - condition: template
-                    value_template: "{{ if state_attr(nordpool, 'current_price') < current_year_average_price }}"
+                    value_template: "{{ state_attr(nordpool, 'current_price') < states(current_year_average_price) | float }}"
                 sequence: 
 
 
