@@ -25,6 +25,7 @@ variables:
   room_name: !input room_name
   room_system_interface: !input room_system_interface
 
+# INCLUDE HEATING SCHEDULE CHECK WHETHER TO BEGIN HEATINT PROCESS AT ALL
 trigger:
   - platform: time_pattern
     minutes: 0  # Trigger at the start of every hour

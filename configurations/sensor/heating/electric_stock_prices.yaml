@@ -14,6 +14,10 @@
 
 - platform: template
   sensors:
+    price_trend:
+      friendly_name: "Electric stock market price trend"
+      value_template: "{{ states('input_text.price_trend') }}"
+
     current_year_average_price:
       friendly_name: "Current year average electric stock market price" # ADD LOGIC TO ACTUALLY CALCULATE IT AT SOME POINT
       value_template: "{{10}}"

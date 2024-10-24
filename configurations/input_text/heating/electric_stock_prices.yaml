@@ -5,7 +5,7 @@
 
 
 price_trend:
-  name: "Electric stock market price trend for next 8 hours"
+  name: "Electric stock market price trend"
   min: 1
   max: 255
   initial: "Not calculated"
