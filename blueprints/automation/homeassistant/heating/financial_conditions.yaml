@@ -34,7 +34,7 @@ blueprint:
               filter:
                 domain: input_text
         current_year_average_price:
-          name: Current year 'saverage price
+          name: Current year's average price
           description: Sensor that provides the current year's average electric stock market price
           selector:
             entity:
@@ -127,10 +127,7 @@ trigger:
       {% endif %}
 
 action:
-  - service: system_log.write
-    data:
-      message: >
-        Entity: {{ user }}
+
   - choose:
       # Heat is at max
       - conditions:
@@ -151,8 +148,8 @@ action:
               - conditions:
                   # Price is expensive and heating is necessary
                   - condition: template
-                    #value_template: "{{ state_attr(nordpool, 'current_price') | float > states(current_year_average_price) | float }}"
-                    value_template: "{{ 15 | float > states(current_year_average_price) | float }}"
+                    value_template: "{{ state_attr(nordpool, 'current_price') | float > states(current_year_average_price) | float }}"
+                    #value_template: "{{ 15 | float > states(current_year_average_price) | float }}"
                 sequence:
                   - service: notify.{{ user }}
                     data:
@@ -163,7 +160,7 @@ action:
                         Huone {{ room_name }} on {{ states(room_temperature) }}°C. 
                         Laske lämmitysrajaa? Nykyinen minimi: {{ states(min_temperature) }}°C. 
                         Reagoi 5 minuutin sisällä.
-                  - delay: "00:00:05"  # 5 minutes "00:05:00"
+                  - delay: "00:05:00"  # 5 minutes
                   - choose:
                       - conditions:
                           # User updated minimum temperature
@@ -187,11 +184,69 @@ action:
 
 
 
-
+              # Heat is needed and price is low
               - conditions:
                   - condition: template
                     value_template: "{{ state_attr(nordpool, 'current_price') < states(current_year_average_price) | float }}"
-                sequence: 
+                sequence:
+                  - service: system_log.write
+                    data:
+                      message: >
+                        Price: {{ state_attr(nordpool, 'current_price') }}
+                  - variables: 
+                      cost_ratio: >
+                        {{ ((states(current_year_average_price) | float - state_attr(nordpool, 'current_price') | float) / states(current_year_average_price) | float) * 100 }}
+
+                  - choose:
+                      # Price is more than 20% cheaper
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ cost_ratio >= 20 }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ 'input_boolean.' + room_name | lower + '_preheat_max' }}
+
+                      # Price is between 12%  to 20% cheaper
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ cost_ratio >= 12 and cost_ratio <= 20 }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ 'input_boolean.' + room_name | lower + '_preheat_by_12' }}
+
+                      # Price is 5% or more but less than 12% cheaper
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ cost_ratio >= 5 and cost_ratio < 12 }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ 'input_boolean.' + room_name | lower + '_preheat_by_5' }}
+
+                      # Price is less than 5% cheaper, fallback to minimum heating
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ cost_ratio < 5 }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}
+
+              # Heat is needed and price is average
+              - conditions:
+                  - condition: template
+                    value_template: "{{ state_attr(nordpool, 'current_price') == states(current_year_average_price) | float }}"
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: >
+                        {{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}
 
 
       # Heat between min and max
