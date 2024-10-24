@@ -325,7 +325,7 @@ action:
                                         - condition: template
                                           value_template: "{{ price < states(current_year_average_price) | float }}"
                                       sequence:
-                                        # Logic to check if the room can hold until the next cheaper price
+                                        # Calculate heat transfer
                                         - variables:
                                             heat_loss: >
                                               {{ (coefficient | float * living_space | float * (room_temperature | float - outdoor_temperature | float)) * (repeat.index+1) }}
@@ -333,6 +333,7 @@ action:
                                               {{ (coefficient | float * living_space | float * (target_temperature | float - room_temperature | float)) * (repeat.index+1) }}
                                             estimated_room_temperature: >
                                               {{ room_temperature | float + (heat_requirement | float - heat_loss | float) / (coefficient | float * living_space | float) }}
+                                        # Logic to check if the room can hold until the next cheaper price
                                         - choose:
                                             - conditions:
                                                 - condition: template
