@@ -1,7 +1,7 @@
 # Name: pipeline.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the configuration for providing pipeline blocks' states.
-
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
 main_bedroom_pipeline_status:

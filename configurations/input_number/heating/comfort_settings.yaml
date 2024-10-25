@@ -3,6 +3,15 @@
 # Description: This file containts the configuration providing min, max and target temperature controllers which provide comfort and financial settings for heating system functionality
 
 
+# General price acceptable price threshold
+price_treshold:
+  name: General electric price treshold
+  min: 0
+  max: 100
+  step: 1
+  initial: 100
+  mode: slider
+  icon: mdi:numeric
 
 entrance_min_temperature:
   name: Entrace min temperature

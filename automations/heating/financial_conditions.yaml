@@ -11,6 +11,7 @@
     path: homeassistant/heating/financial_conditions.yaml
     input:
       user: mobile_app_sebastians_iphone
+      price_treshold: input_number.price_treshold
       price_trend: sensor.price_trend
       current_year_average_price: sensor.current_year_average_price
       nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
