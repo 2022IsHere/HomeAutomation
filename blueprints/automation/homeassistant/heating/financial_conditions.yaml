@@ -291,16 +291,23 @@ action:
             value_template: "{{ state_attr(pipeline_settings, 'block_2_case_3') == 'on' }}"
         sequence:
           - variables:
-              price_trend: "{{ states(price_trend) }}"
-              current_price: "{{ state_attr(nordpool, 'current_price') }}"
-            
+              #price_trend: "{{ states(price_trend) }}"
+              price_trend: 'decreasing'
+              #current_price: "{{ state_attr(nordpool, 'current_price') }}"
+              current_price: 15
+              coefficient: "{{ states(coefficient) }}"
+              living_space: "{{ states(living_space) }}"
+              room_temperature: "{{ states(room_temperature) }}"
+              outdoor_temperature: "{{ states(outdoor_temperature) }}"
+              target_temperature: "{{ states(target_temperature) }}"
+
           # Check price  
           - choose:
 
               # Price category: expensive
               - conditions:
                   - condition: template
-                    value_template: "{{ current_price > current_year_average_price }}"
+                    value_template: "{{ current_price > states(current_year_average_price)  | float }}"
                 sequence:
                   - choose:
                       # Trend category check: increasing
@@ -310,7 +317,7 @@ action:
                         sequence:
                           - variables:
                               delay_set: false  
-                          # Search cheaper but expensive price than current
+                          # Search cheaper price than current
                           - repeat:
                               count: 8
                               sequence:
@@ -401,7 +408,7 @@ action:
                                                # Next best case: Price is below cap
                                               - conditions:
                                                   - condition: template
-                                                    value_template: "{{ price < states(price_threshold) | float }}"
+                                                    value_template: "{{ current_price < states(price_treshold) | float }}"
                                                 sequence:
                                                   # Heat; lowering risk of heating in the next 8 hours
                                                   - service: input_boolean.turn_on
@@ -409,7 +416,7 @@ action:
                                                       entity_id: "{{ 'input_boolean.' + room_name | lower + '_preheat_max' }}"
                                               - conditions:
                                                   - condition: template
-                                                    value_template: "{{ price >= states(price_threshold) | float }}"
+                                                    value_template: "{{ current_price >= states(price_treshold) | float }}"
                                                 sequence:
                                                   # Price is too high; delay heating and risk temperature drop below set min level
                                                   - service: input_boolean.turn_on
@@ -516,7 +523,7 @@ action:
                                                # Next best case: Price is below cap
                                               - conditions:
                                                   - condition: template
-                                                    value_template: "{{ price < states(price_threshold) | float }}"
+                                                    value_template: "{{ current_price < states(price_treshold) | float }}"
                                                 sequence:
                                                   # Heat; lowering risk of heating in the next 8 hours
                                                   - service: input_boolean.turn_on
@@ -524,7 +531,7 @@ action:
                                                       entity_id: "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
                                               - conditions:
                                                   - condition: template
-                                                    value_template: "{{ price >= states(price_threshold) | float }}"
+                                                    value_template: "{{ current_price >= states(price_treshold) | float }}"
                                                 sequence:
                                                   # Price is too high; delay heating and risk temperature drop below set min level
                                                   - service: input_boolean.turn_on
@@ -537,6 +544,37 @@ action:
                           - condition: template
                             value_template: "{{ price_trend == 'decreasing' }}"
                         sequence:
+                          # Initialize today and tomorrow price lists
+                          - variables:
+                              today: "{{ state_attr(nordpool, 'today') }}"
+                              tomorrow: "{{ state_attr(nordpool, 'tomorrow') if state_attr(nordpool, 'tomorrow_valid') else [] }}"
+                              initial_price_list: >
+                                {% set ns.initial_price_list = [] %}
+                                {% for index in range(8) %}
+                                  {% set hour = (now().hour + index) % 24 %}
+                                  {% if hour < 24 %}
+                                    {% set price = today[hour] %}
+                                  {% else %}
+                                    {% if (tomorrow | length) > 0 %}
+                                      {% set price = tomorrow[hour - 24] %}
+                                    {% else %}
+                                      {% set price = 100 %}
+                                    {% endif %}
+                                  {% endif %}
+                                  {% set ns.initial_price_list = ns.initial_price_list + [price] %}
+                                {% endfor %}
+                                {{ ns.initial_price_list }}
+
+                          # Debugging output
+                          - service: system_log.write
+                            data:
+                              message: >
+                                Initial list: {{ initial_price_list }} 
+                                today: {{ today }} len: {{today | length }}
+                                tomorrow: {{ tomorrow }} len: {{tomorrow | length }}
+
+                          # use min filter to find the cheapest, next cheapest and so on.
+
                           #Current price > average
                           #|- create list of next 8 hours combined from today and tomorrow if need be
                           #|- sort the list
@@ -548,7 +586,7 @@ action:
               # Price category: average
               - conditions:
                   - condition: template
-                    value_template: "{{ current_price == current_year_average_price }}"
+                    value_template: "{{ current_price == states(current_year_average_price)  | float }}"
                 sequence:
                   - choose:
                       # Trend category check: increasing
@@ -573,7 +611,7 @@ action:
               # Price category: cheap
               - conditions:
                   - condition: template
-                    value_template: "{{ current_price == current_year_average_price }}"
+                    value_template: "{{ current_price < states(current_year_average_price)  | float }}"
                 sequence:
                   - choose:
                       # Trend category check: increasing
