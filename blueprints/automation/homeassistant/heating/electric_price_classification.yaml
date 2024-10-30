@@ -312,7 +312,7 @@ action:
             target:
               entity_id: !input price_trend
             data:
-              value: "increasing"
+              value: "expensive"
             
       - conditions:
           - condition: template
@@ -322,7 +322,7 @@ action:
             target:
               entity_id: !input price_trend
             data:
-              value: "decreasing"
+              value: "cheap"
 
       - conditions:
           - condition: template
@@ -332,7 +332,7 @@ action:
             target:
               entity_id: !input price_trend
             data:
-              value: "steady"
+              value: "average"
 
 # Lähetä S viesti
 # later sort the list. Index 0 cheapest and index -1 the expensiest

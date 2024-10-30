@@ -61,6 +61,10 @@ kitchen_delay_heat:
   name: "Provide Block 3 delay to heat boolean"
   initial: false
   icon: mdi:state-machine
+kitchen_min_heat:
+  name: "Provide Block 3 minimum heat setting"
+  initial: false
+  icon: mdi:state-machine
 
 kitchen_block_4:
   name: "Provide Block 4 state"

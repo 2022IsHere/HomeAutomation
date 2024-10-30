@@ -52,6 +52,7 @@ action:
         - "{{ 'input_boolean.' + room_name | lower + '_preheat_max' }}"
         - "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
         - "{{ 'input_boolean.' + room_name | lower + '_delay_heat' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_min_heat' }}"
         - "{{ 'input_boolean.' + room_name | lower + '_block_4' }}"
 
 

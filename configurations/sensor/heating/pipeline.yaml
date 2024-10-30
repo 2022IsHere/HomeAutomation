@@ -45,6 +45,7 @@
               "preheat_max": "{{ states('input_boolean.kitchen_preheat_max') }}",
               "maintain_heat": "{{ states('input_boolean.kitchen_maintain_heat') }}",
               "delay_heat": "{{ states('input_boolean.kitchen_delay_heat') }}"
+              "min_heat": "{{ states('input_boolean.kitchen_min_heat') }}"
             }
           block_4: "{{ states('input_boolean.kitchen_block_4') }}"
 
