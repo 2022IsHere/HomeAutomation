@@ -1,0 +1,86 @@
+# Name: control_thermostats.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to provide functionality to perform heating actions
+
+
+
+blueprint:
+  name: Control thermostats
+  description:  Provide automation functionality to control heating. Optimised heating based on electric stock market prices. 
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:    
+    room_information:
+      name: Room information
+      icon: mdi:database
+      description: These inputs provide relevant room information
+      input:  
+        room_name:
+          name: Room Name
+          description: The name of the room for which the process should be conducted
+          selector:
+            text:
+        heating_system_interface:
+          name: Room Heating System Interface
+          description: This is a sensor configured with attributes to control heating system program flow
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        thermostat:
+          name: Thermostat
+          description:  Climate entity used to control the room thermostat
+          selector:
+            entity:
+              filter:
+                domain: climate
+
+mode: restart
+max_exceeded: silent
+
+variables:
+ room_name: !input room_name
+ heating_system_interface: !input heating_system_interface
+ thermostat: !input thermostat
+
+trigger_variables:
+  - platform: template
+    value_template: >
+      {% set preheat_maximum = state_attr(heating_system_interface, 'preheat_max') %}
+      {% set maintain_heat = state_attr(heating_system_interface, 'maintain_heat') %}
+      {% set minimum_heat =  state_attr(heating_system_interface, 'min_heat') %}
+      {% if preheat_naximum == 'on' or maintain_heat == 'on' or minimum_heat == 'on' %}
+        true
+      {% else %}
+        false
+      {% endif %}
+
+action:
+  # ------------------
+  # - INIT VARIABLES -
+  # ------------------
+  - variables:
+    preheat_maximum: "{{ states(preheat_maximum) }}"
+    maintain_heat: "{{ states(maintain_heat) }}"
+    minimum_heat: "{{ states(min_heat) }}"
+
+  - choose:
+    # Preheat
+    - conditions:
+        - condition: template
+          value_template: "{{ preheat_maximum }}"
+      sequence:
+    
+
+    # Maintain heat
+    - conditions:
+        - condition: template
+          value_template: "{{ maintain_heat }}"
+      sequence:
+
+
+    # Minimum heat
+    - conditions:
+        - condition: template
+          value_template: "{{ minimum_heat }}"
+      sequence:

@@ -168,9 +168,9 @@ trigger:
       {% endif %}
 
 action:
-  #-----------------
-  # INIT VARIABLES -
-  #-----------------
+  # ------------------
+  # - INIT VARIABLES -
+  # ------------------
   - variables:
       temperature_at_or_over_max: "{{ state_attr(pipeline_settings, 'block_2_case_1') == 'on' }}"
       temperature_at_or_below_min: "{{ state_attr(pipeline_settings, 'block_2_case_2') == 'on' }}"
