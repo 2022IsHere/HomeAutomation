@@ -1,0 +1,20 @@
+# Name: room_information.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file contains sensor configurations for providing room data
+
+
+
+- platform: template
+  sensors:
+    kitchen_room_information:
+      friendly_name: "Kitchen room information sensor"
+      value_template: "{{ states('sensor.kitchen_temperature_and_humidity_sensor_temperature') }}"
+      attribute_templates:
+        room_temperature: "{{ states('sensor.kitchen_temperature_and_humidity_sensor_temperature') }}"
+        room_minimum_temperature: "{{ states('input_number.kitchen_min_temperature') }}"
+        room_maximum_temperature: "{{ states('input_number.kitchen_max_temperature') }}"
+        room_target_temperature: "{{ states('input_number.kitchen_target_temperature') }}"
+        room_living_space: "{{ states('input_number.kitchen_living_space') }}"
+        room_heating_schedule_start_time: "{{ states('input_datetime.kitchen_heating_schedule_start_time') }}"
+        room_heating_schedule_end_time: "{{ states('input_datetime.kitchen_heating_schedule_end_time') }}"
+        room_thermostat: "{{ states('climate.keittio') }}"

@@ -4,4 +4,12 @@
 
 
 
-#
+- id: kitchen_control_thermostats
+  alias: Kitchen Control Thermostats
+  description: Controls the thermostat for the kitchen based on room information and heating system settings, optimizing heating according to electric stock market prices.
+  use_blueprint:
+    path: homeassistant/heating/control_thermostats.yaml
+    input:
+      room_name: "Kitchen"
+      room_information: sensor.kitchen_room_information
+      heating_system_interface: sensor.kitchen_pipeline
