@@ -4,29 +4,15 @@
 
 
 
-- id: entrance_rooms_conditions
-  alias: Evaluate entrance room conditions
-  description: Evaluate entrance room conditions. Use rules provided by blueprint rooms conditions 
-  use_blueprint:
-    path: homeassistant/heating/room_conditions.yaml
-    input:
-      room_name: "Entrance"
-      room_temperature: sensor.entrance_temperature_and_humidity_sensor_temperature
-      min_temperature: input_number.entrance_min_temperature
-      max_temperature: input_number.entrance_max_temperature
-      pipeline_settings: sensor.entrance_pipeline
-
 - id: kitchen_rooms_conditions
   alias: Evaluate kitchen room conditions
   description: Evaluate kitchen room conditions. Use rules provided by blueprint rooms conditions 
   use_blueprint:
     path: homeassistant/heating/room_conditions.yaml
-    input: # no input sections needed when using blueprints
+    input: 
       room_name: "Kitchen"
-      room_temperature: sensor.kitchen_temperature_and_humidity_sensor_temperature
-      min_temperature: input_number.kitchen_min_temperature
-      max_temperature: input_number.kitchen_max_temperature
-      pipeline_settings: sensor.kitchen_pipeline 
+      room_information: sensor.kitchen_information
+      heating_system_interface: sensor.kitchen_heating_system_interface
 
 - id: bedroom_rooms_conditions
   alias: Evaluate bedroom room conditions
@@ -35,10 +21,8 @@
     path: homeassistant/heating/room_conditions.yaml
     input:
       room_name: "Bedroom"
-      room_temperature: sensor.bedroom_temperature_and_humidity_sensor_temperature
-      min_temperature: input_number.bedroom_min_temperature
-      max_temperature: input_number.bedroom_max_temperature
-      pipeline_settings: sensor.bedroom_pipeline
+      room_information: sensor.bedroom_information
+      heating_system_interface: sensor.bedroom_heating_system_interface
 
 - id: living_room_rooms_conditions
   alias: Evaluate living room conditions
@@ -47,10 +31,8 @@
     path: homeassistant/heating/room_conditions.yaml
     input:
       room_name: "Living_Room"
-      room_temperature: sensor.living_room_temperature_and_humidity_sensor_temperature
-      min_temperature: input_number.living_room_min_temperature
-      max_temperature: input_number.living_room_max_temperature
-      pipeline_settings: sensor.living_room_pipeline
+      room_information: sensor.living_room_information
+      heating_system_interface: sensor.living_room_heating_system_interface
 
 - id: main_bedroom_rooms_conditions
   alias: Evaluate main bedroom room conditions
@@ -59,10 +41,8 @@
     path: homeassistant/heating/room_conditions.yaml
     input:
       room_name: "Main_Bedroom"
-      room_temperature: sensor.main_bedroom_temperature_and_humidity_sensor_temperature
-      min_temperature: input_number.main_bedroom_min_temperature
-      max_temperature: input_number.main_bedroom_max_temperature
-      pipeline_settings: sensor.main_bedroom_pipeline
+      room_information: sensor.main_bedroom_information
+      heating_system_interface: sensor.main_bedroom_heating_system_interface
 
 - id: guest_bedroom_rooms_conditions
   alias: Evaluate guest bedroom room conditions
@@ -71,7 +51,5 @@
     path: homeassistant/heating/room_conditions.yaml
     input:
       room_name: "Guest_Bedroom"
-      room_temperature: sensor.guest_bedroom_temperature_and_humidity_sensor_temperature
-      min_temperature: input_number.guest_bedroom_min_temperature
-      max_temperature: input_number.guest_bedroom_max_temperature
-      pipeline_settings: sensor.guest_bedroom_pipeline
+      room_information: sensor.guest_bedroom_information
+      heating_system_interface: sensor.guest_bedroom_heating_system_interface

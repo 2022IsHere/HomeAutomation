@@ -1,59 +1,55 @@
 # Name: start_process.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
-# Description: This file containts the automations to start process for heating at any hour
+# Description: This file containts the automations to start heating process at every hour
 
 
-
-- id: entrance_start_process
-  alias: Start heating process at every hour for entrance
-  description: Start heating process at every hour. Use blueprint to provide standardised logic.
-  use_blueprint:
-    path: homeassistant/heating/start_process.yaml
-    input: # no input sections needed when using blueprints
-      room_name: "Entrance"  # Providing the room name
-      room_system_interface: sensor.entrance_pipeline  # Specify the corresponding Block 0 input_boolean
 
 - id: kitchen_start_process
-  alias: Start heating process at every hour for kitchen
-  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  alias: Hourly Heating Process for Kitchen
+  description: Starts the heating process at the top of every hour for the kitchen. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
-    input:
+    input: 
       room_name: "Kitchen"
-      room_system_interface: sensor.kitchen_pipeline
+      room_information: sensor.kitchen_information
+      heating_system_interface: sensor.kitchen_heating_system_interface
 
 - id: bedroom_start_process
-  alias: Start heating process at every hour for bedroom
-  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  alias: Hourly Heating Process for Bedroom
+  description: Starts the heating process at the top of every hour for the bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
-    input:
+    input: 
       room_name: "Bedroom"
-      room_system_interface: sensor.bedroom_pipeline
+      room_information: sensor.bedroom_information
+      heating_system_interface: sensor.bedroom_heating_system_interface
 
 - id: living_room_start_process
-  alias: Start heating process at every hour for living room
-  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  alias: Hourly Heating Process for Living Room
+  description: Starts the heating process at the top of every hour for the living room. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
-    input:
+    input: 
       room_name: "Living_Room"
-      room_system_interface: sensor.living_room_pipeline
+      room_information: sensor.living_room_information
+      heating_system_interface: sensor.living_room_heating_system_interface
 
 - id: main_bedroom_start_process
-  alias: Start heating process at every hour for main bedroom
-  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  alias: Hourly Heating Process for Main Bedroom
+  description: Starts the heating process at the top of every hour for the main bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
-    input:
+    input: 
       room_name: "Main_Bedroom"
-      room_system_interface: sensor.living_room_pipeline
+      room_information: sensor.main_bedroom_information
+      heating_system_interface: sensor.main_bedroom_heating_system_interface
 
 - id: guest_bedroom_start_process
-  alias: Start heating process at every hour for guest bedroom
-  description: Start heating process at every hour. Use blueprint to provide standardized logic.
+  alias: Hourly Heating Process for Guest Bedroom
+  description: Starts the heating process at the top of every hour for the guest bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
-    input:
+    input: 
       room_name: "Guest_Bedroom"
-      room_system_interface: sensor.guest_bedroom_pipeline
+      room_information: sensor.guest_bedroom_information
+      heating_system_interface: sensor.guest_bedroom_heating_system_interface

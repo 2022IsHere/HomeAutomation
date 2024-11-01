@@ -8,32 +8,91 @@ blueprint:
   name: Start heating process
   description: Start process which evaluates rooms conditions, financial conditions, heating strategy and performs actions if needed
   domain: automation
-  input:
-    room_name:
-      name: Room Name
-      description: The name of the room for which the process should be conducted
-      selector:
-        text:
-    room_system_interface:
-      name: Room System Interface
-      description: This is a sensor configured with sensor attributes to control heating system program flow
-      selector:
-        entity:
-          domain: sensor
+  input:    
+    room_information:
+      name: Room information
+      icon: mdi:database
+      description: These inputs provide relevant room information
+      input:  
+        room_name:
+          name: Room Name
+          description: The name of the room for which the process should be conducted
+          selector:
+            text:
+        room_information:
+          name: Room Information Sensor
+          description: Sensor providing such as heating schedule, temperature and thermostats
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        heating_system_interface:
+          name: Room Heating System Interface
+          description: This is a sensor configured to control heating system program flow
+          selector:
+            entity:
+              filter:
+                domain: sensor
+
+mode: restart
+max_exceeded: silent
 
 variables:
   room_name: !input room_name
-  room_system_interface: !input room_system_interface
+  room_information: !input room_information
+  heating_system_interface: !input heating_system_interface
 
-# INCLUDE HEATING SCHEDULE CHECK WHETHER TO BEGIN HEATINT PROCESS AT ALL
 trigger:
   - platform: time_pattern
-    minutes: 0  # Trigger at the start of every hour
+    minutes: 0  # Triggers at the start of every hour
 
-# Test functionality and configuration with these lines
-#trigger:
-#  - platform: time_pattern
-#    seconds: "/1"  # Trigger every second
+condition:
+  - condition: template
+    value_template: >
+      {% set room_name = room_name %}
+
+      {% set entity = 'sensor.' + room_name + '_room_information' %}
+      {% set start_time = state_attr(entity, 'room_heating_schedule_start_time') %}
+      {% set end_time = state_attr(entity, 'room_heating_schedule_end_time') %}
+
+
+      {% if start_time not in [none, '', 'unknown'] %}
+          {% set time_parts = start_time.split(':') %}
+          {% set start_hour = time_parts[0] | int %}
+          {% set start_minute = time_parts[1] | int %}
+          {% set start_second = time_parts[2] | int %}
+      {% else %}
+          {% set start_hour = 0 %}
+          {% set start_minute = 0 %}
+          {% set start_second = 0 %}
+      {% endif %}
+
+
+      {% if end_time not in [none, '', 'unknown'] %}
+          {% set time_parts = end_time.split(':') %}
+          {% set end_hour = time_parts[0] | int %}
+          {% set end_minute = time_parts[1] | int %}
+          {% set end_second = time_parts[2] | int %}
+      {% else %}
+          {% set end_hour = 0 %}
+          {% set end_minute = 0 %}
+          {% set end_second = 0 %}
+      {% endif %}
+
+
+      {% set current_hour = now().hour %}
+
+
+      {% if start_hour == 0 and start_minute == 0 and start_second == 0 and 
+            end_hour == 0 and end_minute == 0 and end_second == 0 %}
+        true
+      {% else %}
+        {% if start_hour <= end_hour %}
+          {{ start_hour <= current_hour < end_hour }}
+        {% else %}
+          {{ current_hour >= start_hour or current_hour < end_hour }}
+        {% endif %}
+      {% endif %}
 
 action:
 
@@ -41,22 +100,19 @@ action:
   - service: input_boolean.turn_off
     target:
       entity_id:
-        - "{{ 'input_boolean.' + room_name | lower + '_block_0' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_block_1' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_block_2_case_1' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_block_2_case_2' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_block_2_case_3' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_preheat_by_5' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_preheat_by_12' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_preheat_by_20' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_preheat_max' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_start_heating_process' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_data_collection_process' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_at_maximum_temperature' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_at_or_below_minimum_temperature' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_between_minimum_and_maximum_temperature' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_preheat_maximum' }}"
         - "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
         - "{{ 'input_boolean.' + room_name | lower + '_delay_heat' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_min_heat' }}"
-        - "{{ 'input_boolean.' + room_name | lower + '_block_4' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_minimum_heat' }}"
+        - "{{ 'input_boolean.' + room_name | lower + '_control_thermostats' }}"
 
-
+  # Begin heating process
   - service: input_boolean.turn_on
     target:
       entity_id: >
-        {{ 'input_boolean.' + room_name | lower + '_block_0' }}
+        {{ 'input_boolean.' + room_name | lower + '_start_heating_process' }}
