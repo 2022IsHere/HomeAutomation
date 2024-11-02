@@ -1,21 +1,9 @@
 # Name: heating_schedule.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the configuration providing heating schedule control for users for each room
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
-
-entrance_heating_schedule_start_time:
-  name: Entrance heating schedule start time
-  initial: 00:00:00
-  icon: mdi:clock-start
-  has_date: false
-  has_time: true
-entrance_heating_schedule_end_time:
-  name: Entrance heating schedule end time
-  initial: 00:00:00
-  icon: mdi:clock-end
-  has_date: false
-  has_time: true
 
 kitchen_heating_schedule_start_time:
   name: Kitchen heating schedule start time
@@ -23,7 +11,6 @@ kitchen_heating_schedule_start_time:
   icon: mdi:clock-start
   has_date: false
   has_time: true
-
 kitchen_heating_schedule_end_time:
   name: Kitchen heating schedule end time
   initial: 00:00:00

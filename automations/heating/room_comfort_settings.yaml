@@ -1,0 +1,64 @@
+# Name: room_comfort_settings.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to control comfort settings in UI. Enforcing rules utilizing blueprint Control comfort settings.
+
+
+
+- id: kitchen_comfort_settings
+  alias: Control kitchen comfort settings
+  description: Control comfort settings. Use blueprint Control comfort settings to enforce control.
+  use_blueprint:
+    path: homeassistant/heating/room_comfort_settings.yaml
+    input:
+      room_name: "Kitchen"
+      room_minimum_temperature: input_number.kitchen_minimum_temperature
+      room_maximum_temperature: input_number.kitchen_maximum_temperature
+      room_target_temperature: input_number.kitchen_target_temperature
+
+
+- id: bedroom_comfort_settings
+  alias: Control bedroom comfort settings
+  description: Control comfort settings. Use blueprint Control comfort settings to enforce control.
+  use_blueprint:
+    path: homeassistant/heating/room_comfort_settings.yaml
+    input:
+      room_name: "Bedroom"
+      room_minimum_temperature: input_number.bedroom_minimum_temperature
+      room_maximum_temperature: input_number.bedroom_maximum_temperature
+      room_target_temperature: input_number.bedroom_target_temperature
+
+
+- id: living_room_comfort_settings
+  alias: Control living room comfort settings
+  description: Control comfort settings. Use blueprint Control comfort settings to enforce control.
+  use_blueprint:
+    path: homeassistant/heating/room_comfort_settings.yaml
+    input:
+      room_name: "Living_Room"
+      room_minimum_temperature: input_number.living_room_minimum_temperature
+      room_maximum_temperature: input_number.living_room_maximum_temperature
+      room_target_temperature: input_number.living_room_target_temperature
+
+
+- id: main_bedroom_comfort_settings
+  alias: Control main bedroom comfort settings
+  description: Control comfort settings. Use blueprint Control comfort settings to enforce control.
+  use_blueprint:
+    path: homeassistant/heating/room_comfort_settings.yaml
+    input:
+      room_name: "Main_Bedroom"
+      room_minimum_temperature: input_number.main_bedroom_minimum_temperature
+      room_maximum_temperature: input_number.main_bedroom_maximum_temperature
+      room_target_temperature: input_number.main_bedroom_target_temperature
+
+
+- id: guest_bedroom_comfort_settings
+  alias: Control guest bedroom comfort settings
+  description: Control comfort settings. Use blueprint Control comfort settings to enforce control.
+  use_blueprint:
+    path: homeassistant/heating/room_comfort_settings.yaml
+    input:
+      room_name: "Guest Bedroom"
+      room_minimum_temperature: input_number.guest_bedroom_minimum_temperature
+      room_maximum_temperature: input_number.guest_bedroom_maximum_temperature
+      room_target_temperature: input_number.guest_bedroom_target_temperature

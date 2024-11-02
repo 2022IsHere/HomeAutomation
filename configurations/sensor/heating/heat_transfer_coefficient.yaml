@@ -1,14 +1,14 @@
 # Name: coefficients.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
-# Description: This file containts the configuration providing energy loss coefficient for heating calculations
-
+# Description: This file containts the configuration providing heat transfer coefficient for heating calculations
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
 
 - platform: template
   sensors:
-    coefficient:
-      friendly_name: "Heat loss coefficient"
+    heat_transfer_coefficient:
+      friendly_name: "Heat transfer coefficient"
       value_template: >
         {% set month = now().month %}
         {% if month >= 5 and month <= 9 %}

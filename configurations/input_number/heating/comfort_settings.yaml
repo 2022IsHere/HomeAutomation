@@ -1,9 +1,10 @@
 # Name: comfort_settings.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the configuration providing min, max and target temperature controllers which provide comfort and financial settings for heating system functionality
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
-# General price acceptable price threshold
+
 price_treshold:
   name: General electric price treshold
   min: 0

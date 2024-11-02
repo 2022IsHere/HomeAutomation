@@ -1,7 +1,7 @@
 # Name: electric_stock_prices.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the configuration for providing nordpool integration to access electric stock market data, current year price average, etc
-
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
 - platform: nordpool
@@ -17,9 +17,13 @@
     price_trend:
       friendly_name: "Electric stock market price trend"
       value_template: "{{ states('input_text.price_trend') }}"
-
+    
+    price_treshold:
+      friendly_name: "Electricity Price Ceiling for Heating System Operation"
+      value_template: "{{ states('input_number.price_treshold') }}"
+    # CHeck helpes. COmbine state of severan inputs to avg
     current_year_average_price:
-      friendly_name: "Current year average electric stock market price" # ADD LOGIC TO ACTUALLY CALCULATE IT AT SOME POINT
+      friendly_name: "Year-to-Date Average Electric Price" 
       value_template: "{{10}}"
 
     electric_price_classification_8hr:

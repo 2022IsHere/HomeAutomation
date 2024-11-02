@@ -1,17 +1,9 @@
 # Name: space.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the configuration providing room space controller to UI for heating calculations
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
-
-entrance_living_space:
-  name: Entrance living space
-  min: 0
-  max: 30
-  step: 0.1
-  initial: 21
-  mode: slider
-  icon: mdi:thermometer-high
 
 kitchen_living_space:
   name: Kitchen living space

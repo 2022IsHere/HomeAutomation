@@ -1,6 +1,7 @@
 # Name: room_information.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file contains sensor configurations for providing room data
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
 
@@ -21,9 +22,9 @@
 
     bedroom_room_information:
       friendly_name: "Bedroom Room Information Sensor"
-      value_template: "{{ states('sensor.bedroom_temperature') }}"
+      value_template: "{{ states('sensor.bedroom_temperature_and_humidity_sensor_temperature') }}"
       attribute_templates:
-        room_temperature: "{{ states('sensor.bedroom_temperature') }}"
+        room_temperature: "{{ states('sensor.bedroom_temperature_and_humidity_sensor_temperature') }}"
         room_minimum_temperature: "{{ states('input_number.bedroom_minimum_temperature') }}"
         room_maximum_temperature: "{{ states('input_number.bedroom_maximum_temperature') }}"
         room_target_temperature: "{{ states('input_number.bedroom_target_temperature') }}"
@@ -34,9 +35,9 @@
 
     living_room_information:
       friendly_name: "Living Room Information Sensor"
-      value_template: "{{ states('sensor.living_room_temperature') }}"
+      value_template: "{{ states('sensor.living_room_temperature_and_humidity_sensor_temperature') }}"
       attribute_templates:
-        room_temperature: "{{ states('sensor.living_room_temperature') }}"
+        room_temperature: "{{ states('sensor.living_room_temperature_and_humidity_sensor_temperature') }}"
         room_minimum_temperature: "{{ states('input_number.living_room_minimum_temperature') }}"
         room_maximum_temperature: "{{ states('input_number.living_room_maximum_temperature') }}"
         room_target_temperature: "{{ states('input_number.living_room_target_temperature') }}"
@@ -52,9 +53,9 @@
           }}
     main_bedroom_room_information:
       friendly_name: "Main Bedroom Room Information Sensor"
-      value_template: "{{ states('sensor.main_bedroom_temperature') }}"
+      value_template: "{{ states('sensor.main_bedroom_temperature_and_humidity_sensor_temperature') }}"
       attribute_templates:
-        room_temperature: "{{ states('sensor.main_bedroom_temperature') }}"
+        room_temperature: "{{ states('sensor.main_bedroom_temperature_and_humidity_sensor_temperature') }}"
         room_minimum_temperature: "{{ states('input_number.main_bedroom_minimum_temperature') }}"
         room_maximum_temperature: "{{ states('input_number.main_bedroom_maximum_temperature') }}"
         room_target_temperature: "{{ states('input_number.main_bedroom_target_temperature') }}"
@@ -65,9 +66,9 @@
 
     guest_bedroom_room_information:
       friendly_name: "Guest Bedroom Room Information Sensor"
-      value_template: "{{ states('sensor.guest_bedroom_temperature') }}"
+      value_template: "{{ states('sensor.guest_bedroom_temperature_and_humidity_sensor_temperature') }}"
       attribute_templates:
-        room_temperature: "{{ states('sensor.guest_bedroom_temperature') }}"
+        room_temperature: "{{ states('sensor.guest_bedroom_temperature_and_humidity_sensor_temperature') }}"
         room_minimum_temperature: "{{ states('input_number.guest_bedroom_minimum_temperature') }}"
         room_maximum_temperature: "{{ states('input_number.guest_bedroom_maximum_temperature') }}"
         room_target_temperature: "{{ states('input_number.guest_bedroom_target_temperature') }}"
