@@ -4,6 +4,7 @@
 # Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
 
+
 - platform: template
   sensors:
     kitchen_heating_system_interface:

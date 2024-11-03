@@ -5,7 +5,7 @@
 
 
 
-heating_system_interface:
+central_heating_system_interface:
   name: "Heating System Control"
   initial: off
   icon: mdi:light-switch

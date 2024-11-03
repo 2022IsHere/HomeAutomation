@@ -1,9 +1,11 @@
-# Name: Adjust Actual Thermostats
-# INFO: Automation to change electric heater thermostat states through UI with single thermostat
-# WARNING: -
-# RESTRICTION: -
-- id: adjust_actual_thermostats
-  alias: Adjust Actual Thermostats
+# Name: manual_thermostat_control.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automation to provide smart manual thermostat control
+
+
+
+- id: manual_thermostat_control
+  alias: Manual Thermostat Control
   trigger:
   - platform: state
     entity_id: climate.virtual_thermostat
@@ -22,7 +24,3 @@
     - climate.vierashuone
     - climate.makuuhuone
     - climate.paamakuuhuone
-  - service: system_log.write
-    data_template:
-      message: "Virtual thermostat is set to: {{ state_attr('climate.virtual_thermostat', 'temperature') }}."
-      level: info

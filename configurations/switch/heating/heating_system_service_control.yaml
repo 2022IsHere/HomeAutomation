@@ -5,22 +5,3 @@
 
 
 
-- platform: template
-  switches:
-    service_control:
-      friendly_name: "Heating switch"
-      value_template: "{{ states('input_boolean.heating_system_interface') == 'on' }}"
-      turn_on:
-        service: input_boolean.turn_on
-        target:
-          entity_id: input_boolean.heating_system_interface
-      turn_off:
-        service: input_boolean.turn_off
-        target:
-          entity_id: input_boolean.heating_system_interface
-      icon_template: >
-        {% if states('input_boolean.heating_system_interface') == 'on' %}
-          mdi:toggle-switch-variant-off
-        {% else %}
-          mdi:toggle-switch-variant
-        {% endif %}
