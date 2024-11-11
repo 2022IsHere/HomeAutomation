@@ -1,0 +1,13 @@
+# Name: electricity_stock_market_price_information.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the entity which is updated to showcase price trend in electric stock market.
+
+
+
+price_trend:
+  name: "Electric stock market price trend"
+  min: 1
+  max: 255
+  initial: "Not calculated"
+  icon: mdi:import
+  mode: text

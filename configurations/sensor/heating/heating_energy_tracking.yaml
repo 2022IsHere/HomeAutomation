@@ -1,0 +1,36 @@
+# File: hourly_heating_energy_tracking.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# This configuration file defines a sensor that tracks the energy consumed for heating on an hourly basis.
+# The sensor reads from a single `input_number` entity that is updated each hour by an automation,
+# which retrieves energy consumption data from Adax Cloud. This allows for monitoring and analyzing the
+# energy consumption for heating in real-time, broken down by hour.
+#
+# The automation updates the `input_number` entity based on data retrieved from Adax Cloud, which is
+# then used by the sensor to monitor energy usage.
+#
+# This setup provides a streamlined way to track energy consumption for heating on an hourly basis.
+#
+# Warning:
+# Ensure that both the Adax Cloud integration and the input number entity are correctly defined and accessible
+# to avoid sensor errors.
+
+
+
+- platform: template
+  sensors:
+    hourly_heating_energy_tracking_sensor:
+      friendly_name: "Hourly Heating Energy Cost Tracking Sensor"
+      value_template: "{{ states('input_number.hourly_heating_energy_tracking') | float }}"
+    
+
+    monthly_heating_energy_tracking:
+      friendly_name: "Monthly Heating Energy Tracking"
+      value_template: "{{ states('input_number.monthly_heating_energy_tracking') | float }}"
+
+    
+    yearly_heating_energy_tracking:
+      friendly_name: "Yearly Heating Energy Tracking"
+      value_template: "{{ states('input_number.yearly_heating_energy_tracking') | float }}"

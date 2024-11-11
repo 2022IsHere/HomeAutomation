@@ -1,0 +1,53 @@
+# Name: api_commands.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing automations to use Restful API commands. These automations provide control and functionality with Adax Gen2 thermostats
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
+
+
+
+- id: get_api_token
+  alias: Get API Token
+  trigger:
+  - platform: time
+    at: 00:01:00
+  action:
+  - service: rest_command.get_api_token
+    data: {}
+    response_variable: api_response_token
+  - variables:
+      access_token: '{% set json_response = api_response_token.content | from_json %} {{ json_response.access_token }}'
+  - service: input_text.set_value
+    data:
+      value: '{{ access_token }}'
+    target:
+      entity_id: input_text.store_api_token
+
+
+
+
+- id: get_room_energy_data
+  alias: Get Room Energy Data
+  trigger:
+    - platform: time_pattern
+      minutes: 0
+  action:
+    - service: rest_command.get_room_energy_data
+      data: {}
+      response_variable: api_response_energy
+
+    # Check Adax API response validity
+    - condition: template
+      value_template: >
+        {{ api_response_energy.content is not none and api_response_energy.status == 200 }}
+    
+    # Map all data and sum it
+    - variables:
+        total_energyWh: '{{ api_response_energy.content.devices | map(attribute=''energyWh'') | sum }}'
+    
+    # Update energy tracking sensor(s)
+    - service: input_number.set_value
+      data:
+        value: '{{ total_energyWh }}'
+      target:
+        entity_id: 
+          - input_number.hourly_heating_energy_tracking

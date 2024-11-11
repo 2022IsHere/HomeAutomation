@@ -1,0 +1,26 @@
+# File: electricity_contract_information.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+# 
+# Description:
+# This configuration file contains the template sensor for retrieving and displaying information about the electricity contract.
+# It includes details on the fixed price, general electricity transfer fee, base fee, and electricity tax, all of which are essential for
+# calculating energy costs. The sensor aggregates data from various input_number entities and provides an overview of key contract parameters,
+# which are used in cost calculations and comparisons.
+#
+# Warning:
+# Please maintain the same formatting throughout this file to prevent errors in configuration parsing and execution.
+
+
+
+- platform: template
+  sensors:
+    electricity_contract_information:
+      friendly_name: "Electricity Contract Information"
+      unit_of_measurement: "snt/kWh"
+      value_template: "{{ states('input_number.general_electricity_transfer_fee') | float }}"
+      attribute_templates:
+        price: "{{ states('input_number.fixed_price') | float }}"
+        general_electricity_transfer_fee: "{{ states('input_number.general_electricity_transfer_fee') | float }}"
+        base_fee: "{{ states('input_number.base_fee') | float }}"
+        electricity_tax: "{{ states('input_number.electricity_tax') | float }}"

@@ -1,0 +1,51 @@
+# File: heating_energy_tracking.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# This configuration file contains three `input_number` entities used to track heating energy consumption over different time periods:
+# - `hourly_heating_energy_tracking`: Tracks energy spent per hour in Wh.
+# - `monthly_heating_energy_tracking`: Tracks total energy spent on heating for the current month in kWh.
+# - `yearly_heating_energy_tracking`: Tracks total energy spent on heating for the current year in kWh.
+#
+# Each entity is updated by automation to reflect real-time energy usage, providing a detailed view of heating energy trends.
+# This consolidated approach simplifies the configuration and enhances the tracking of energy usage over multiple periods, enabling better
+# energy management and analysis of heating efficiency.
+#
+# Warning:
+# Ensure that the automations responsible for updating these entities run correctly at appropriate intervals (hourly, daily, or yearly)
+# to maintain accurate energy tracking for all periods.
+
+
+
+hourly_heating_energy_tracking:
+  name: "Heating Energy Tracking"
+  min: 0
+  max: 1000
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "kWh"
+  mode: box
+  icon: mdi:flash
+
+# NOT USED
+monthly_heating_energy_tracking:
+  name: "Monthly Heating Energy Tracking"
+  min: 0
+  max: 10000 
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "kWh"
+  mode: box
+  icon: mdi:flash
+
+# NOT USED
+yearly_heating_energy_tracking:
+  name: "Yearly Heating Energy Tracking"
+  min: 0
+  max: 30000
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "kWh"
+  mode: box
+  icon: mdi:flash

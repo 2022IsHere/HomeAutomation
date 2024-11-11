@@ -1,0 +1,77 @@
+# File: heating_energy_cost_tracking.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# This file defines cost-tracking entities for comparing different electricity billing models in heating.
+#
+# Warning:
+# Please ensure consistent formatting throughout this file to prevent configuration parsing errors and execution issues.
+
+
+
+# -------------------------------------------------------------------------------
+# - These provide values to compare all 3 billing models running heating system -
+# -------------------------------------------------------------------------------
+fixed_contract_energy_cost_tracking:
+  name: "Kiinteä hintainen"
+  min: 0
+  max: 5500
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur
+
+stock_market_contract_energy_cost_tracking:
+  name: "Pörssisopimuksen"
+  min: 0
+  max: 5500
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur
+
+estimated_automated_heating_system_energy_cost_tracking:
+  name: "Automatio & Pörssisopimus"
+  min: 0
+  max: 5500
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur
+
+# -------------------------------------------------------------
+# - These provide the monthly heating system electricity bill -
+# -------------------------------------------------------------
+energy_per_kwh:
+  name: "Energian hinta per kWh"
+  min: 0
+  max: 10000
+  step: 0.01
+  initial: 0
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur
+
+transfer_fee_per_kwh:
+  name: "Siirtohinta per kWh"
+  min: 0
+  max: 10000
+  step: 0.01
+  initial: 0
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur
+
+tax_per_kwh:
+  name: "Sähkövero per kWh"
+  min: 0
+  max: 10000
+  step: 0.01
+  initial: 0
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur

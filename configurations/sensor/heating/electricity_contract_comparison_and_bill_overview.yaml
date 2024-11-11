@@ -1,0 +1,95 @@
+# File: electricity_contract_comparison_and_bill_overview.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# This configuration file contains multiple template sensors used for comparing electricity contract cost efficiency
+# and calculating monthly electricity bills based on different pricing factors. The sensors provide analytics to compare 
+# fixed contract pricing and stock market-based contract pricing by tracking the annual energy costs for both models.
+# Additionally, it calculates the monthly electricity bill, breaking it down by energy price, transfer fee, and tax.
+# Lastly, the file offers an overview of the daily electricity prices retrieved from Nordpool, including the highest, 
+# lowest, and current price periods for more informed decision-making about electricity usage.
+#
+# Warning:
+# Please maintain the same formatting throughout this file to prevent errors in configuration parsing and execution.
+
+
+
+- platform: template
+  sensors:
+
+    # ------------------------------------------------------------------------------------------------
+    # - These sensors compare the annual energy cost of fixed and stock market electricity contracts -
+    # ------------------------------------------------------------------------------------------------
+    fixed_contract_energy_cost_tracking:
+      friendly_name: "Kiinteän sopimuksen vuosihinta"
+      value_template: "{{ states('input_number.fixed_contract_energy_cost_tracking') | float | round(2) }}"
+      unique_id: fixed_contract_energy_cost_tracking
+
+    stock_market_contract_energy_cost_tracking:
+      friendly_name: "Pörssisopimuksen vuosihinta"
+      value_template: "{{ states('input_number.stock_market_contract_energy_cost_tracking') | float | round(2) }}"
+      unique_id: stock_market_contract_energy_cost_tracking
+
+
+
+
+    # --------------------------------------------------------------------------------------------
+    # - These sensors track the monthly energy cost, transfer fee, and tax for electricity usage -
+    # --------------------------------------------------------------------------------------------
+    energy_per_kwh:
+      friendly_name: "Kuukauden Energian Hinta"
+      value_template: "{{ states('input_number.energy_per_kwh') | float }}"
+
+    transfer_fee_per_kwh:
+      friendly_name: "Kuukauden Siirron Hinta"
+      value_template: "{{ states('input_number.transfer_fee_per_kwh') | float }}"
+
+    tax_per_kwh:
+      friendly_name: "Kuukauden Sähkövero"
+      value_template: "{{ states('input_number.tax_per_kwh') | float }}"
+
+
+
+
+    # -------------------------------------------------------------------------------------
+    # - These sensors provide today's Nordpool electricity prices: High, Low, and Current -
+    # - along with their corresponding time periods for each price.                       -      
+    # -------------------------------------------------------------------------------------
+    nordpool_high_price:
+      friendly_name: "Nordpool High Price"
+      unit_of_measurement: "c/kWh"
+      value_template: "{{ state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'max') }}"
+      unique_id: sensor.nordpool_high_price
+    nordpool_high_price_period:
+      friendly_name: "Nordpool High Price Period"
+      value_template: >
+        {% set prices = state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'today') %}
+        {% set max_index = prices.index(prices | max) %}
+        {{ max_index | string + ":00 - " + ((max_index + 1) % 24) | string + ":00" }}
+      unique_id: sensor.nordpool_high_price_period
+
+    nordpool_low_price:
+      friendly_name: "Nordpool Low Price"
+      unit_of_measurement: "c/kWh"
+      value_template: "{{ state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'min') }}" 
+      unique_id: sensor.nordpool_low_price
+    nordpool_low_price_period:
+      friendly_name: "Nordpool Low Price Period"
+      value_template: >
+        {% set prices = state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'today') %}
+        {% set min_index = prices.index(prices | min) %}
+        {{ min_index | string + ":00 - " + ((min_index + 1) % 24) | string + ":00" }}
+      unique_id: sensor.nordpool_low_price_period
+
+    # ---------------------------------------------------------------------- 
+    # - Current price is inferred by states('sensor.nordpool_entity_name') -
+    # ----------------------------------------------------------------------
+    nordpool_current_price_period:
+      friendly_name: "Nordpool Current Price Period"
+      value_template: >
+        {% set prices = state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'today') %}
+        {% set current_price = state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'current_price') %}
+        {% set current_index = prices.index(current_price) %}
+          {{ "{:02d}:00 - {:02d}:00".format(current_index, (current_index + 1) % 24) }}
+      unique_id: sensor.nordpool_current_price_period

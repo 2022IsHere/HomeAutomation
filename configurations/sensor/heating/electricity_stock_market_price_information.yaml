@@ -1,0 +1,35 @@
+# Name: electric_stock_prices.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing electricity price information which improves heating decision-making process.
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
+
+
+
+- platform: nordpool
+  VAT: true
+  currency: "EUR"
+  price_in_cents: true
+  region: "FI"
+  precision: 2
+  price_type: kWh 
+
+- platform: template
+  sensors:
+
+
+    # -----------------------------------------------------------------------------------------
+    # - Sensor for automated heating control based on electricity price trends:               -
+    # -   `price_trend`: Indicates if prices are rising, steady, or falling to adjust heating -
+    # -   `price_treshold`: Limits heating when prices exceed this user-set threshold         -
+    # -   `average_price`: Baseline price for favorable heating conditions                    -
+    # -----------------------------------------------------------------------------------------
+    electricity_stock_market_price_information:
+      friendly_name: "Electricity Stock Market Price Information"
+      value_template: "{{ states('input_text.price_trend') }}"
+      attribute_templates:
+        price_trend: "{{ states('input_text.price_trend') }}"
+        price_treshold: "{{ states('input_number.price_treshold') | float }}"
+        above_average_counter: "{{ states('counter.electric_price_trend_expensive') | float }}"
+        equal_to_average_counter: "{{ states('counter.electric_price_trend_average') | float }}"
+        below_average_counter: "{{ states('counter.electric_price_trend_cheap') | float }}"
+        average_price: "{{ states('input_number.fixed_price') | float }}"
