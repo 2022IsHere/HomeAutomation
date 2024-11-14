@@ -5,7 +5,7 @@
 
 
 - id: kitchen_rooms_conditions
-  alias: Evaluate kitchen room conditions
+  alias: Assess kitchen room conditions
   description: Evaluate kitchen room conditions. Use rules provided by blueprint rooms conditions 
   use_blueprint:
     path: homeassistant/heating/room_conditions.yaml
@@ -15,7 +15,7 @@
       heating_system_interface: sensor.kitchen_heating_system_interface
 
 - id: bedroom_rooms_conditions
-  alias: Evaluate bedroom room conditions
+  alias: Assess bedroom room conditions
   description: Evaluate bedroom room conditions. Use rules provided by blueprint rooms conditions 
   use_blueprint:
     path: homeassistant/heating/room_conditions.yaml
@@ -25,7 +25,7 @@
       heating_system_interface: sensor.bedroom_heating_system_interface
 
 - id: living_room_rooms_conditions
-  alias: Evaluate living room conditions
+  alias: Assess living room conditions
   description: Evaluate living room room conditions. Use rules provided by blueprint rooms conditions 
   use_blueprint:
     path: homeassistant/heating/room_conditions.yaml
@@ -35,7 +35,7 @@
       heating_system_interface: sensor.living_room_heating_system_interface
 
 - id: main_bedroom_rooms_conditions
-  alias: Evaluate main bedroom room conditions
+  alias: Assess main bedroom room conditions
   description: Evaluate main bedroom room conditions. Use rules provided by blueprint rooms conditions 
   use_blueprint:
     path: homeassistant/heating/room_conditions.yaml
@@ -45,7 +45,7 @@
       heating_system_interface: sensor.main_bedroom_heating_system_interface
 
 - id: guest_bedroom_rooms_conditions
-  alias: Evaluate guest bedroom room conditions
+  alias: Assess guest bedroom room conditions
   description: Evaluate guest bedroom room conditions. Use rules provided by blueprint rooms conditions 
   use_blueprint:
     path: homeassistant/heating/room_conditions.yaml
