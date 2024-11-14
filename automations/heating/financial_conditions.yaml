@@ -14,12 +14,10 @@
       room_name: Kitchen
       room_information: sensor.kitchen_room_information
       heating_system_interface: sensor.kitchen_heating_system_interface
-      price_trend: sensor.price_trend
-      price_treshold: sensor.price_treshold
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price
 
 - id: bedroom_financial_conditions
   alias: Assess financial conditions for bedroom
@@ -31,12 +29,10 @@
       room_name: Bedroom
       room_information: sensor.bedroom_room_information
       heating_system_interface: sensor.bedroom_heating_system_interface
-      price_trend: sensor.price_trend
-      price_treshold: sensor.price_treshold
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price
 
 - id: living_room_financial_conditions
   alias: Assess financial conditions for living room
@@ -45,15 +41,13 @@
     path: homeassistant/heating/financial_conditions.yaml
     input:
       user: mobile_app_sebastians_iphone
-      room_name: Living Room
+      room_name: Living_Room
       room_information: sensor.living_room_room_information
       heating_system_interface: sensor.living_room_heating_system_interface
-      price_trend: sensor.price_trend
-      price_treshold: sensor.price_treshold
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price
 
 - id: main_bedroom_financial_conditions
   alias: Assess financial conditions for main bedroom
@@ -62,15 +56,13 @@
     path: homeassistant/heating/financial_conditions.yaml
     input:
       user: mobile_app_sebastians_iphone
-      room_name: Main Bedroom
+      room_name: Main_Bedroom
       room_information: sensor.main_bedroom_room_information
       heating_system_interface: sensor.main_bedroom_heating_system_interface
-      price_trend: sensor.price_trend
-      price_treshold: sensor.price_treshold
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price
 
 - id: guest_bedroom_financial_conditionse
   alias: Assess financial conditions for guest bedroom
@@ -79,12 +71,10 @@
     path: homeassistant/heating/financial_conditions.yaml
     input:
       user: mobile_app_sebastians_iphone
-      room_name: Guest Bedroom
+      room_name: Guest_Bedroom
       room_information: sensor.guest_bedroom_room_information
       heating_system_interface: sensor.guest_bedroom_heating_system_interface
-      price_trend: sensor.price_trend
-      price_treshold: sensor.price_treshold
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price
