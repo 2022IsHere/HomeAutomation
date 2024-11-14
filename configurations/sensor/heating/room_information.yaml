@@ -33,7 +33,7 @@
         room_heating_schedule_end_time: "{{ states('input_datetime.bedroom_heating_schedule_end_time') }}"
         room_thermostat: "{{ states('climate.makuuhuone') }}"
 
-    living_room_information:
+    living_room_room_information:
       friendly_name: "Living Room Information Sensor"
       value_template: "{{ states('sensor.living_room_temperature_and_humidity_sensor_temperature') }}"
       attribute_templates:
