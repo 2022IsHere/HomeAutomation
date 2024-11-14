@@ -1,7 +1,8 @@
 # Name: room_comfort_settings.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the automations to control comfort settings in UI. Enforcing rules utilizing blueprint Control comfort settings.
-
+#
+# Warning: Correct entity formatting is important otherwise automations will run into errors!
 
 
 - id: kitchen_comfort_settings

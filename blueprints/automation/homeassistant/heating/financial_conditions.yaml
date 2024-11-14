@@ -134,6 +134,7 @@ action:
       price_treshold: "{{ states(price_treshold) | float }}"
 
 
+      room_interface_status: "{{ states(room_information) }}"
       room_temperature: "{{ state_attr(room_information, 'room_temperature') | float }}"
       room_minimum_temperature: "{{ state_attr(room_information, 'room_minimum_temperature') | float }}"
       room_maximum_temperature: "{{ state_attr(room_information, 'room_maximum_temperature') | float }}"
@@ -194,7 +195,7 @@ action:
                         Reagoi 5 minuutin sisällä.
                   - delay: "00:05:00"  # 5 minutes
                   - choose:
-                      # User response
+                      # User response; Lowered minimum temperature level
                       - conditions:
                           - condition: template
                             value_template: "{{ minimum_temperature < room_temperature }}"
@@ -203,10 +204,19 @@ action:
                             target:
                               entity_id: >
                                 {{ delay_heat }}
+                      
+                      # User response; turned off automated heating --> Delay 
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ room_interface_status }}" 
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ delay_heat }}  
 
 
-
-                      # No user response
+                      # User response; Nada --> therefore heat
                       - conditions:
                           - condition: template
                             value_template: "{{ states(min_temperature) | float >= states(room_temperature) | float }}" # Re-evaluate

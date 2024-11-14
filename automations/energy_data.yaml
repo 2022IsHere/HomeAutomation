@@ -1,59 +1,4 @@
-# Name: Adax API Token
-# INFO: Automation to get new API token
-# WARNING: -
-# RESTRICTION: - 
-- id: adax_api_token_123
-  alias: Adax API Token
-  trigger:
-  - platform: time
-    at: 00:01:00
-  action:
-  - service: rest_command.rest_adax_api_token
-    data: {}
-    response_variable: api_response_token
-  - service: system_log.write
-    data:
-      message: 'Token: {{ api_response }}'
-  - variables:
-      access_token: '{% set json_response = api_response_token.content | from_json
-        %} {{ json_response.access_token }}
 
-        '
-  - service: input_text.set_value
-    data:
-      value: '{{ access_token }}'
-    target:
-      entity_id: input_text.rest_adax_token
-
-# Name: Adax Rooms Energy Data
-# INFO: Automation to get update to energy data spent on heating
-# WARNING: -
-# RESTRICTION: -
-- id: adax_rooms_energy_data_123
-  alias: Adax Rooms Energy Data
-  trigger:
-    - platform: time_pattern
-      minutes: /5
-  action:
-    - service: rest_command.rest_adax_rooms_energy_data
-      data: {}
-      response_variable: api_response_energy
-
-    # Check if the API response is valid
-    - condition: template
-      value_template: >
-        {{ api_response_energy.content is not none and api_response_energy.status == 200 }}
-
-    # If the check passes, proceed with the calculation
-    - variables:
-        total_energyWh: '{{ api_response_energy.content.devices | map(attribute=''energyWh'') | sum }}'
-
-    # Update the input number with the total energy if the check passes
-    - service: input_number.set_value
-      data:
-        value: '{{ total_energyWh }}'
-      target:
-        entity_id: input_number.energy_consumption_heating
 
 
 # Name: Hot Water Energy Data
@@ -167,9 +112,7 @@
     service: input_number.set_value
     data:
       entity_id: input_number.total_energy_usage_night
-      value: '{{ states(''sensor.total_daily_energy'') | float }}
-
-        '
+      value: '{{ states(''sensor.total_daily_energy'') | float }}'
 
 # Name: Update Morning Energy Use
 # INFO: Calculates and updates the total energy usage for the morning period at 12:00:00 by subtracting night usage from total daily usage.

@@ -25,9 +25,9 @@ blueprint:
           filter:  
             domain: sensor
     price_trend:
-      name: Electric stock market price trend
+      name: Electricity Stock Market Price Information
       icon: mdi:counter
-      description: Inputs provide counters for calculating price trend
+      description: Inputs provided such as counters for calculating price trend, etc.
       input:
         price_trend:
           name: Electric Price Trend - Text
@@ -53,127 +53,8 @@ blueprint:
           selector:
             entity:
               domain: counter
-    prices_JSON:
-      name: Classified next 8 hrs as {"hour"; type}
-      icon: mdi:json
-      description: Provide inputs which provide dynamic control of JSON
-      input:
-        hour_1:
-          name: Hour 1 of 8 hrs 
-          description: First hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_1_type:
-          name: Hour 1 type
-          description: First hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_2:
-          name: Hour 2 of 8 hrs 
-          description: Second hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_2_type:
-          name: Hour 2 type
-          description: Second hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_3:
-          name: Hour 3 of 8 hrs 
-          description: Third hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_3_type:
-          name: Hour 3 type
-          description: Third hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_4:
-          name: Hour 4 of 8 hrs 
-          description: Fourth hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_4_type:
-          name: Hour 4 type
-          description: Fourth hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_5:
-          name: Hour 5 of 8 hrs 
-          description: Fifth hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_5_type:
-          name: Hour 5 type
-          description: Fifth hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_6:
-          name: Hour 6 of 8 hrs 
-          description: Sixth hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_6_type:
-          name: Hour 6 type
-          description: Sixth hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_7:
-          name: Hour 7 of 8 hrs 
-          description: Seventh hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_7_type:
-          name: Hour 7 type
-          description: Seventh hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
-        hour_8:
-          name: Hour 8 of 8 hrs 
-          description: Eighth hour in the JSON
-          selector:
-            entity:
-              domain: input_number
-        hour_8_type:
-          name: Hour 8 type
-          description: Eighth hour's type in the JSON
-          selector:
-            entity:
-              domain: input_text
 
 variables:
-  hour_1: !input hour_1
-  hour_1_type: !input hour_1_type
-  hour_2: !input hour_2
-  hour_2_type: !input hour_2_type
-  hour_3: !input hour_3
-  hour_3_type: !input hour_3_type
-  hour_4: !input hour_4
-  hour_4_type: !input hour_4_type
-  hour_5: !input hour_5
-  hour_5_type: !input hour_5_type
-  hour_6: !input hour_6
-  hour_6_type: !input hour_6_type
-  hour_7: !input hour_7
-  hour_7_type: !input hour_7_type
-  hour_8: !input hour_8
-  hour_8_type: !input hour_8_type
-
-trigger_variables:
   nordpool: !input nordpool
   current_year_average_price: !input current_year_average_price
   price_trend: !input price_trend
@@ -186,9 +67,15 @@ max_exceeded: silent
 
 trigger:
   - platform: time_pattern
-    minutes: 0  # Trigger every hour to refresh the classification data
+    minutes: 0  # Trigger every hour
 
 action:
+  # ------------------
+  # - INIT VARIABLES -
+  # ------------------
+  - variables:
+      average_price: "{{ states(current_year_average_price) | float }}"
+
 
   # reset counters
   - service: counter.reset
@@ -198,12 +85,8 @@ action:
         - !input equal_to_average_counter
         - !input below_average_counter
 
-  #- service: system_log.write
-  #  data:
-  #    message: >
-  #        Time now: {{ now().hour }}
 
-  # Loop through the 8 hours and compare with the average price to determine the trend
+  # Search the next 8 hours. Do Average vs. Price comparisons.
   - repeat:
       count: 8
       sequence:
@@ -220,15 +103,8 @@ action:
                   100
                 {% endif %}
               {% endif %}
-            sortedList: []
-
-        #- service: system_log.write
-        #  data:
-        #    message: >
-        #        hour: {{ hour }}
-        #        price: {{ price }}
         
-        # Process the trend logic and update the counters based on price comparison
+        # Process the price
         - choose:
             - conditions:
                 - condition: template
@@ -237,7 +113,7 @@ action:
                 - choose:
                     - conditions:
                         - condition: template
-                          value_template: "{{ price < states(current_year_average_price) | float }}"
+                          value_template: "{{ price < average_price }}"
                       sequence:
                         - service: counter.increment
                           target:
@@ -245,7 +121,7 @@ action:
 
                     - conditions:
                         - condition: template
-                          value_template: "{{ price > states(current_year_average_price) | float }}"
+                          value_template: "{{ price > average_price }}"
                       sequence:
                         - service: counter.increment
                           target:
@@ -253,56 +129,14 @@ action:
 
                     - conditions:
                         - condition: template
-                          value_template: "{{ price == states(current_year_average_price) | float }}"
+                          value_template: "{{ price == average_price }}"
                       sequence:
                         - service: counter.increment
                           target:
                             entity_id: !input equal_to_average_counter
 
-        # Update prices_JSON with the hour input_number[n] entity
-        - service: input_number.set_value
-          target:
-            entity_id: "input_number.hour_{{repeat.index}}"
-          data:
-            value: "{{ hour | int }}"
 
-        # Update prices_JSON with the corresponding type input_text[n]_type entity
-        - service: input_text.set_value
-          target:
-            entity_id: "input_text.hour_{{repeat.index}}_type"
-          data:
-            value: >
-              {% if price > states(current_year_average_price) | float %}
-                Expensive
-              {% elif price < states(current_year_average_price) | float %}
-                Cheap
-              {% else %}
-                Average
-              {% endif %}
-
-        # Debug hour and its state
-        #- service: system_log.write
-        #  data: 
-        #    message: >
-        #      entity: input_number.hour_{{ repeat.index }}
-        #      price: {{ states('input_number.hour_' ~ repeat.index) }}
-
-        # Debug price type
-        #- service: system_log.write
-        #  data: 
-        #    message: >
-        #      entity_type: input_text.hour_{{ repeat.index }}_type
-        #      type: {{ states('input_text.hour_' ~ repeat.index ~ '_type') }}
-        #      type: {% if price > states(current_year_average_price) | float %}
-        #              Expensive
-        #            {% elif price < states(current_year_average_price) | float %}
-        #              Cheap
-        #            {% else %}
-        #              Average
-        #            {% endif %}
-          
-
-  # After calculating the trends, update the input_text entity with the trend
+  # Update sensor attribute with accurate trend estimation
   - choose:
       - conditions:
           - condition: template
@@ -333,6 +167,3 @@ action:
               entity_id: !input price_trend
             data:
               value: "average"
-
-# Lähetä S viesti
-# later sort the list. Index 0 cheapest and index -1 the expensiest

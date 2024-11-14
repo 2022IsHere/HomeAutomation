@@ -5,6 +5,9 @@
 
 
 
+# -------------------------------------------------------
+# - Automated heating system disabled or enabled button -
+# -------------------------------------------------------
 central_heating_system_interface:
   name: "Heating System Control"
   initial: off

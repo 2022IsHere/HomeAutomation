@@ -1,6 +1,8 @@
 # Name: data_collection.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
 # Description: This file containts the automation to perform data availability and validity
+#
+# Warning: Correct entity formatting is important otherwise automations will run into errors!
 
 
 
@@ -13,10 +15,10 @@
       room_name: "Kitchen"
       room_information: sensor.kitchen_information
       heating_system_interface: sensor.kitchen_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price 
 
 - id: bedroom_data_collection
   alias: Bedroom Data Collection
@@ -27,10 +29,10 @@
       room_name: "Bedroom"
       room_information: sensor.bedroom_information
       heating_system_interface: sensor.bedroom_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price 
 
 - id: living_room_data_collection
   alias: Living Room Data Collection
@@ -41,10 +43,10 @@
       room_name: "Living_Room"
       room_information: sensor.living_room_information
       heating_system_interface: sensor.living_room_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price 
 
 - id: main_bedroom_data_collection
   alias: Main Bedroom Data Collection
@@ -55,10 +57,10 @@
       room_name: "Main_Bedroom"
       room_information: sensor.main_bedroom_information
       heating_system_interface: sensor.main_bedroom_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price 
 
 - id: guest_bedroom_data_collection
   alias: Guest Bedroom Data Collection
@@ -69,7 +71,7 @@
       room_name: "Guest_Bedroom"
       room_information: sensor.guest_bedroom_information
       heating_system_interface: sensor.guest_bedroom_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
-      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
-      current_year_average_price: sensor.current_year_average_price 

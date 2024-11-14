@@ -38,7 +38,6 @@ blueprint:
 mode: restart
 max_exceeded: silent
 
-
 variables:
   room_name: !input room_name
   room_information: !input room_information
@@ -62,10 +61,16 @@ action:
       room_maximum_temperature: "{{ state_attr(room_information, 'room_maximum_temperature') | float }}"
       room_target_temperature: "{{ state_attr(room_information, 'room_target_temperature') | float }}"
 
+  # ------------------------------------
+  # - Check room temperature situation -
+  # ------------------------------------
   - choose:
       - conditions:
           - condition: template
             value_template: "{{ room_temperature >= room_maximum_temperature }}"
+        # ------------------------------------------------------
+        # - Update heating system interface based on situation -
+        # ------------------------------------------------------
         sequence:
           - service: input_boolean.turn_on
             target:
@@ -74,6 +79,9 @@ action:
       - conditions:
           - condition: template
             value_template: "{{ room_temperature <= room_minimum_temperature }}"
+        # ------------------------------------------------------
+        # - Update heating system interface based on situation -
+        # ------------------------------------------------------
         sequence:
           - service: input_boolean.turn_on
             target:
@@ -82,6 +90,9 @@ action:
       - conditions:
           - condition: template
             value_template: "{{ room_temperature < room_maximum_temperature and room_temperature > room_minimum_temperature }}"
+        # ------------------------------------------------------
+        # - Update heating system interface based on situation -
+        # ------------------------------------------------------
         sequence:
           - service: input_boolean.turn_on
             target:
