@@ -1,0 +1,127 @@
+# Name: data_collection.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to check that all necessary data is available
+
+
+
+blueprint:
+  name: Assess data availability and validity
+  description: Properly validate necessary data to conduct smart heating
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    room_information:
+      name: Room information
+      icon: mdi:database
+      description: These inputs provide relevant room information
+      input:  
+        room_name:
+          name: Room Name
+          description: The name of the room for which the process should be conducted
+          selector:
+            text:
+        room_information:
+          name: Room Information Sensor
+          description: Sensor providing such as heating schedule, temperature and thermostats
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        heating_system_interface:
+          name: Room Heating System Interface
+          description: This is a sensor configured to control heating system program flow
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    electric_stock_market_price_information:
+      name: Electric Stock Market Price Information
+      icon: mdi:currency-eur
+      description: Sensors providing electric stock market price information
+      input:
+        nordpool_sensor:
+          name: Nordpool Integration Sensor
+          description: Sensor for Nordpool integration
+          selector:
+            entity:
+              filter:
+                domain: sensor    
+        electricity_stock_market_price_information:
+          name: Electricity Stock Market Price Information
+          description: Custom sensor providing details on electricity prices, trends and thresholds
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    general_data:
+      name: General Data for Heating Process
+      icon: mdi:import
+      description: Inputs essential for proceeding with the heating process
+      input:  
+        heat_transfer_coefficient: 
+          name: Heat Transfer Coefficient
+          description: Sensor measuring the heat transfer coefficient
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        outdoor_temperature:
+          name: Outdoor Temperature Sensor
+          description: Sensor for measuring the outdoor temperature
+          selector:
+            entity:
+              filter:
+                domain: sensor
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  room_name: !input room_name
+
+
+# ---------------------------------------------------
+# - Define all necessary variables to trigger scope -
+# ---------------------------------------------------
+trigger_variables:
+  room_information: !input room_information
+  heating_system_interface: !input heating_system_interface
+  nordpool_sensor: !input nordpool_sensor
+  electricity_stock_market_price_information: !input electricity_stock_market_price_information
+  heat_transfer_coefficient: !input heat_transfer_coefficient
+  outdoor_temperature: !input outdoor_temperature
+
+# ---------------------
+# - Check data access -
+# ---------------------
+trigger:
+  - platform: template
+    value_template: >
+      {% set invalid_states = ['unknown', 'unavailable', None] %}
+
+      {% set room_information_valid = states(room_information) not in invalid_states %}
+      {% set heating_system_interface_valid = states(heating_system_interface) not in invalid_states %}
+      {% set nordpool_sensor_valid = states(nordpool_sensor) not in invalid_states %}
+      {% set electricity_stock_market_price_information_valid = states(electricity_stock_market_price_information) not in invalid_states %}
+      {% set heat_transfer_coefficient_valid = states(heat_transfer_coefficient) not in invalid_states %}
+      {% set outdoor_temperature_valid = states(outdoor_temperature) not in invalid_states %}
+
+      {{ room_information_valid and heating_system_interface_valid and nordpool_sensor_valid and electricity_stock_market_price_information_valid and heat_transfer_coefficient_valid and outdoor_temperature_valid }}
+
+# ----------------------------------------------------
+# - Check that heating system has run without errors -
+# ----------------------------------------------------
+condition:
+  - condition: template
+    value_template: >
+      {{ state_attr(heating_system_interface, 'start_heating_process') == 'on' }}
+
+# -------------------------------------------------------------------
+# - Allow heating system to proceed further if there were no issues -
+# -------------------------------------------------------------------
+action:
+
+  - service: input_boolean.turn_on
+    target:
+      entity_id: >
+        {{ 'input_boolean.' + room_name | lower + '_data_collection_process' }}
