@@ -5,7 +5,7 @@
 
 
 - id: kitchen_start_process
-  alias: Hourly Heating Process for Kitchen
+  alias: Start Hourly Heating Process for Kitchen
   description: Starts the heating process at the top of every hour for the kitchen. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
@@ -15,7 +15,7 @@
       heating_system_interface: sensor.kitchen_heating_system_interface
 
 - id: bedroom_start_process
-  alias: Hourly Heating Process for Bedroom
+  alias: Start Hourly Heating Process for Bedroom
   description: Starts the heating process at the top of every hour for the bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
@@ -25,7 +25,7 @@
       heating_system_interface: sensor.bedroom_heating_system_interface
 
 - id: living_room_start_process
-  alias: Hourly Heating Process for Living Room
+  alias: Start Hourly Heating Process for Living Room
   description: Starts the heating process at the top of every hour for the living room. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
@@ -35,7 +35,7 @@
       heating_system_interface: sensor.living_room_heating_system_interface
 
 - id: main_bedroom_start_process
-  alias: Hourly Heating Process for Main Bedroom
+  alias: Start Hourly Heating Process for Main Bedroom
   description: Starts the heating process at the top of every hour for the main bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml
@@ -45,7 +45,7 @@
       heating_system_interface: sensor.main_bedroom_heating_system_interface
 
 - id: guest_bedroom_start_process
-  alias: Hourly Heating Process for Guest Bedroom
+  alias: Start Hourly Heating Process for Guest Bedroom
   description: Starts the heating process at the top of every hour for the guest bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
   use_blueprint:
     path: homeassistant/heating/start_process.yaml

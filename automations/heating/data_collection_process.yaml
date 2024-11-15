@@ -7,7 +7,7 @@
 
 
 - id: kitchen_data_collection
-  alias: Kitchen Data Collection
+  alias:  Collect Kitchen Data
   description: Check that all data is available before proceeding to data processing
   use_blueprint:
     path: homeassistant/heating/data_collection_process.yaml
@@ -21,7 +21,7 @@
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: bedroom_data_collection
-  alias: Bedroom Data Collection
+  alias: Collect Bedroom Data
   description: Check that all data is available before proceeding to data processing
   use_blueprint:
     path: homeassistant/heating/data_collection_process.yaml
@@ -35,7 +35,7 @@
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: living_room_data_collection
-  alias: Living Room Data Collection
+  alias: Collect Living Room Data
   description: Check that all data is available before proceeding to data processing
   use_blueprint:
     path: homeassistant/heating/data_collection_process.yaml
@@ -49,7 +49,7 @@
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: main_bedroom_data_collection
-  alias: Main Bedroom Data Collection
+  alias: Collect Main Bedroom Data
   description: Check that all data is available before proceeding to data processing
   use_blueprint:
     path: homeassistant/heating/data_collection_process.yaml
@@ -63,7 +63,7 @@
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: guest_bedroom_data_collection
-  alias: Guest Bedroom Data Collection
+  alias: Collect Guest Bedroom Data
   description: Check that all data is available before proceeding to data processing
   use_blueprint:
     path: homeassistant/heating/data_collection_process.yaml
