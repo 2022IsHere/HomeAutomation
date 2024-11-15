@@ -101,9 +101,9 @@ variables:
   # --------------------------------------------------------------
   # - Define derived variables in as is principle. No alteration -
   # --------------------------------------------------------------
-  room_at_maximum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['maximum_temperature_reached'] }}"
-  room_at_or_below_minimum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['minimum_temperature_or_below'] }}"
-  room_between_minimum_and_maximum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['between_min_max_temperature'] }}"
+  room_at_maximum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['maximum_temperature_reached'] == 'on' }}"
+  room_at_or_below_minimum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['minimum_temperature_or_below']  == 'on' }}"
+  room_between_minimum_and_maximum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['between_min_max_temperature']  == 'on' }}"
 
 # ---------------------------------------------------------------
 # - Check has heating system run till this point without errors -
@@ -155,33 +155,8 @@ action:
       maintain_heat: "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
       preheat_maximum: "{{ 'input_boolean.' + room_name | lower + '_preheat_maximum' }}"
   
-  - service: system_log.write
-    data:
-      message: >
-        I did make it to action field!
 
-  - service: system_log.write
-    data:
-      message: >
-        Heating system interface situation: {{ heating_system_interface, states(heating_system_interface) }}
-        room_conditions: "{{ state_attr(heating_system_interface, 'room_conditions') }}"
-        room_at_maximum_temperature: "{{ room_at_maximum_temperature }}"
-        room_at_or_below_minimum_temperature: "{{ room_at_or_below_minimum_temperature }}"
-        room_between_minimum_and_maximum_temperature: "{{ room_between_minimum_and_maximum_temperature }}"
-
-
-  - service: system_log.write
-    data:
-      message: >
-        Room situation: {{ room_temperature }}
-        Heating system interface situation: {{ room_interface_status }}
-        Room temperature is at max tmp: {{ room_at_or_below_minimum_temperature }}
-        Room temperature is at or below: {{ room_at_or_below_minimum_temperature }}
-        Room temperature is between min and max tmp: {{ room_between_minimum_and_maximum_temperature }}
-        Price categry: expensive {{ price_category_expensive }}
-        Price categry: average {{ price_category_average }}
-        Price categry: cheap {{ price_category_cheap }}
-
+  
   - choose:
       # --------------------------
       # - Room temperature check -
@@ -203,6 +178,10 @@ action:
           - condition: template
             value_template: "{{ room_at_or_below_minimum_temperature }}"
         sequence:
+          - service: system_log.write
+            data:
+              message: >
+                I noticed that room needs heating ASAP!
           - choose:
               # -------------------------------------------
               # - Current price is categorised: expensive -
@@ -285,10 +264,6 @@ action:
                     target:
                       entity_id: >
                         {{ preheat_maximum }}
-                  - service: system_log.write
-                    data:
-                      message: >
-                        I noticed that I need to heat and price is low!
 
 
       # --------------------------
