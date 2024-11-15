@@ -31,6 +31,9 @@
           - input_number.fixed_contract_energy_cost_tracking
           - input_number.stock_market_contract_energy_cost_tracking
 
+# -----------------------------------------------------------------
+# - Reset Monthly electricity bill at the beginning of each month -
+# -----------------------------------------------------------------
 - id: reset_monthly_electricity_bill_structure_cost_tracking
   alias: Reset Monthly Electricity Bill Structure Cost Tracking
   description: Resets energy cost structure counters (kulurakenne) at the beginning of each month
@@ -51,6 +54,9 @@
           - input_number.tax_per_kwh
 
 
+# -------------------------------------------------------------------
+# - Calculate Monthly electricity bill upon new energy reading data -
+# -------------------------------------------------------------------
 - id: update_monthly_electricity_bill_structure_cost_tracking
   alias: "Update Monthly Electricity Bill Structure Cost Tracking"
   description: "Updates energy cost structure when new energy data arrive"
@@ -58,41 +64,47 @@
     - platform: state
       entity_id: input_number.hourly_heating_energy_tracking
   action:
-    # Update Monthly Energy Cost (€/kWh)
-    - service: input_number.set_value
-      data:
-        value: >
-          {% set current_total = states('input_number.energy_per_kwh') | float %}
-          {% set current_hour_cost = states('input_number.hourly_heating_energy_tracking') | float / 1000 * states('input_number.average_electricity_price_optimization_point') | float / 100 %}
-          {{ current_total + current_hour_cost }}
-      target:
-        entity_id: input_number.energy_per_kwh
 
-    # Update Monthly Transfer Fee Cost (€/kWh)
+    # -------------------------------
+    # - Cumulative cost of transfer -
+    # -------------------------------
     - service: input_number.set_value
       data:
         value: >
-          {% set current_total = states('input_number.transfer_fee_per_kwh') | float %}
-          {% set current_hour_cost = states('input_number.hourly_heating_energy_tracking') | float / 1000 * states('input_number.general_electricity_transfer_fee') | float / 100 %}
-          {{ current_total + current_hour_cost }}
+          {% set current_total_energy_kWh = states('input_number.hourly_heating_energy_tracking') | float / 1000 %}
+          {% set total_transfer_fee_cost_eur = states('input_number.transfer_fee_per_kwh') | float + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (states('input_number.general_electricity_transfer_fee') | float / 100) %}
+          {{ total_transfer_fee_cost_eur }}
       target:
         entity_id: input_number.transfer_fee_per_kwh
 
-    # Update Monthly Tax Cost (€/kWh)
+    # -----------------------------
+    # - Cumulative cost of energy -
+    # -----------------------------
     - service: input_number.set_value
       data:
         value: >
-          {% set current_total = states('input_number.tax_per_kwh') | float %}
-          {% set current_hour_cost = states('input_number.hourly_heating_energy_tracking') | float / 1000 * states('input_number.electricity_tax') | float / 100 %}
-          {{ current_total + current_hour_cost }}
+          {% set current_total_energy_kWh = states('input_number.hourly_heating_energy_tracking') | float / 1000 %}
+          {% set total_energy_cost_eur = states('input_number.energy_per_kwh') | float + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (states('input_number.fixed_price') | float / 100) %}
+          {{ total_energy_cost_eur }}
+      target:
+        entity_id: input_number.energy_per_kwh
+    
+    # --------------------------
+    # - Cumulative cost of tax -
+    # --------------------------
+    - service: input_number.set_value
+      data:
+        value: >
+          {% set current_total_energy_kWh = states('input_number.hourly_heating_energy_tracking') | float / 1000 %}
+          {% set total_tax_cost_eur = states('input_number.tax_per_kwh') | float + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (states('input_number.electricity_tax') | float / 100) %}
+          {{ total_tax_cost_eur }}
       target:
         entity_id: input_number.tax_per_kwh
 
 
-
-
-
-
+# -----------------------------------------------------------------------
+# - Calculate different electricity contract total costs for comparison -
+# -----------------------------------------------------------------------
 - id: update_electricity_contract_comparison_analytics
   alias: Update Electricity Contract Comparison Analytics
   description: "This automation updates entities providing comparison energy costs for fixed-price and stock-market electricity contracts"
@@ -101,33 +113,38 @@
       entity_id: input_number.hourly_heating_energy_tracking
   action:
 
-
-    # Fixed Contract
-    # Energy Cost = Energy Used (kWh) × (Electricity Price per kWh + Transfer Fee per kWh + Tax Rate)
+    # -----------------------------------
+    # - Fixed Contract & Manual Heating -    UPDATE THIS TO FOLLOW CERTAIN ROOM WHERE THIS MODEL IS USED ATM
+    # -----------------------------------
     - service: input_number.set_value
       data:
         value: >
-          {% set energy = (states('input_number.hourly_heating_energy_tracking') | float) / 1000 %}
-          {% set cost_per_kWh = (states('input_number.fixed_price') | float +
-                                 states('input_number.general_electricity_transfer_fee') | float +
-                                 states('input_number.electricity_tax') | float) / 100 %}
-          {% set energy_cost = energy * cost_per_kWh %}
-          {% set total_energy_cost = states('input_number.fixed_contract_energy_cost_tracking') | float + energy_cost %}
-          {{ total_energy_cost }}
+          {% set current_total_cost_eur = states('input_number.fixed_contract_energy_cost_tracking') | float %}
+          {% set total_cost_eur = current_total_cost_eur + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (states('input_number.fixed_price') | float / 100) %}
+          {{ total_cost_eur }}
       target:
         entity_id: input_number.fixed_contract_energy_cost_tracking
 
-    # Stock Contract
-    # Energy Cost = Energy Used (kWh) × (Electricity Price per kWh + Transfer Fee per kWh + Tax Rate)
+    # -----------------------------------
+    # - Stock Contract & Manual Heating -     UPDATE THIS TO FOLLOW CERTAIN ROOM WHERE THIS MODEL IS USED ATM
+    # -----------------------------------
     - service: input_number.set_value
       data:
         value: >
-          {% set energy = (states('input_number.hourly_heating_energy_tracking') | float) / 1000 %}
-          {% set cost_per_kWh = (states('sensor.nordpool_kwh_fi_eur_2_10_0255') | float +
-                                 states('input_number.general_electricity_transfer_fee') | float +
-                                 states('input_number.electricity_tax') | float) / 100 %}
-          {% set energy_cost = energy * cost_per_kWh %}
-          {% set total_energy_cost = states('input_number.stock_market_contract_energy_cost_tracking') | float + energy_cost %}
-          {{ total_energy_cost }}
+          {% set current_total_cost_eur = states('input_number.fixed_contract_energy_cost_tracking') | float %}
+          {% set total_cost_eur = current_total_cost_eur + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'current_price') | float / 100) %}
+          {{ total_cost_eur }}
       target:
         entity_id: input_number.stock_market_contract_energy_cost_tracking
+
+    # - ------------------------------------
+    # - Stock Contract & Automated Heating -
+    # --------------------------------------
+    - service: input_number.set_value
+      data:
+        value: >
+          {% set current_total_cost_eur = states('input_number.fixed_contract_energy_cost_tracking') | float %}
+          {% set total_cost_eur = current_total_cost_eur + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'current_price') | float / 100) %}
+          {{ total_cost_eur }}
+      target:
+        entity_id: input_number.estimated_automated_heating_system_energy_cost_tracking
