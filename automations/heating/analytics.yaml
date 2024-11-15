@@ -1,5 +1,19 @@
 
 
+- id: electric_price_trend_analyzer
+  alias: Analyze Electric Price Calculations
+  description: Analyze and classify upcoming electricity price trends for the next 8 hours using Nordpool data, enabling smarter energy decisions based on cost efficiency.
+  use_blueprint:
+    path: homeassistant/heating/analytics.yaml
+    input:
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
+      price_trend: input_text.price_trend
+      above_average_counter: counter.electric_price_trend_expensive
+      equal_to_average_counter: counter.electric_price_trend_average
+      below_average_counter: counter.electric_price_trend_cheap
+
+
 - id: reset_energy_cost_tracking
   alias: Reset Energy Cost Tracking At The Beginning Of Each Year
   trigger:

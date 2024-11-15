@@ -4,59 +4,65 @@
 
 
 
-
 blueprint:
-  name: Price Classification, trend check, etc
-  description: Collect data from the Nordpool sensor and generate a classification of electric prices for the next 8 hours.
+  name: Electric Price Trend Analyzer
+  description: Analyze and classify upcoming electricity price trends for the next 8 hours using Nordpool data, enabling smarter energy decisions based on cost efficiency.
   domain: automation
   author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:
-    nordpool:
-      name: Nordpool Integration Sensor
-      description: The sensor providing the electric stock market prices.
-      selector:
-        entity:
-          domain: sensor
-    current_year_average_price:
-      name: Current year average price in electric stock market
-      description: The sensor state is accurate value on current year average price in electric stock market
-      selector:
-        entity:
-          filter:  
-            domain: sensor
-    price_trend:
-      name: Electricity Stock Market Price Information
-      icon: mdi:counter
-      description: Inputs provided such as counters for calculating price trend, etc.
+    electric_stock_market_price_information:
+      name: Electric Stock Market Price Information
+      icon: mdi:currency-eur
+      description: Sensors providing electric stock market price information
+      input:
+        nordpool_sensor:
+          name: Nordpool Integration Sensor
+          description: Sensor for Nordpool integration
+          selector:
+            entity:
+              filter:
+                domain: sensor    
+        electricity_stock_market_price_information:
+          name: Electricity Stock Market Price Information
+          description: Custom sensor providing details on electricity prices, trends and thresholds
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    price_analysis:
+      name: Price Analysis Entities
+      icon: mdi:chart-line
+      description: Essential entities for analyzing electric prices
       input:
         price_trend:
-          name: Electric Price Trend - Text
-          description: Text entity storing the classified electric price trend for the next 8 hours
+          name: Electric Price Trend
+          description: Text entity storing the analysed electric price trend
           selector:
             entity:
               domain: input_text
         above_average_counter:
-          name: Increasing trend counter
-          description: The counter to increment on every expensive hour
+          name: Expensive Hours Counter
+          description: Counter to track the number of hours classified as expensive.
           selector:
             entity:
               domain: counter
         equal_to_average_counter:
-          name: Steady trend counter
-          description: The counter to increment on every average priced hour
+          name: Average Hours Counter
+          description: Counter to track the number of hours classified as average.
           selector:
             entity:
               domain: counter
         below_average_counter:
-          name: Decreasing trend counter
-          description: The counter to increment on every cheaper hour
+          name: Cheap Hours Counter
+          description: Counter to track the number of hours classified as cheaper.
           selector:
             entity:
               domain: counter
 
+
 variables:
-  nordpool: !input nordpool
-  current_year_average_price: !input current_year_average_price
+  nordpool_sensor: !input nordpool_sensor
+  electricity_stock_market_price_information: !input electricity_stock_market_price_information
   price_trend: !input price_trend
   above_average_counter: !input above_average_counter
   equal_to_average_counter: !input equal_to_average_counter
@@ -74,10 +80,11 @@ action:
   # - INIT VARIABLES -
   # ------------------
   - variables:
-      average_price: "{{ states(current_year_average_price) | float }}"
+      average_price: "{{ state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
 
-
-  # reset counters
+  # ------------------
+  # - reset counters -
+  # ------------------
   - service: counter.reset
     target:
       entity_id:
@@ -85,8 +92,9 @@ action:
         - !input equal_to_average_counter
         - !input below_average_counter
 
-
-  # Search the next 8 hours. Do Average vs. Price comparisons.
+  # -------------------------------------------------------------
+  # - Search the next 8 hours. Do Average vs. Price comparisons -
+  # -------------------------------------------------------------
   - repeat:
       count: 8
       sequence:
@@ -95,16 +103,19 @@ action:
             price: >              
               {% set hour_offset = (now().hour + repeat.index) %}
               {% if hour_offset < 24 %}
-                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                {{ (state_attr(nordpool_sensor, 'today')[hour_offset]) | float }}  
               {% else %}
-                {% if state_attr(nordpool, 'tomorrow_valid') %}
-                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                {% if state_attr(nordpool_sensor, 'tomorrow_valid') %}
+                  {{ (state_attr(nordpool_sensor, 'tomorrow')[hour_offset - 24]) | float }}  
                 {% else %}
                   100
                 {% endif %}
               {% endif %}
-        
-        # Process the price
+
+
+        # ---------------
+        # - Check price -
+        # ---------------
         - choose:
             - conditions:
                 - condition: template
@@ -135,8 +146,9 @@ action:
                           target:
                             entity_id: !input equal_to_average_counter
 
-
-  # Update sensor attribute with accurate trend estimation
+  # --------------------------------------------------------------------------------------------------------
+  # - Update counters. Note! Its important to reretrieve each counter as their original state has changed! -
+  # --------------------------------------------------------------------------------------------------------
   - choose:
       - conditions:
           - condition: template
