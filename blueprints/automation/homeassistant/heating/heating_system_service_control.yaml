@@ -1,4 +1,6 @@
-
+# Name: heating_system_service_control.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to provide logic to control between manual and automated heating through heating interface
 
 
 
