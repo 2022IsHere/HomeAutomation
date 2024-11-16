@@ -1,6 +1,6 @@
 # Home Automation System Backend
 
-This repository contains the backend configurations and integrations for a comprehensive Home Automation system. It is designed to manage and optimize various integrated systems across the home, ensuring efficiency, security, and automation. The core systems included in this repository are:
+This repository contains the backend configurations and integrations for a Home Automation system. It is designed to manage and optimize various integrated systems across the home, ensuring efficiency, security, and automation. The core systems included in this repository are:
 
 ## Core Systems
 
