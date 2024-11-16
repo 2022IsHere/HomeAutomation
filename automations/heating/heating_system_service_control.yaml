@@ -1,9 +1,11 @@
 # Name: heating_system_service_control.yaml
 # Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
-# Description: This file containts the configuration for controlling heating service between optimised automation and manual smart control services
+# Description: This file containts the configuration for controlling heating service between optimised automation and manual smart heating control services
 
 
-
+# ------------------------------------------------------------------------------------
+# - Enable or disable all rooms' automated heating based on central house controller -
+# ------------------------------------------------------------------------------------
 - id: synchronize_heating_system_service_controllers
   alias: Synchronize Heating System Service Controllers
   trigger:
@@ -38,103 +40,57 @@
                   - input_boolean.main_bedroom_heating_system_service_control
                   - input_boolean.guest_bedroom_heating_system_service_control
 
-- id: synchronize_room_heating_system_interfaces
-  alias: Synchronize Room Heating Interfaces
-  trigger:
-    - platform: state
-      entity_id: 
-        - input_boolean.kitchen_heating_system_service_control
-        - input_boolean.bedroom_heating_system_service_control
-        - input_boolean.living_room_heating_system_service_control
-        - input_boolean.main_bedroom_heating_system_service_control
-        - input_boolean.guest_bedroom_heating_system_service_control        
-  action:
-    - choose:
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.kitchen_heating_system_service_control
-              state: 'on'
-          sequence:
-            - service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.kitchen_heating_system_interface
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.kitchen_heating_system_service_control
-              state: 'off'
-          sequence:
-            - service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.kitchen_heating_system_interface
 
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.bedroom_heating_system_service_control
-              state: 'on'
-          sequence:
-            - service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.bedroom_heating_system_interface
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.bedroom_heating_system_service_control
-              state: 'off'
-          sequence:
-            - service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.bedroom_heating_system_interface
+# -------------------------------------------------------------------
+# - Enable or disable automated heating based on user setting in UI -
+# -------------------------------------------------------------------
+- id: control_kitchen_heating_system_interface_status
+  alias: Controle Kitchen Heating System Interface status
+  use_blueprint:
+    path: homeassistant/heating/heating_system_service_control.yaml
+    input:
+      heating_system_service_control_entity: input_boolean.kitchen_heating_system_service_control
+      heating_system_interface_entity: input_boolean.kitchen_heating_system_interface
 
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.living_room_heating_system_service_control
-              state: 'on'
-          sequence:
-            - service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.living_room_heating_system_interface
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.living_room_heating_system_service_control
-              state: 'off'
-          sequence:
-            - service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.living_room_heating_system_interface
+- id: control_bedroom_heating_system_interface_status
+  alias: Control Bedroom Heating System Interface Status
+  use_blueprint:
+    path: homeassistant/heating/heating_system_service_control.yaml
+    input:
+      heating_system_service_control_entity: input_boolean.bedroom_heating_system_service_control
+      heating_system_interface_entity: input_boolean.bedroom_heating_system_interface
 
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.main_bedroom_heating_system_service_control
-              state: 'on'
-          sequence:
-            - service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.main_bedroom_heating_system_interface
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.main_bedroom_heating_system_service_control
-              state: 'off'
-          sequence:
-            - service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.main_bedroom_heating_system_interface
+- id: control_living_room_heating_system_interface_status
+  alias: Control Living Room Heating System Interface Status
+  use_blueprint:
+    path: homeassistant/heating/heating_system_service_control.yaml
+    input:
+      heating_system_service_control_entity: input_boolean.living_room_heating_system_service_control
+      heating_system_interface_entity: input_boolean.living_room_heating_system_interface
 
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.guest_bedroom_heating_system_service_control
-              state: 'on'
-          sequence:
-            - service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.guest_bedroom_heating_system_interface
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.guest_bedroom_heating_system_service_control
-              state: 'off'
-          sequence:
-            - service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.guest_bedroom_heating_system_interface
+- id: control_main_bedroom_heating_system_interface_status
+  alias: Control Main Bedroom Heating System Interface Status
+  use_blueprint:
+    path: homeassistant/heating/heating_system_service_control.yaml
+    input:
+      heating_system_service_control_entity: input_boolean.main_bedroom_heating_system_service_control
+      heating_system_interface_entity: input_boolean.main_bedroom_heating_system_interface
 
+- id: control_guest_bedroom_heating_system_interface_status
+  alias: Control Guest Bedroom Heating System Interface Status
+  use_blueprint:
+    path: homeassistant/heating/heating_system_service_control.yaml
+    input:
+      heating_system_service_control_entity: input_boolean.guest_bedroom_heating_system_service_control
+      heating_system_interface_entity: input_boolean.guest_bedroom_heating_system_interface
+
+
+
+
+
+# --------------------------------------------------------------------------------
+# - Enable room specific automated heating only if central controller is not off -
+# --------------------------------------------------------------------------------
 - id: synchronize_room_heating_controllers
   alias: Synchronize Room Heating System Service Controllers
   trigger:
