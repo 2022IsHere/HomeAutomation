@@ -1,0 +1,13 @@
+# Name: token.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration so store API token. The token is updated regurlarly by automation. 
+
+
+
+store_api_token:
+  name: "Store API Token"
+  min: 1
+  max: 255
+  initial: "No token"
+  icon: mdi:api 
+  mode: password

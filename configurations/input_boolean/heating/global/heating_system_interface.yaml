@@ -1,0 +1,14 @@
+# Name: heating_system_interface.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for providing heating system service control. Options are manual or automation.
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
+
+
+
+# -------------------------------------------------------
+# - Automated heating system disabled or enabled button -
+# -------------------------------------------------------
+central_heating_system_interface:
+  name: "Heating System Control"
+  initial: off
+  icon: mdi:light-switch

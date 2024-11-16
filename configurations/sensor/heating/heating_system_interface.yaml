@@ -1,0 +1,113 @@
+# Name: heating_system_interface.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the sensor configurations for providing heating system program flow.
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
+
+
+
+- platform: template
+  sensors:
+    kitchen_heating_system_interface:
+      friendly_name: "Heating System Interface for Kitchen"
+      value_template: "{{ states('input_boolean.kitchen_heating_system_interface') }}"
+      attribute_templates:
+        start_heating_process: "{{ states('input_boolean.kitchen_start_heating_process') }}"
+        data_collection_process: "{{ states('input_boolean.kitchen_data_collection_process') }}"
+        room_conditions: >
+          {
+            "maximum_temperature_reached": "{{ states('input_boolean.kitchen_at_maximum_temperature') }}",
+            "minimum_temperature_or_below": "{{ states('input_boolean.kitchen_at_or_below_minimum_temperature') }}",
+            "between_min_max_temperature": "{{ states('input_boolean.kitchen_between_minimum_and_maximum_temperature') }}"
+          }
+        heating_options: >
+          {
+            "preheat_maximum": "{{ states('input_boolean.kitchen_preheat_maximum') }}",
+            "maintain_heat": "{{ states('input_boolean.kitchen_maintain_heat') }}",
+            "delay_heat": "{{ states('input_boolean.kitchen_delay_heat') }}",
+            "minimum_heat": "{{ states('input_boolean.kitchen_minimum_heat') }}"
+          }
+        control_thermostats: "{{ states('input_boolean.kitchen_control_thermostats') }}"
+
+    bedroom_heating_system_interface:
+      friendly_name: "Heating System Interface for Bedroom"
+      value_template: "{{ states('input_boolean.bedroom_heating_system_interface') }}"
+      attribute_templates:
+        start_heating_process: "{{ states('input_boolean.bedroom_start_heating_process') }}"
+        data_collection_process: "{{ states('input_boolean.bedroom_data_collection_process') }}"
+        room_conditions: >
+          {
+            "maximum_temperature_reached": "{{ states('input_boolean.bedroom_at_maximum_temperature') }}",
+            "minimum_temperature_or_below": "{{ states('input_boolean.bedroom_at_or_below_minimum_temperature') }}",
+            "between_min_max_temperature": "{{ states('input_boolean.bedroom_between_minimum_and_maximum_temperature') }}"
+          }
+        heating_options: >
+          {
+            "preheat_maximum": "{{ states('input_boolean.bedroom_preheat_maximum') }}",
+            "maintain_heat": "{{ states('input_boolean.bedroom_maintain_heat') }}",
+            "delay_heat": "{{ states('input_boolean.bedroom_delay_heat') }}",
+            "minimum_heat": "{{ states('input_boolean.bedroom_minimum_heat') }}"
+          }
+        control_thermostats: "{{ states('input_boolean.bedroom_control_thermostats') }}"
+
+    living_room_heating_system_interface:
+      friendly_name: "Heating System Interface for Living Room"
+      value_template: "{{ states('input_boolean.living_room_heating_system_interface') }}"
+      attribute_templates:
+        start_heating_process: "{{ states('input_boolean.living_room_start_heating_process') }}"
+        data_collection_process: "{{ states('input_boolean.living_room_data_collection_process') }}"
+        room_conditions: >
+          {
+            "maximum_temperature_reached": "{{ states('input_boolean.living_room_at_maximum_temperature') }}",
+            "minimum_temperature_or_below": "{{ states('input_boolean.living_room_at_or_below_minimum_temperature') }}",
+            "between_min_max_temperature": "{{ states('input_boolean.living_room_between_minimum_and_maximum_temperature') }}"
+          }
+        heating_options: >
+          {
+            "preheat_maximum": "{{ states('input_boolean.living_room_preheat_maximum') }}",
+            "maintain_heat": "{{ states('input_boolean.living_room_maintain_heat') }}",
+            "delay_heat": "{{ states('input_boolean.living_room_delay_heat') }}",
+            "minimum_heat": "{{ states('input_boolean.living_room_minimum_heat') }}"
+          }
+        control_thermostats: "{{ states('input_boolean.living_room_control_thermostats') }}"
+
+    main_bedroom_heating_system_interface:
+      friendly_name: "Heating System Interface for Main Bedroom"
+      value_template: "{{ states('input_boolean.main_bedroom_heating_system_interface') }}"
+      attribute_templates:
+        start_heating_process: "{{ states('input_boolean.main_bedroom_start_heating_process') }}"
+        data_collection_process: "{{ states('input_boolean.main_bedroom_data_collection_process') }}"
+        room_conditions: >
+          {
+            "maximum_temperature_reached": "{{ states('input_boolean.main_bedroom_at_maximum_temperature') }}",
+            "minimum_temperature_or_below": "{{ states('input_boolean.main_bedroom_at_or_below_minimum_temperature') }}",
+            "between_min_max_temperature": "{{ states('input_boolean.main_bedroom_between_minimum_and_maximum_temperature') }}"
+          }
+        heating_options: >
+          {
+            "preheat_maximum": "{{ states('input_boolean.main_bedroom_preheat_maximum') }}",
+            "maintain_heat": "{{ states('input_boolean.main_bedroom_maintain_heat') }}",
+            "delay_heat": "{{ states('input_boolean.main_bedroom_delay_heat') }}",
+            "minimum_heat": "{{ states('input_boolean.main_bedroom_minimum_heat') }}"
+          }
+        control_thermostats: "{{ states('input_boolean.main_bedroom_control_thermostats') }}"
+
+    guest_bedroom_heating_system_interface:
+      friendly_name: "Heating System Interface for Guest Bedroom"
+      value_template: "{{ states('input_boolean.guest_bedroom_heating_system_interface') }}"
+      attribute_templates:
+        start_heating_process: "{{ states('input_boolean.guest_bedroom_start_heating_process') }}"
+        data_collection_process: "{{ states('input_boolean.guest_bedroom_data_collection_process') }}"
+        room_conditions: >
+          {
+            "maximum_temperature_reached": "{{ states('input_boolean.guest_bedroom_at_maximum_temperature') }}",
+            "minimum_temperature_or_below": "{{ states('input_boolean.guest_bedroom_at_or_below_minimum_temperature') }}",
+            "between_min_max_temperature": "{{ states('input_boolean.guest_bedroom_between_minimum_and_maximum_temperature') }}"
+          }
+        heating_options: >
+          {
+            "preheat_maximum": "{{ states('input_boolean.guest_bedroom_preheat_maximum') }}",
+            "maintain_heat": "{{ states('input_boolean.guest_bedroom_maintain_heat') }}",
+            "delay_heat": "{{ states('input_boolean.guest_bedroom_delay_heat') }}",
+            "minimum_heat": "{{ states('input_boolean.guest_bedroom_minimum_heat') }}"
+          }
+        control_thermostats: "{{ states('input_boolean.guest_bedroom_control_thermostats') }}"

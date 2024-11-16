@@ -1,0 +1,55 @@
+# Name: automated_thermostat_control.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to perform heating actions
+
+
+
+- id: kitchen_heating_system_controls_thermostats
+  alias: Control Kitchen Thermostats
+  description: Controls the thermostat for the kitchen based on room information and heating system settings, optimizing heating according to electric stock market prices.
+  use_blueprint:
+    path: homeassistant/heating/automated_thermostat_control.yaml
+    input:
+      room_name: "Kitchen"
+      room_information: sensor.kitchen_room_information
+      room_heating_system_interface: sensor.kitchen_heating_system_interface
+
+- id: bedroom_heating_system_controls_thermostats
+  alias: Control Bedroom Thermostats
+  description: Controls the thermostat for the bedroom based on room information and heating system settings, optimizing heating according to electric stock market prices.
+  use_blueprint:
+    path: homeassistant/heating/automated_thermostat_control.yaml
+    input:
+      room_name: "Bedroom"
+      room_information: sensor.bedroom_room_information
+      room_heating_system_interface: sensor.bedroom_heating_system_interface
+
+- id: living_room_heating_system_controls_thermostats
+  alias: Control Living Room Thermostats
+  description: Controls the thermostat for the living room based on room information and heating system settings, optimizing heating according to electric stock market prices.
+  use_blueprint:
+    path: homeassistant/heating/automated_thermostat_control.yaml
+    input:
+      room_name: "Living_Room"
+      room_information: sensor.living_room_room_information
+      room_heating_system_interface: sensor.living_room_heating_system_interface
+
+- id: main_bedroom_heating_system_controls_thermostats
+  alias: Control Main Bedroom Thermostats
+  description: Controls the thermostat for the main bedroom based on room information and heating system settings, optimizing heating according to electric stock market prices.
+  use_blueprint:
+    path: homeassistant/heating/automated_thermostat_control.yaml
+    input:
+      room_name: "Main_Bedroom"
+      room_information: sensor.main_bedroom_room_information
+      room_heating_system_interface: sensor.main_bedroom_heating_system_interface
+
+- id: guest_bedroom_heating_system_controls_thermostats
+  alias: Control Guest Bedroom Thermostats
+  description: Controls the thermostat for the guest bedroom based on room information and heating system settings, optimizing heating according to electric stock market prices.
+  use_blueprint:
+    path: homeassistant/heating/automated_thermostat_control.yaml
+    input:
+      room_name: "Guest_Bedroom"
+      room_information: sensor.guest_bedroom_room_information
+      room_heating_system_interface: sensor.guest_bedroom_heating_system_interface

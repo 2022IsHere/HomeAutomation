@@ -1,0 +1,100 @@
+# Name: room_conditions.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to provide logic to evaluate room conditions
+
+
+
+blueprint:
+  name: Assess Room Conditions
+  description: Output will be one of the options; maximum room temperature reached, room temperature at or below minimum or room temperature between limits
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    room_information:
+      name: Room information
+      icon: mdi:database
+      description: These inputs provide relevant room information
+      input:  
+        room_name:
+          name: Room Name
+          description: The name of the room for which the process should be conducted
+          selector:
+            text:
+        room_information:
+          name: Room Information Sensor
+          description: Sensor providing such as heating schedule, temperature and thermostats
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        heating_system_interface:
+          name: Room Heating System Interface
+          description: This is a sensor configured to control heating system program flow
+          selector:
+            entity:
+              filter:
+                domain: sensor
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  room_name: !input room_name
+  room_information: !input room_information
+
+trigger_variables:
+  heating_system_interface: !input heating_system_interface
+
+trigger:
+  - platform: template
+    value_template: >
+      {% set data_collection_process_status = state_attr(heating_system_interface, 'data_collection_process') %}
+      {{ data_collection_process_status not in ['unknown', 'undefined', '', None] and data_collection_process_status }}
+
+action:
+  # ------------------
+  # - INIT VARIABLES -
+  # ------------------
+  - variables:
+      room_temperature: "{{ state_attr(room_information, 'room_temperature') | float }}"
+      room_minimum_temperature: "{{ state_attr(room_information, 'room_minimum_temperature') | float }}"
+      room_maximum_temperature: "{{ state_attr(room_information, 'room_maximum_temperature') | float }}"
+      room_target_temperature: "{{ state_attr(room_information, 'room_target_temperature') | float }}"
+
+  # ------------------------------------
+  # - Check room temperature situation -
+  # ------------------------------------
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ room_temperature >= room_maximum_temperature }}"
+        # ------------------------------------------------------
+        # - Update heating system interface based on situation -
+        # ------------------------------------------------------
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_at_maximum_temperature' }}
+      - conditions:
+          - condition: template
+            value_template: "{{ room_temperature <= room_minimum_temperature }}"
+        # ------------------------------------------------------
+        # - Update heating system interface based on situation -
+        # ------------------------------------------------------
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_at_or_below_minimum_temperature' }}
+      - conditions:
+          - condition: template
+            value_template: "{{ room_temperature < room_maximum_temperature and room_temperature > room_minimum_temperature }}"
+        # ------------------------------------------------------
+        # - Update heating system interface based on situation -
+        # ------------------------------------------------------
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: >
+                {{ 'input_boolean.' + room_name | lower + '_between_minimum_and_maximum_temperature' }}

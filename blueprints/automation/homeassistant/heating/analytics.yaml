@@ -1,0 +1,181 @@
+# Name: analytics.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to calculate price trend for the upcoming 8 hours and sort the hours for finance decision-making
+
+
+
+blueprint:
+  name: Electric Price Trend Analyzer
+  description: Analyze and classify upcoming electricity price trends for the next 8 hours using Nordpool data, enabling smarter energy decisions based on cost efficiency.
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    electric_stock_market_price_information:
+      name: Electric Stock Market Price Information
+      icon: mdi:currency-eur
+      description: Sensors providing electric stock market price information
+      input:
+        nordpool_sensor:
+          name: Nordpool Integration Sensor
+          description: Sensor for Nordpool integration
+          selector:
+            entity:
+              filter:
+                domain: sensor    
+        electricity_stock_market_price_information:
+          name: Electricity Stock Market Price Information
+          description: Custom sensor providing details on electricity prices, trends and thresholds
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    price_analysis:
+      name: Price Analysis Entities
+      icon: mdi:chart-line
+      description: Essential entities for analyzing electric prices
+      input:
+        price_trend:
+          name: Electric Price Trend
+          description: Text entity storing the analysed electric price trend
+          selector:
+            entity:
+              domain: input_text
+        above_average_counter:
+          name: Expensive Hours Counter
+          description: Counter to track the number of hours classified as expensive.
+          selector:
+            entity:
+              domain: counter
+        equal_to_average_counter:
+          name: Average Hours Counter
+          description: Counter to track the number of hours classified as average.
+          selector:
+            entity:
+              domain: counter
+        below_average_counter:
+          name: Cheap Hours Counter
+          description: Counter to track the number of hours classified as cheaper.
+          selector:
+            entity:
+              domain: counter
+
+
+variables:
+  nordpool_sensor: !input nordpool_sensor
+  electricity_stock_market_price_information: !input electricity_stock_market_price_information
+  price_trend: !input price_trend
+  above_average_counter: !input above_average_counter
+  equal_to_average_counter: !input equal_to_average_counter
+  below_average_counter: !input below_average_counter
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: time_pattern
+    minutes: 0  # Trigger every hour
+
+action:
+  # ------------------
+  # - INIT VARIABLES -
+  # ------------------
+  - variables:
+      average_price: "{{ state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
+
+  # ------------------
+  # - reset counters -
+  # ------------------
+  - service: counter.reset
+    target:
+      entity_id:
+        - !input above_average_counter
+        - !input equal_to_average_counter
+        - !input below_average_counter
+
+  # -------------------------------------------------------------
+  # - Search the next 8 hours. Do Average vs. Price comparisons -
+  # -------------------------------------------------------------
+  - repeat:
+      count: 8
+      sequence:
+        - variables:
+            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+            price: >              
+              {% set hour_offset = (now().hour + repeat.index) %}
+              {% if hour_offset < 24 %}
+                {{ (state_attr(nordpool_sensor, 'today')[hour_offset]) | float }}  
+              {% else %}
+                {% if state_attr(nordpool_sensor, 'tomorrow_valid') %}
+                  {{ (state_attr(nordpool_sensor, 'tomorrow')[hour_offset - 24]) | float }}  
+                {% else %}
+                  100
+                {% endif %}
+              {% endif %}
+
+
+        # ---------------
+        # - Check price -
+        # ---------------
+        - choose:
+            - conditions:
+                - condition: template
+                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+              sequence:
+                - choose:
+                    - conditions:
+                        - condition: template
+                          value_template: "{{ price < average_price }}"
+                      sequence:
+                        - service: counter.increment
+                          target:
+                            entity_id: !input below_average_counter
+
+                    - conditions:
+                        - condition: template
+                          value_template: "{{ price > average_price }}"
+                      sequence:
+                        - service: counter.increment
+                          target:
+                            entity_id: !input above_average_counter
+
+                    - conditions:
+                        - condition: template
+                          value_template: "{{ price == average_price }}"
+                      sequence:
+                        - service: counter.increment
+                          target:
+                            entity_id: !input equal_to_average_counter
+
+  # --------------------------------------------------------------------------------------------------------
+  # - Update counters. Note! Its important to reretrieve each counter as their original state has changed! -
+  # --------------------------------------------------------------------------------------------------------
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ states(above_average_counter) | float > states(below_average_counter) | float }}"
+        sequence:
+          - service: input_text.set_value
+            target:
+              entity_id: !input price_trend
+            data:
+              value: "expensive"
+            
+      - conditions:
+          - condition: template
+            value_template: "{{ states(below_average_counter) | float > states(above_average_counter) | float }}"
+        sequence:
+          - service: input_text.set_value
+            target:
+              entity_id: !input price_trend
+            data:
+              value: "cheap"
+
+      - conditions:
+          - condition: template
+            value_template: "{{ states(equal_to_average_counter) | float > 0 }}"
+        sequence:
+          - service: input_text.set_value
+            target:
+              entity_id: !input price_trend
+            data:
+              value: "average"

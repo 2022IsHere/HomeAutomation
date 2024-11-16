@@ -1,0 +1,55 @@
+# Name: start_process.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to start heating process at every hour
+
+
+
+- id: kitchen_start_process
+  alias: Start Hourly Heating Process for Kitchen
+  description: Starts the heating process at the top of every hour for the kitchen. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input: 
+      room_name: "Kitchen"
+      room_information: sensor.kitchen_information
+      heating_system_interface: sensor.kitchen_heating_system_interface
+
+- id: bedroom_start_process
+  alias: Start Hourly Heating Process for Bedroom
+  description: Starts the heating process at the top of every hour for the bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input: 
+      room_name: "Bedroom"
+      room_information: sensor.bedroom_information
+      heating_system_interface: sensor.bedroom_heating_system_interface
+
+- id: living_room_start_process
+  alias: Start Hourly Heating Process for Living Room
+  description: Starts the heating process at the top of every hour for the living room. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input: 
+      room_name: "Living_Room"
+      room_information: sensor.living_room_information
+      heating_system_interface: sensor.living_room_heating_system_interface
+
+- id: main_bedroom_start_process
+  alias: Start Hourly Heating Process for Main Bedroom
+  description: Starts the heating process at the top of every hour for the main bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input: 
+      room_name: "Main_Bedroom"
+      room_information: sensor.main_bedroom_information
+      heating_system_interface: sensor.main_bedroom_heating_system_interface
+
+- id: guest_bedroom_start_process
+  alias: Start Hourly Heating Process for Guest Bedroom
+  description: Starts the heating process at the top of every hour for the guest bedroom. Applies room conditions, financial criteria, and heating strategy using standardized blueprint logic.
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input: 
+      room_name: "Guest_Bedroom"
+      room_information: sensor.guest_bedroom_information
+      heating_system_interface: sensor.guest_bedroom_heating_system_interface

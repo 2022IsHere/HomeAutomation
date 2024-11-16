@@ -1,0 +1,16 @@
+# Name: analytics.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file should containt the configuration providing counters for calculating price trend. However, counter integration doesn't work properly at this time 11/11/2024. Therefore there's instructions below how to handle the same logic elsewheere.
+
+
+
+# TEMPERARY INSTRUCTION SET TO CONFIGURE COUNTERS
+# In the UI: Move to Settings => Devices & services => Helpers
+# Click button + CREATE HELPER => counter
+# Configuration
+# Name: Electric Price Trend - Increasing, Electric Price Trend - Steady & Electric Price Trend - Decreasing
+# Icon: mdi:counter
+# Min: 0
+# Max: 8
+# Initial: 0
+# Step: 1

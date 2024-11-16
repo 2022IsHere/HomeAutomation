@@ -1,0 +1,78 @@
+# Name: room_information.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file contains sensor configurations for providing room data
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
+
+
+
+- platform: template
+  sensors:
+    kitchen_room_information:
+      friendly_name: "Kitchen Room Information Sensor"
+      value_template: "{{ states('sensor.kitchen_temperature_and_humidity_sensor_temperature') }}"
+      attribute_templates:
+        room_temperature: "{{ states('sensor.kitchen_temperature_and_humidity_sensor_temperature') }}"
+        room_minimum_temperature: "{{ states('input_number.kitchen_minimum_temperature') }}"
+        room_maximum_temperature: "{{ states('input_number.kitchen_maximum_temperature') }}"
+        room_target_temperature: "{{ states('input_number.kitchen_target_temperature') }}"
+        room_living_space: "{{ states('input_number.kitchen_living_space') }}"
+        room_heating_schedule_start_time: "{{ states('input_datetime.kitchen_heating_schedule_start_time') }}"
+        room_heating_schedule_end_time: "{{ states('input_datetime.kitchen_heating_schedule_end_time') }}"
+        room_thermostat: "{{ states('climate.keittio') }}"
+
+    bedroom_room_information:
+      friendly_name: "Bedroom Room Information Sensor"
+      value_template: "{{ states('sensor.bedroom_temperature_and_humidity_sensor_temperature') }}"
+      attribute_templates:
+        room_temperature: "{{ states('sensor.bedroom_temperature_and_humidity_sensor_temperature') }}"
+        room_minimum_temperature: "{{ states('input_number.bedroom_minimum_temperature') }}"
+        room_maximum_temperature: "{{ states('input_number.bedroom_maximum_temperature') }}"
+        room_target_temperature: "{{ states('input_number.bedroom_target_temperature') }}"
+        room_living_space: "{{ states('input_number.bedroom_living_space') }}"
+        room_heating_schedule_start_time: "{{ states('input_datetime.bedroom_heating_schedule_start_time') }}"
+        room_heating_schedule_end_time: "{{ states('input_datetime.bedroom_heating_schedule_end_time') }}"
+        room_thermostat: "{{ states('climate.makuuhuone') }}"
+
+    living_room_room_information:
+      friendly_name: "Living Room Information Sensor"
+      value_template: "{{ states('sensor.living_room_temperature_and_humidity_sensor_temperature') }}"
+      attribute_templates:
+        room_temperature: "{{ states('sensor.living_room_temperature_and_humidity_sensor_temperature') }}"
+        room_minimum_temperature: "{{ states('input_number.living_room_minimum_temperature') }}"
+        room_maximum_temperature: "{{ states('input_number.living_room_maximum_temperature') }}"
+        room_target_temperature: "{{ states('input_number.living_room_target_temperature') }}"
+        room_living_space: "{{ states('input_number.living_room_living_space') }}"
+        room_heating_schedule_start_time: "{{ states('input_datetime.living_room_heating_schedule_start_time') }}"
+        room_heating_schedule_end_time: "{{ states('input_datetime.living_room_heating_schedule_end_time') }}"
+        room_thermostat: >
+          {{
+            {
+              "olohuone_oikea": states('climate.olohuone_oikea'),
+              "olohuone_vasen": states('climate.olohuone_vasen')
+            }
+          }}
+    main_bedroom_room_information:
+      friendly_name: "Main Bedroom Room Information Sensor"
+      value_template: "{{ states('sensor.main_bedroom_temperature_and_humidity_sensor_temperature') }}"
+      attribute_templates:
+        room_temperature: "{{ states('sensor.main_bedroom_temperature_and_humidity_sensor_temperature') }}"
+        room_minimum_temperature: "{{ states('input_number.main_bedroom_minimum_temperature') }}"
+        room_maximum_temperature: "{{ states('input_number.main_bedroom_maximum_temperature') }}"
+        room_target_temperature: "{{ states('input_number.main_bedroom_target_temperature') }}"
+        room_living_space: "{{ states('input_number.main_bedroom_living_space') }}"
+        room_heating_schedule_start_time: "{{ states('input_datetime.main_bedroom_heating_schedule_start_time') }}"
+        room_heating_schedule_end_time: "{{ states('input_datetime.main_bedroom_heating_schedule_end_time') }}"
+        room_thermostat: "{{ states('climate.paamakuuhuone') }}"
+
+    guest_bedroom_room_information:
+      friendly_name: "Guest Bedroom Room Information Sensor"
+      value_template: "{{ states('sensor.guest_bedroom_temperature_and_humidity_sensor_temperature') }}"
+      attribute_templates:
+        room_temperature: "{{ states('sensor.guest_bedroom_temperature_and_humidity_sensor_temperature') }}"
+        room_minimum_temperature: "{{ states('input_number.guest_bedroom_minimum_temperature') }}"
+        room_maximum_temperature: "{{ states('input_number.guest_bedroom_maximum_temperature') }}"
+        room_target_temperature: "{{ states('input_number.guest_bedroom_target_temperature') }}"
+        room_living_space: "{{ states('input_number.guest_bedroom_living_space') }}"
+        room_heating_schedule_start_time: "{{ states('input_datetime.guest_bedroom_heating_schedule_start_time') }}"
+        room_heating_schedule_end_time: "{{ states('input_datetime.guest_bedroom_heating_schedule_end_time') }}"
+        room_thermostat: "{{ states('climate.vierashuone') }}"

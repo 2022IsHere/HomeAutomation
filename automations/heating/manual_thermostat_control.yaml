@@ -1,0 +1,42 @@
+# Name: manual_thermostat_control.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automation to provide smart manual thermostat control
+
+
+
+- id: manual_entire_home_thermostat_control
+  alias: Manual Entire Home Thermostat Control
+  trigger:
+  - platform: state
+    entity_id: climate.central_home_thermostat
+  action:
+  - wait_template: >
+      {{ state_attr('climate.central_home_thermostat', 'temperature') is not none }}
+    timeout: '00:00:15'
+    continue_on_timeout: 'false' 
+  - service: climate.set_temperature
+    data_template:
+      temperature: '{{ state_attr(''climate.central_home_thermostat'', ''temperature'') }}'
+    entity_id:
+    - climate.central_living_room_thermostat
+    - climate.keittio
+    - climate.vierashuone
+    - climate.makuuhuone
+    - climate.paamakuuhuone
+
+- id: manual_living_room_thermostat_control
+  alias: Manual Living Room Thermostat Control
+  trigger:
+  - platform: state
+    entity_id: climate.central_living_room_thermostat
+  action:
+  - wait_template: >
+      {{ state_attr('climate.central_living_room_thermostat', 'temperature') is not none }}
+    timeout: '00:00:15'
+    continue_on_timeout: 'false' 
+  - service: climate.set_temperature
+    data_template:
+      temperature: '{{ state_attr(''climate.central_living_room_thermostat'', ''temperature'') }}'
+    entity_id:
+    - climate.olohuone_oikea
+    - climate.olohuone_vasen

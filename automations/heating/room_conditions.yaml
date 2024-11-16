@@ -1,0 +1,55 @@
+# Name: room_conditions.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to evaluate rooms conditions. Utilizing rules provided by blueprint.
+
+
+
+- id: kitchen_rooms_conditions
+  alias: Assess kitchen room conditions
+  description: Evaluate kitchen room conditions. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/room_conditions.yaml
+    input: 
+      room_name: "Kitchen"
+      room_information: sensor.kitchen_room_information
+      heating_system_interface: sensor.kitchen_heating_system_interface
+
+- id: bedroom_rooms_conditions
+  alias: Assess bedroom room conditions
+  description: Evaluate bedroom room conditions. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/room_conditions.yaml
+    input:
+      room_name: "Bedroom"
+      room_information: sensor.bedroom_room_information
+      heating_system_interface: sensor.bedroom_heating_system_interface
+
+- id: living_room_rooms_conditions
+  alias: Assess living room conditions
+  description: Evaluate living room room conditions. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/room_conditions.yaml
+    input:
+      room_name: "Living_Room"
+      room_information: sensor.living_room_room_information
+      heating_system_interface: sensor.living_room_heating_system_interface
+
+- id: main_bedroom_rooms_conditions
+  alias: Assess main bedroom room conditions
+  description: Evaluate main bedroom room conditions. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/room_conditions.yaml
+    input:
+      room_name: "Main_Bedroom"
+      room_information: sensor.main_bedroom_room_information
+      heating_system_interface: sensor.main_bedroom_heating_system_interface
+
+- id: guest_bedroom_rooms_conditions
+  alias: Assess guest bedroom room conditions
+  description: Evaluate guest bedroom room conditions. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/room_conditions.yaml
+    input:
+      room_name: "Guest_Bedroom"
+      room_information: sensor.guest_bedroom_room_information
+      heating_system_interface: sensor.guest_bedroom_heating_system_interface

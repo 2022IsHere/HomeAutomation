@@ -1,0 +1,1132 @@
+# Name: financial_conditions.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the blueprint to provide logic to evaluate financial conditions
+
+
+
+blueprint:
+  name: Assess financial conditions
+  description: Output will be one of the following options; delay, preheat or agressive heat 
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    housekeep:
+      name: House Keep Information
+      icon: mdi:hoop-house
+      description:  Assign person for notifications and critical alerts
+      input:
+        user:
+          name: Housekeeper's phone
+          description: This user is administrator of heating system
+          selector:
+            entity:
+              filter:
+    room_information:
+      name: Room information
+      icon: mdi:database
+      description: These inputs provide relevant room information
+      input:  
+        room_name:
+          name: Room Name
+          description: The name of the room for which the process should be conducted
+          selector:
+            text:
+        room_information:
+          name: Room Information Sensor
+          description: Sensor providing such as heating schedule, temperature and thermostats
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        heating_system_interface:
+          name: Room Heating System Interface
+          description: This is a sensor configured to control heating system program flow
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    electric_stock_market_price_information:
+      name: Electric Stock Market Price Information
+      icon: mdi:currency-eur
+      description: Sensors providing electric stock market price information
+      input:
+        nordpool_sensor:
+          name: Nordpool Integration Sensor
+          description: Sensor for Nordpool integration
+          selector:
+            entity:
+              filter:
+                domain: sensor    
+        electricity_stock_market_price_information:
+          name: Electricity Stock Market Price Information
+          description: Custom sensor providing details on electricity prices, trends and thresholds
+          selector:
+            entity:
+              filter:
+                domain: sensor
+    general_data:
+      name: General Data for Heating Process
+      icon: mdi:import
+      description: Inputs essential for proceeding with the heating process
+      input:  
+        heat_transfer_coefficient: 
+          name: Heat Transfer Coefficient
+          description: Sensor measuring the heat transfer coefficient
+          selector:
+            entity:
+              filter:
+                domain: sensor
+        outdoor_temperature:
+          name: Outdoor Temperature Sensor
+          description: Sensor for measuring the outdoor temperature
+          selector:
+            entity:
+              filter:
+                domain: sensor
+
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  user: !input user
+  room_name: !input room_name
+  room_information: !input room_information
+  heating_system_interface: !input heating_system_interface
+  nordpool_sensor: !input nordpool_sensor
+  electricity_stock_market_price_information: !input electricity_stock_market_price_information
+  heat_transfer_coefficient: !input heat_transfer_coefficient
+  outdoor_temperature: !input outdoor_temperature
+
+  # --------------------------------------------------------------
+  # - Define derived variables in as is principle. No alteration -
+  # --------------------------------------------------------------
+  room_at_maximum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['maximum_temperature_reached'] == 'on' }}"
+  room_at_or_below_minimum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['minimum_temperature_or_below']  == 'on' }}"
+  room_between_minimum_and_maximum_temperature: "{{ state_attr(heating_system_interface, 'room_conditions')['between_min_max_temperature']  == 'on' }}"
+
+# ---------------------------------------------------------------
+# - Check has heating system run till this point without errors -
+# ---------------------------------------------------------------
+trigger:
+  - platform: template
+    value_template: >
+      {% if room_at_maximum_temperature == 'on' or room_at_or_below_minimum_temperature == 'on' or room_between_minimum_and_maximum_temperature == 'on' %}
+        true
+      {% else %}
+        false
+      {% endif %}
+
+action:
+  # ------------------
+  # - INIT VARIABLES -
+  # ------------------
+  - variables:
+      price_trend: "{{ state_attr(electricity_stock_market_price_information, 'price_trend') }}"
+      current_price: "{{ state_attr(nordpool_sensor, 'current_price') | float }}"
+      price_unit: "{{  state_attr(nordpool_sensor, 'unit_of_measurement') }}"
+      price_treshold: "{{ state_attr(electricity_stock_market_price_information, 'price_treshold') | float }}"
+
+
+      room_interface_status: "{{ states(room_information) }}"
+      room_temperature: "{{ state_attr(room_information, 'room_temperature') | float }}"
+      room_minimum_temperature: "{{ state_attr(room_information, 'room_minimum_temperature') | float }}"
+      room_maximum_temperature: "{{ state_attr(room_information, 'room_maximum_temperature') | float }}"
+      room_target_temperature: "{{ state_attr(room_information, 'room_target_temperature') | float }}"
+      room_living_space: "{{ state_attr(room_information, 'room_living_space') | float }}"
+
+
+      outdoor_temperature: "{{ states(outdoor_temperature) | float }}"
+      heat_transfer_coefficient: "{{ states(heat_transfer_coefficient) | float }}"
+
+
+      price_category_expensive: "{{ state_attr(nordpool_sensor, 'current_price') | float > state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
+      price_category_average: "{{ state_attr(nordpool_sensor, 'current_price') | float == state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
+      price_category_cheap: "{{ state_attr(nordpool_sensor, 'current_price') | float < state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
+      
+      
+      price_trend_expensive: "{{ price_trend == 'expensive' }}"
+      price_trend_average: "{{ price_trend == 'average' }}"
+      price_trend_cheap: "{{ price_trend == 'cheap' }}"
+
+
+      delay_heat: "{{ 'input_boolean.' + room_name | lower + '_delay_heat' }}"
+      minimum_heat: "{{ 'input_boolean.' + room_name | lower + '_minimum_heat' }}"
+      maintain_heat: "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
+      preheat_maximum: "{{ 'input_boolean.' + room_name | lower + '_preheat_maximum' }}"
+  
+
+  
+  - choose:
+      # --------------------------
+      # - Room temperature check -
+      # --------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ room_at_maximum_temperature }}"
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: >
+                {{ delay_heat }}
+
+
+      # --------------------------
+      # - Room temperature check -
+      # --------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ room_at_or_below_minimum_temperature }}"
+        sequence:
+          - service: system_log.write
+            data:
+              message: >
+                I noticed that room needs heating ASAP!
+          - choose:
+              # -------------------------------------------
+              # - Current price is categorised: expensive -
+              # -------------------------------------------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ price_category_expensive }}"
+                # --------------------------------------------------------------
+                # - Ask user to respond to high price and low room temperature -
+                # --------------------------------------------------------------
+                sequence:
+                  - service: notify.{{ user }}
+                    data:
+                      title: >
+                        Huom! Korkea sähkön hinta
+                      message: >
+                        Hinta: {{ current_price }} {{ price_unit }}. 
+                        Huone {{ room_name }} on {{ room_temperature }}°C. 
+                        Laske lämmitysrajaa? Nykyinen minimi: {{ minimum_temperature }}°C. 
+                        Reagoi 5 minuutin sisällä.
+                  - delay: "00:05:00"  # 5 minutes
+                  - choose:
+                      # -------------------------------------------------------------
+                      # - User response; minimum temperature level has been lowered -
+                      # -------------------------------------------------------------
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ minimum_temperature < room_temperature }}"
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ delay_heat }}
+                      # ---------------------------------------------------------
+                      # - User response; turned off automated heating --> Delay -
+                      # ---------------------------------------------------------
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ room_interface_status }}" 
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ delay_heat }}  
+
+                      # ------------------------------------------
+                      # - User response; Nada --> therefore heat -
+                      # ------------------------------------------
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ states(min_temperature) | float >= states(room_temperature) | float }}" # Re-evaluate
+                        sequence:
+                          - service: input_boolean.turn_on
+                            target:
+                              entity_id: >
+                                {{ maintain_heat }}
+
+
+              # -----------------------------------------
+              # - Current price is categorised: average -
+              # -----------------------------------------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ price_category_average }}"
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: >
+                        {{ maintain_heat }}
+
+
+              # ---------------------------------------
+              # - Current price is categorised: cheap -
+              # ---------------------------------------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ price_category_cheap }}"
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: >
+                        {{ preheat_maximum }}
+
+
+      # --------------------------
+      # - Room temperature check -
+      # --------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ room_between_minimum_and_maximum_temperature }}"
+        sequence:
+          - choose:
+              # -------------------------------------------
+              # - Current price is categorised: expensive -
+              # -------------------------------------------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ price_category_expensive }}"
+                sequence:
+                  - choose:
+                      # -------------------------------------------------
+                      # - Current price trend is categorised: expensive -
+                      # -------------------------------------------------
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_expensive }}"
+                        sequence:
+                          - variables:
+                              delay_set: false  
+                          # -------------------------------------
+                          # - Search cheaper price than current -
+                          # -------------------------------------
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # ------------------------------
+                                # - Loop through future prices -
+                                # ------------------------------
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # ---------------------------------------------------
+                                        # - Start to assess the current price in assessment -
+                                        # ---------------------------------------------------
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # -------------------------------------
+                                                    # - Check is the future price cheaper -
+                                                    # -------------------------------------
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # --------------------------------------------------------------------------------------------
+                                                        # - Calculate necessary values for assessing whether room can sustain heat till cheaper hour -
+                                                        # - ------------------------------------------------------------------------------------------
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # --------------------------------------------------
+                                                        # - Assess can room sustain current heat till then -
+                                                        # - ------------------------------------------------
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # -----------------------------------------------------------------------------
+                                                                # - Delay as room is expected to be capable to sustain heat till cheaper hour -
+                                                                # -----------------------------------------------------------------------------
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # ----------------------------------------------      
+                                                                # - Set the flag to end checking future prices -
+                                                                # ----------------------------------------------
+                                                                - variables:
+                                                                    delay_set: true
+
+                          # ----------------------------------------------------
+                          # - Fallback as there's no cheaper hour than current -
+                          # - --------------------------------------------------
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # ----------------------------------------------------------------------------------------------------
+                                  # - Calculate necessary values for assessing whether room can sustain heat over the expensive period -
+                                  # - --------------------------------------------------------------------------------------------------
+                                  - variables:
+                                      heat_loss: >
+                                        {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * 8 | float }}
+                                      heat_requirement: >
+                                        {{ (heat_transfer_coefficient * room_living_space * (room_target_temperaturet - room_temperature)) * 8 | float }}
+                                      estimated_room_temperature: >
+                                        {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                  - choose:
+                                      # ---------------------------------------------------------------------
+                                      # - Best case: room can sustain temperature voer the expensive period -
+                                      # ---------------------------------------------------------------------
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                        sequence:
+                                          # ----------------------------------------------------
+                                          # - Update heating system interface => Delay heating -
+                                          # ----------------------------------------------------
+                                          - service: input_boolean.turn_on
+                                            target:
+                                              entity_id: "{{ delay_heat }}"
+
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ estimated_room_temperature < room_minimum_temperature }}"
+                                        sequence:
+                                          # ---------------------------------------
+                                          # - Worst case: room can't sustain heat -
+                                          # ---------------------------------------
+                                          - choose:
+                                              # ---------------------------------------------------------
+                                              # - Next best case: Price is below user defines price cap -
+                                              # ---------------------------------------------------------
+                                              - conditions:
+                                                  - condition: template
+                                                    value_template: "{{ current_price < price_treshold }}"
+                                                sequence:
+                                                  # -------------------------------------------------------------------
+                                                  # - YES IT IS => Heat; lowering risk of heating in the next 8 hours -
+                                                  # -------------------------------------------------------------------
+                                                  - service: input_boolean.turn_on
+                                                    target:
+                                                      entity_id: "{{ minimum_heat }}"
+                                              - conditions:
+                                                  - condition: template
+                                                    value_template: "{{ current_price >= price_treshold }}"
+                                                sequence:
+                                                  # ---------------------------------------------------------------------------------------------
+                                                  # - NO ITS NOT => delay heating and risk temperature drop below set minimum temperature level -
+                                                  # ---------------------------------------------------------------------------------------------
+                                                  - service: input_boolean.turn_on
+                                                    target:
+                                                      entity_id: "{{ delay_heat }}"
+
+
+
+                      # Trend category check: average
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_average }}"
+                        sequence:
+                          - variables:
+                              delay_set: false
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true                          
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Worst case: room can't sustain heat
+                                  - choose:
+                                        # Next best case: Price is below cap
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ current_price < price_treshold }}"
+                                        sequence:
+                                          # Heat; lowering risk of heating during extra expensive hours
+                                          - service: input_boolean.turn_on
+                                            target:
+                                              entity_id: "{{ minimum_heat }}"
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ current_price >= price_treshold }}"
+                                        sequence:
+                                          # Price is too high; delay heating and risk temperature drop below set min level
+                                          - service: input_boolean.turn_on
+                                            target:
+                                              entity_id: "{{ delay_heat }}"
+
+
+
+                      # Trend category check: cheap
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_cheap }}"
+                        sequence:
+                          - variables:
+                              delay_set: false  
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true                          
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Worst case: room can't sustain heat
+                                  - choose:
+                                        # Next best case: Price is below cap
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ current_price < price_treshold }}"
+                                        sequence:
+                                          # Heat; lowering risk of heating in the next 8 hours
+                                          - service: input_boolean.turn_on
+                                            target:
+                                              entity_id: "{{ minimum_heat }}"
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ current_price >= price_treshold }}"
+                                        sequence:
+                                          # Price is too high; delay heating and risk temperature drop below set min level
+                                          - service: input_boolean.turn_on
+                                            target:
+                                              entity_id: "{{ delay_heat }}"
+
+
+
+              # Price category: average
+              - conditions:
+                  - condition: template
+                    value_template: "{{ price_category_average }}"
+                sequence:
+                  - choose:
+                      # Trend category check: expensive
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_expensive }}"
+                        sequence:
+                          - variables:
+                              delay_set: false  
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  - variables:
+                                      heat_loss: >
+                                        {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * 8 | float }}
+                                      heat_requirement: >
+                                        {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * 8 | float }}
+                                      estimated_room_temperature: >
+                                        {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+
+                                  # Best case: room can sustain temperature for 8 hours
+                                  - choose:
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                        sequence:
+                                          # Delay heating
+                                          - service: input_boolean.turn_on
+                                            target:
+                                              entity_id: "{{ delay_heat }}"
+
+                                      - conditions:
+                                          - condition: template
+                                            value_template: "{{ estimated_room_temperature < room_minimum_temperature }}"
+                                        sequence:
+                                          # Worst case: room can't sustain
+                                          - choose:
+                                               # Next best case: Price is below cap
+                                              - conditions:
+                                                  - condition: template
+                                                    value_template: "{{ current_price < price_treshold }}"
+                                                sequence:
+                                                  # Heat; lowering risk of heating in the next 8 hours
+                                                  - service: input_boolean.turn_on
+                                                    target:
+                                                      entity_id: "{{ preheat_maximum }}"
+                                              - conditions:
+                                                  - condition: template
+                                                    value_template: "{{ current_price >= price_treshold }}"
+                                                sequence:
+                                                  # Price is too high; delay heating and risk temperature drop below set min level
+                                                  - service: input_boolean.turn_on
+                                                    target:
+                                                      entity_id: "{{ delay_heat }}"
+                          
+
+                      # Trend category check: average
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_average }}"
+                        sequence:
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperaturet }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true                          
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Preheat; lowering risk of heating in the next 8 hours
+                                  - service: input_boolean.turn_on
+                                    target:
+                                      entity_id: "{{ maintain_heat }}"
+
+
+                      # Trend category check: cheap
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_cheap }}"
+                        sequence:
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true                          
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Preheat; lowering risk of heating in the next 8 hours
+                                  - service: input_boolean.turn_on
+                                    target:
+                                      entity_id: "{{ maintain_heat }}"
+              
+
+
+              # Price category: cheap
+              - conditions:
+                  - condition: template
+                    value_template: "{{ price_category_cheap }}"
+                sequence:
+                  - choose:
+                      # Trend category check: expensive
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_expensive }}"
+                        sequence:
+                          - variables:
+                              delay_set: false  
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature}}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Preheat; lowering risk of heating in the next 8 hours
+                                  - service: input_boolean.turn_on
+                                    target:
+                                      entity_id: "{{ preheat_maximum }}"
+
+
+                      # Trend category check: average
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_average }}"
+                        sequence:
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true                          
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Preheat; lowering risk of heating in the next 8 hours
+                                  - service: input_boolean.turn_on
+                                    target:
+                                      entity_id: "{{ maintain_heat }}"
+
+
+                      # Trend category check: cheap
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ price_trend_cheap }}"
+                        sequence:
+                          # Search cheaper price than current
+                          - repeat:
+                              count: 8
+                              sequence:
+                                # Check if delay is already set
+                                - choose:
+                                    - conditions:
+                                        - condition: template
+                                          value_template: "{{ delay_set == false }}"
+                                      sequence:
+                                        - variables:
+                                            hour: "{{ ((now().hour + repeat.index) % 24) }}"
+                                            price: >
+                                              {% set hour_offset = (now().hour + repeat.index) %}
+                                              {% if hour_offset < 24 %}
+                                                {{ (state_attr(nordpool, 'today')[hour_offset]) | float }}  
+                                              {% else %}
+                                                {% if state_attr(nordpool, 'tomorrow_valid') %}
+                                                  {{ (state_attr(nordpool, 'tomorrow')[hour_offset - 24]) | float }}  
+                                                {% else %}
+                                                  100
+                                                {% endif %}
+                                              {% endif %}
+                                        # Process the price
+                                        - choose:
+                                            - conditions:
+                                                - condition: template
+                                                  value_template: "{{ price != 100.0 }}"  # Skip invalid prices
+                                              sequence:
+                                                - choose:
+                                                    # There's cheaper hour than current
+                                                    - conditions:
+                                                        - condition: template
+                                                          value_template: "{{ price < current_price }}"
+                                                      sequence:
+                                                        # Calculate heat transfer
+                                                        - variables:
+                                                            heat_loss: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_temperature - outdoor_temperature)) * (repeat.index + 1) }}
+                                                            heat_requirement: >
+                                                              {{ (heat_transfer_coefficient * room_living_space * (room_target_temperature - room_temperature)) * (repeat.index + 1) }}
+                                                            estimated_room_temperature: >
+                                                              {{ room_temperature + (heat_requirement - heat_loss) / (heat_transfer_coefficient * room_living_space) }}
+                                                        # Check if the room can hold until the next cheaper price
+                                                        - choose:
+                                                            - conditions:
+                                                                - condition: template
+                                                                  value_template: "{{ estimated_room_temperature >= room_minimum_temperature }}"
+                                                              sequence:
+                                                                # Delay for the cheap hour
+                                                                - service: input_boolean.turn_on
+                                                                  target:
+                                                                    entity_id: >
+                                                                      {{ delay_heat }}
+                                                                # Set the flag to end the loop
+                                                                - variables:
+                                                                    delay_set: true                          
+
+
+                          # There's no cheaper hour than current
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ not delay_set }}"
+                                sequence:
+                                  # Preheat; lowering risk of heating in the next 8 hours
+                                  - service: input_boolean.turn_on
+                                    target:
+                                      entity_id: "{{ maintain_heat }}"
+

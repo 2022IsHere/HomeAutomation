@@ -1,0 +1,193 @@
+# Name: heating_system_service_control.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration for controlling heating service between optimised automation and manual smart control services
+
+
+
+- id: synchronize_heating_system_service_controllers
+  alias: Synchronize Heating System Service Controllers
+  trigger:
+    - platform: state
+      entity_id: input_boolean.central_heating_system_interface
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.central_heating_system_interface
+              state: 'on'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: 
+                  - input_boolean.kitchen_heating_system_service_control
+                  - input_boolean.bedroom_heating_system_service_control
+                  - input_boolean.living_room_heating_system_service_control
+                  - input_boolean.main_bedroom_heating_system_service_control
+                  - input_boolean.guest_bedroom_heating_system_service_control
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.central_heating_system_interface
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: 
+                  - input_boolean.kitchen_heating_system_service_control
+                  - input_boolean.bedroom_heating_system_service_control
+                  - input_boolean.living_room_heating_system_service_control
+                  - input_boolean.main_bedroom_heating_system_service_control
+                  - input_boolean.guest_bedroom_heating_system_service_control
+
+- id: synchronize_room_heating_system_interfaces
+  alias: Synchronize Room Heating Interfaces
+  trigger:
+    - platform: state
+      entity_id: 
+        - input_boolean.kitchen_heating_system_service_control
+        - input_boolean.bedroom_heating_system_service_control
+        - input_boolean.living_room_heating_system_service_control
+        - input_boolean.main_bedroom_heating_system_service_control
+        - input_boolean.guest_bedroom_heating_system_service_control        
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.kitchen_heating_system_service_control
+              state: 'on'
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.kitchen_heating_system_interface
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.kitchen_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.kitchen_heating_system_interface
+
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.bedroom_heating_system_service_control
+              state: 'on'
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.bedroom_heating_system_interface
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.bedroom_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.bedroom_heating_system_interface
+
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.living_room_heating_system_service_control
+              state: 'on'
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.living_room_heating_system_interface
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.living_room_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.living_room_heating_system_interface
+
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.main_bedroom_heating_system_service_control
+              state: 'on'
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.main_bedroom_heating_system_interface
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.main_bedroom_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.main_bedroom_heating_system_interface
+
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.guest_bedroom_heating_system_service_control
+              state: 'on'
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.guest_bedroom_heating_system_interface
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.guest_bedroom_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.guest_bedroom_heating_system_interface
+
+- id: synchronize_room_heating_controllers
+  alias: Synchronize Room Heating System Service Controllers
+  trigger:
+    - platform: state
+      entity_id:
+        - input_boolean.kitchen_heating_system_service_control
+        - input_boolean.bedroom_heating_system_service_control
+        - input_boolean.living_room_heating_system_service_control
+        - input_boolean.main_bedroom_heating_system_service_control
+        - input_boolean.guest_bedroom_heating_system_service_control
+  condition:
+    - condition: state
+      entity_id: input_boolean.central_heating_system_interface
+      state: 'on'
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.kitchen_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.kitchen_heating_system_service_control
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.bedroom_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.bedroom_heating_system_service_control
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.living_room_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.living_room_heating_system_service_control
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.main_bedroom_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.main_bedroom_heating_system_service_control
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.guest_bedroom_heating_system_service_control
+              state: 'off'
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.guest_bedroom_heating_system_service_control

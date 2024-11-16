@@ -1,0 +1,80 @@
+# Name: financial_conditions.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to evaluate financial conditions. Utilizing rules provided by blueprint.
+
+
+
+- id: kitchen_financial_conditions
+  alias: Assess financial conditions for kitchen
+  description: Determine heating strategy for kitchen. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/financial_conditions.yaml
+    input:
+      user: mobile_app_sebastians_iphone
+      room_name: Kitchen
+      room_information: sensor.kitchen_room_information
+      heating_system_interface: sensor.kitchen_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
+      heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
+
+- id: bedroom_financial_conditions
+  alias: Assess financial conditions for bedroom
+  description: Determine heating strategy for bedroom. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/financial_conditions.yaml
+    input:
+      user: mobile_app_sebastians_iphone
+      room_name: Bedroom
+      room_information: sensor.bedroom_room_information
+      heating_system_interface: sensor.bedroom_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
+      heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
+
+- id: living_room_financial_conditions
+  alias: Assess financial conditions for living room
+  description: Determine heating strategy for living room. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/financial_conditions.yaml
+    input:
+      user: mobile_app_sebastians_iphone
+      room_name: Living_Room
+      room_information: sensor.living_room_room_information
+      heating_system_interface: sensor.living_room_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
+      heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
+
+- id: main_bedroom_financial_conditions
+  alias: Assess financial conditions for main bedroom
+  description: Determine heating strategy for main bedroom. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/financial_conditions.yaml
+    input:
+      user: mobile_app_sebastians_iphone
+      room_name: Main_Bedroom
+      room_information: sensor.main_bedroom_room_information
+      heating_system_interface: sensor.main_bedroom_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
+      heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
+
+- id: guest_bedroom_financial_conditionse
+  alias: Assess financial conditions for guest bedroom
+  description: Ddetermine heating strategy for guest bedroom. Use rules provided by blueprint rooms conditions 
+  use_blueprint:
+    path: homeassistant/heating/financial_conditions.yaml
+    input:
+      user: mobile_app_sebastians_iphone
+      room_name: Guest_Bedroom
+      room_information: sensor.guest_bedroom_room_information
+      heating_system_interface: sensor.guest_bedroom_heating_system_interface
+      nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
+      electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
+      heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature

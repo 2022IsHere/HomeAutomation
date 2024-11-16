@@ -1,0 +1,26 @@
+# Name: central_home_thermostat.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# This configuration file defines the settings for a central heating system thermostat, which serves as the central control unit 
+# for heating systems in the home automation setup.
+#
+# Warning:
+# Please maintain consistent formatting throughout this file to prevent parsing errors and ensure proper 
+# functionality within the Home Assistant environment.
+
+
+
+- platform: generic_thermostat
+  unique_id: central_home_thermostat
+  name: "Central Home Thermostat"
+  heater: switch.your_heater_switch
+  target_sensor: sensor.indoor_average_temperature_and_humidity
+  min_temp: 5
+  max_temp: 35
+  ac_mode: false
+  target_temp: 21
+  precision: 1.0
+  cold_tolerance: 0.5
+  hot_tolerance: 0.5 
+  initial_hvac_mode: "heat"

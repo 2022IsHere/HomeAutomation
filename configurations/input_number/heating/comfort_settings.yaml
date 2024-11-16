@@ -1,42 +1,46 @@
-entrance_min_temperature:
-  name: Entrace min temperature
-  min: 5
-  max: 35
-  step: 1
-  initial: 21
-  mode: slider
-  icon: mdi:thermometer-low
-entrance_max_temperature:
-  name: Entrance max temperature
-  min: 5
-  max: 35
-  step: 1
-  initial: 21
-  mode: slider
-  icon: mdi:thermometer-high
-entrance_target_temperature:
-  name: Entrance target temperature
-  min: 5
-  max: 35
-  step: 1
-  initial: 21
-  mode: slider
-  icon: mdi:thermometer-auto
+# Name: comfort_settings.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+#
+# Description: This file containts the configuration providing such as minimum room temperature, maximum room temperature and target temperature controllers which provide comfort and financial settings for heating system functionality
+#
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
 
-kitchen_min_temperature:
+# ---------------------------------------------------------------------------------------------------------
+# - WARNING! WARNING! WARNING! WARNING!                                                                                            -
+# - Change this once loaded. Heating system will discard default values! This may allow expensive heating -
+# ---------------------------------------------------------------------------------------------------------
+price_treshold:
+  name: Hintakatto
+  min: 0
+  max: 100
+  step: 1
+  initial: 100
+  unit_of_measurement: "snt/kWh"
+  mode: box
+  icon: mdi:currency-eur
+
+
+
+# --------------------------------------------------------------------------------------------                                                         -
+# - These allow users to control the room specific minimum, maximum, and target temperatures -
+# - Each room has its own variables                                                          -
+# --------------------------------------------------------------------------------------------
+kitchen_minimum_temperature:
   name: Kitchen min temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-low
-kitchen_max_temperature:
+kitchen_maximum_temperature:
   name: Kitchen max temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-high
 kitchen_target_temperature:
@@ -45,24 +49,35 @@ kitchen_target_temperature:
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-auto
+kitchen_living_space:
+  name: Kitchen living space
+  min: 0
+  max: 30
+  step: 0.1
+  initial: 18.5
+  mode: slider
+  icon: mdi:crop-square
 
 
-bedroom_min_temperature:
+bedroom_minimum_temperature:
   name: Bedroom min temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-low
-bedroom_max_temperature:
+bedroom_maximum_temperature:
   name: Bedroom max temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-high
 bedroom_target_temperature:
@@ -71,23 +86,35 @@ bedroom_target_temperature:
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-auto
+bedroom_living_space:
+  name: Bedroom living space
+  min: 0
+  max: 30
+  step: 0.1
+  initial: 10.5
+  mode: slider
+  icon: mdi:crop-square
 
-living_room_min_temperature:
+
+living_room_minimum_temperature:
   name: Living Room min temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-low
-living_room_max_temperature:
+living_room_maximum_temperature:
   name: Living Room max temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-high
 living_room_target_temperature:
@@ -96,23 +123,35 @@ living_room_target_temperature:
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-auto
+living_room_living_space:
+  name: Living room living space
+  min: 0
+  max: 30
+  step: 0.1
+  initial: 21.3
+  mode: slider
+  icon: mdi:crop-square
 
-main_bedroom_min_temperature:
+
+main_bedroom_minimum_temperature:
   name: Main Bedroom min temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-low
-main_bedroom_max_temperature:
+main_bedroom_maximum_temperature:
   name: Main Bedroom max temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-high
 main_bedroom_target_temperature:
@@ -121,23 +160,35 @@ main_bedroom_target_temperature:
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-auto
+main_bedroom_living_space:
+  name: Main bedroom living space
+  min: 0
+  max: 30
+  step: 0.1
+  initial: 14.2
+  mode: slider
+  icon: mdi:crop-square
 
-guest_bedroom_min_temperature:
+
+guest_bedroom_minimum_temperature:
   name: Guest Bedroom min temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-low
-guest_bedroom_max_temperature:
+guest_bedroom_maximum_temperature:
   name: Guest Bedroom max temperature
   min: 5
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-high
 guest_bedroom_target_temperature:
@@ -146,5 +197,14 @@ guest_bedroom_target_temperature:
   max: 35
   step: 1
   initial: 21
+  unit_of_measurement: "°C"
   mode: slider
   icon: mdi:thermometer-auto
+guest_bedroom_living_space:
+  name: Guest bedroom living space
+  min: 0
+  max: 30
+  step: 0.1
+  initial: 10.4
+  mode: slider
+  icon: mdi:crop-square

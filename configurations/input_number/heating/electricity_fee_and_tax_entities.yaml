@@ -1,0 +1,51 @@
+# File: electricity_fee_and_tax_entities.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+# 
+# Description: This file contains variables for user to provide electricity contract information. 
+# These are vital to calculate electricity bill and provide analysis.
+#
+# Warning:
+# Please ensure consistent formatting throughout this file to prevent configuration parsing errors and execution issues.
+
+
+
+fixed_price:
+  name: "Kiinteä sähkön hinta"
+  min: 0
+  max: 50
+  step: 0.01
+  initial: 6.00
+  unit_of_measurement: "snt/kWh"
+  mode: box
+  icon: mdi:currency-eur
+
+general_electricity_transfer_fee:
+  name: "Siirtohinta"
+  min: 0
+  max: 50
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "snt/kWh"
+  mode: box
+  icon: mdi:currency-eur
+
+electricity_tax:
+  name: "Sähkövero"
+  min: 0
+  max: 50
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "snt/kWh"
+  mode: box
+  icon: mdi:currency-eur
+
+base_fee:
+  name: "Perusmaksu"
+  min: 0 
+  max: 50
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "€"
+  mode: box
+  icon: mdi:currency-eur

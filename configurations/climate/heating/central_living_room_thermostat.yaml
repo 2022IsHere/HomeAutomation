@@ -1,0 +1,28 @@
+# Name: central_living_room_thermostat.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# This configuration file defines the settings for the central living room thermostat, which monitors and controls the heating 
+# system specifically for the living room area within the home automation setup. It enables accurate temperature regulation 
+# based on real-time sensor data, providing targeted comfort and energy efficiency.
+#
+# Warning:
+# Ensure that the entities referenced in this file (heater switch and temperature sensor) are available and correctly named 
+# in Home Assistant to avoid configuration errors. Consistent formatting is essential to prevent parsing issues and maintain 
+# system functionality.
+
+
+
+- platform: generic_thermostat
+  unique_id: central_living_room_thermostat
+  name: "Central Living Room Thermostat"
+  heater: switch.your_heater_switch
+  target_sensor: sensor.living_room_temperature_and_humidity_sensor_temperature
+  min_temp: 5
+  max_temp: 35
+  ac_mode: false
+  target_temp: 21
+  precision: 1.0
+  cold_tolerance: 0.5
+  hot_tolerance: 0.5 
+  initial_hvac_mode: "heat"

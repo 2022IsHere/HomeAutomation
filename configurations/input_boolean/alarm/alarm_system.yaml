@@ -1,0 +1,10 @@
+
+
+
+# -----------------------------------------------
+# - Entity which controls alarm system On & Off -
+# -----------------------------------------------
+system_alarms:
+  name: "Disable Alarms"
+  initial: false
+  icon: mdi:shield-home 
