@@ -1,0 +1,61 @@
+
+
+
+
+blueprint:
+  name: Control Room Heating Interface Status
+  description: Adjusts the heating system interface status based on the service controller state.
+  domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+  input:
+    heating_system_service_control:
+      name: Room Heating System Service Control
+      icon: mdi:controller
+      description: Configure a button to control heating services; manual or automated
+      input:
+        heating_system_service_control_entity:
+          name: Service Control Entity
+          description: The `input_boolean` entity representing the heating system service controller enabled/disabled status
+          selector:
+            entity:
+              domain: input_boolean
+        heating_system_interface_entity:
+          name: Interface Entity
+          description: The `input_boolean` entity representing the heating system interface enabled/disabled status
+          selector:
+            entity:
+              domain: input_boolean
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  heating_system_service_control_entity: !input heating_system_service_control_entity
+  heating_system_interface_entity: !input heating_system_interface_entity
+
+trigger:
+  - platform: state
+    entity_id: !input heating_system_service_control_entity
+
+action:
+  - choose:
+      # - ---------------------------------------------------------------
+      # - Turn automated heating off when servive controller is pressed -
+      # -----------------------------------------------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ states(heating_system_service_control_entity) == 'on' }}"
+        sequence:
+          - service: input_boolean.turn_off
+            target:
+              entity_id: !input heating_system_interface_entity
+      # - ----------------------------------------------------------------
+      # - Turn automated heating off when servive controller is released -
+      # ------------------------------------------------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ states(heating_system_service_control_entity) == 'off' }}"
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: !input heating_system_interface_entity
