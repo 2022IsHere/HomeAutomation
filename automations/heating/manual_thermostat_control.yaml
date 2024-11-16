@@ -3,7 +3,9 @@
 # Description: This file containts the automation to provide smart manual thermostat control
 
 
-
+# ----------------------------------------------------------------
+# - Control all household thermostats through single virtual one -
+# ----------------------------------------------------------------
 - id: manual_entire_home_thermostat_control
   alias: Manual Entire Home Thermostat Control
   trigger:
@@ -24,6 +26,9 @@
     - climate.makuuhuone
     - climate.paamakuuhuone
 
+# ---------------------------------------------------------------------
+# - Control both physical room thermostats through single virtual one -
+# ---------------------------------------------------------------------
 - id: manual_living_room_thermostat_control
   alias: Manual Living Room Thermostat Control
   trigger:
