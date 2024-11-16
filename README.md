@@ -64,4 +64,16 @@ To use this system:
 - Custom automation scripts may require updates to align with your home's specific setup or local electricity pricing structures.
 - The beta integrations are experimental and may require further testing.
 
+### Project Management and Development Status
+
+The ongoing tasks, planned updates, and features currently in progress for this Home Automation system can be tracked on our [Trello Board](https://trello.com/invite/b/66cc5c63439f46b7f21c7f19/ATTI3b96f731dea7428a1ec6fe551eff2aef34BAE250/home-automation).
+
+This board provides transparency into the development process and includes information about:
+
+- Features under development  
+- Ttesting progress  
+- Planned enhancements and future updates  
+
+Feel free to check the board to stay updated on the project's status and contribute suggestions or feedback.
+
 
