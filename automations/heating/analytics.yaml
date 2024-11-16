@@ -30,6 +30,7 @@
         entity_id: 
           - input_number.fixed_contract_energy_cost_tracking
           - input_number.stock_market_contract_energy_cost_tracking
+          - input_number.estimated_automated_heating_system_energy_cost_tracking
 
 # -----------------------------------------------------------------
 # - Reset Monthly electricity bill at the beginning of each month -
@@ -131,7 +132,7 @@
     - service: input_number.set_value
       data:
         value: >
-          {% set current_total_cost_eur = states('input_number.fixed_contract_energy_cost_tracking') | float %}
+          {% set current_total_cost_eur = states('input_number.stock_market_contract_energy_cost_tracking') | float %}
           {% set total_cost_eur = current_total_cost_eur + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'current_price') | float / 100) %}
           {{ total_cost_eur }}
       target:
@@ -143,8 +144,45 @@
     - service: input_number.set_value
       data:
         value: >
-          {% set current_total_cost_eur = states('input_number.fixed_contract_energy_cost_tracking') | float %}
+          {% set current_total_cost_eur = states('input_number.estimated_automated_heating_system_energy_cost_tracking') | float %}
           {% set total_cost_eur = current_total_cost_eur + states('input_number.hourly_heating_energy_tracking') | float / 1000 * (state_attr('sensor.nordpool_kwh_fi_eur_2_10_0255', 'current_price') | float / 100) %}
           {{ total_cost_eur }}
       target:
         entity_id: input_number.estimated_automated_heating_system_energy_cost_tracking
+
+
+# ----------------------------------------------------------------------------------
+# - This is for analysing manual and automated price relationship to hourly energy -
+# ----------------------------------------------------------------------------------
+- id: get_single_room_energy_data
+  alias: Get Single Room Energy Data
+  trigger:
+    - platform: time_pattern
+      minutes: 0
+  action:
+
+    # Call the REST command to fetch energy data
+    - service: rest_command.get_room_energy_data
+      data: {}
+      response_variable: api_response_energy
+
+    # Check the validity of the API response
+    - condition: template
+      value_template: >
+        {{ api_response_energy.content is not none and api_response_energy.status == 200 }}
+    
+    # Filter and process energy data for a single room
+    - variables:
+        room_id: 2151523  
+        single_room_energyWh: >
+          {{ api_response_energy.content.devices 
+             | selectattr('roomId', 'equalto', room_id) 
+             | map(attribute='energyWh') 
+             | sum }}
+    
+    # Update the room-specific energy tracking sensor
+    - service: input_number.set_value
+      data:
+        value: '{{ single_room_energyWh }}'
+      target:
+        entity_id: input_number.hourly_main_bedroom_energy_tracking

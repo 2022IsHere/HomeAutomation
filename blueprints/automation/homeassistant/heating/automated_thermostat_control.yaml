@@ -77,7 +77,9 @@ action:
       room_thermostat: "{{ state_attr(room_information, 'room_thermostat') }}"
 
   - choose:
-    # Preheat
+    # ---------------------------
+    # - Set thermostat: Preheat -
+    # ---------------------------
     - conditions:
         - condition: template
           value_template: "{{ preheat_maximum }}"
@@ -87,7 +89,9 @@ action:
             entity_id: "{{ room_thermostat }}"
             temperature: "{{ room_maximum_temperature }}"    
 
-    # Maintain heat
+    # ---------------------------
+    # - Set thermostat: Maintain -
+    # ---------------------------
     - conditions:
         - condition: template
           value_template: "{{ maintain_heat }}"
@@ -97,7 +101,9 @@ action:
             entity_id: "{{ room_thermostat }}"
             temperature: "{{ room_target_temperature }}"
 
-    # Minimum heat
+    # ---------------------------
+    # - Set thermostat: Minimum -
+    # ---------------------------
     - conditions:
         - condition: template
           value_template: "{{ minimum_heat }}"
@@ -107,7 +113,9 @@ action:
             entity_id: "{{ room_thermostat }}"
             temperature: "{{ room_minimum_temperature }}"
     
-    # Delay heat
+    # -------------------------
+    # - Set thermostat: Delay -
+    # -------------------------
     - conditions:
         - condition: template
           value_template: "{{ delay_heat }}"

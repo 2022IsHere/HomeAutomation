@@ -28,6 +28,19 @@ hourly_heating_energy_tracking:
   mode: box
   icon: mdi:flash
 
+# ----------------------------------------------------------------------------------
+# - This is for analysing manual and automated price relationship to hourly energy -
+# ----------------------------------------------------------------------------------
+hourly_main_bedroom_energy_tracking:
+  name: "heating Energy Tracking"
+  min: 0
+  max: 1000
+  step: 0.01
+  initial: 0.00
+  unit_of_measurement: "kWh"
+  mode: box
+  icon: mdi:flash
+
 # NOT USED
 monthly_heating_energy_tracking:
   name: "Monthly Heating Energy Tracking"

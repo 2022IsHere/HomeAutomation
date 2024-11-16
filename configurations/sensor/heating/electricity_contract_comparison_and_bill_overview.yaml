@@ -22,17 +22,19 @@
     # - These sensors compare the annual energy cost of fixed and stock market electricity contracts -
     # ------------------------------------------------------------------------------------------------
     fixed_contract_energy_cost_tracking:
-      friendly_name: "Kiinteän sopimuksen vuosihinta"
+      friendly_name: "Kiinteän sopimuksen vuosihinta (manual)"
       value_template: "{{ states('input_number.fixed_contract_energy_cost_tracking') | float | round(2) }}"
       unique_id: fixed_contract_energy_cost_tracking
 
     stock_market_contract_energy_cost_tracking:
-      friendly_name: "Pörssisopimuksen vuosihinta"
+      friendly_name: "Pörssisopimuksen vuosihinta (manual)"
       value_template: "{{ states('input_number.stock_market_contract_energy_cost_tracking') | float | round(2) }}"
       unique_id: stock_market_contract_energy_cost_tracking
 
-
-
+    estimated_automated_heating_system_energy_cost_tracking:
+      friendly_name: "Pörssisopimuksen vuosihinta (auto)"
+      value_template: "{{ states('input_number.estimated_automated_heating_system_energy_cost_tracking') | float | round(2) }}"
+      unique_id: estimated_automated_heating_system_energy_cost_tracking
 
     # --------------------------------------------------------------------------------------------
     # - These sensors track the monthly energy cost, transfer fee, and tax for electricity usage -

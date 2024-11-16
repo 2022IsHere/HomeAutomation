@@ -25,6 +25,12 @@
       friendly_name: "Hourly Heating Energy Cost Tracking Sensor"
       value_template: "{{ states('input_number.hourly_heating_energy_tracking') | float }}"
     
+    # ----------------------------------------------------------------------------------
+    # - This is for analysing manual and automated price relationship to hourly energy -
+    # ----------------------------------------------------------------------------------
+    hourly_main_bedroom_energy_tracking:
+      friendly_name: "Hourly Main Bedroom Energy Cost Tracking Sensor"
+      value_template: "{{ states('input_number.hourly_main_bedroom_energy_tracking') | float }}"
 
     monthly_heating_energy_tracking:
       friendly_name: "Monthly Heating Energy Tracking"
