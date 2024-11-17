@@ -8,13 +8,22 @@
 # -
 # - IN PROGRESS: CONFIGURING AI:
 # -
-#- id: send_raw_weather_data_to_extended_openai
-#  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
-#  trigger:
-#    - platform: time_pattern
-#      at: "08:00:00"
-#  action:
+- id: send_raw_weather_data_to_extended_openai
+  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
+  trigger:
+    - platform: time_pattern
+      at: "08:00:00"
+  action:
+    # Step 1: Call homeassistant service to start chat converstation with a hardcoded promt
 
+    # Step 2: Extended OpenAI retrieves the data through established configuration autoamtically
+
+    # Step 3: API response is restored in response_variable. "The response promt"
+
+    # Step 3: Call homeassistant service to start chat conversation with  AI. Provide the response_variable as promt.
+
+    # Step 4: Extended OpenAI triggers function notify_all with a message 'response_variable' which provides weather forecast notifications.
+    
 
 - id: send_weather_sms
   alias: Send Weather SMS
