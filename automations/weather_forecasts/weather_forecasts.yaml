@@ -5,6 +5,16 @@
 # Warning: Correct entity formatting is important otherwise automations will run into errors!
 
 
+# -
+# - IN PROGRESS: CONFIGURING AI:
+# -
+#- id: send_raw_weather_data_to_extended_openai
+#  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
+#  trigger:
+#    - platform: time_pattern
+#      at: "08:00:00"
+#  action:
+
 
 - id: send_weather_sms
   alias: Send Weather SMS
