@@ -6,15 +6,16 @@
 
 
 # -
-# - IN PROGRESS: CONFIGURING AI:
+# - IN PROGRESS: CONFIGURING AI: 
 # -
-- id: send_raw_weather_data_to_extended_openai
-  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
-  trigger:
-    - platform: time_pattern
-      at: "08:00:00"
-  action:
+#- id: send_raw_weather_data_to_extended_openai
+#  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
+#  trigger:
+#    - platform: time_pattern
+#      at: "08:00:00"
+#  action:
     # Step 1: Call homeassistant service to start chat converstation with a hardcoded promt
+      # Use coversation.process or conversation.reload
 
     # Step 2: Extended OpenAI retrieves the data through established configuration autoamtically
 
@@ -23,7 +24,29 @@
     # Step 3: Call homeassistant service to start chat conversation with  AI. Provide the response_variable as promt.
 
     # Step 4: Extended OpenAI triggers function notify_all with a message 'response_variable' which provides weather forecast notifications.
-    
+
+### NOTES https://www.home-assistant.io/integrations/weather
+#
+# Use coversation.process or conversation.reload
+#triggers:
+#  - trigger: state
+    entity_id:
+      - input_boolean.central_heating_system_interface
+    to: "on"
+#conditions: []
+#actions:
+#  - action: weather.get_forecasts
+#    target:
+#      entity_id: weather.met_no_next_6_hours_forecast_home
+#    data:
+#      type: hourly
+#
+#
+#
+### RESPONSE
+#
+# Quite good and formmatted weather data from entities. 
+# This can be used with the AI. Or not but good to know.
 
 - id: send_weather_sms
   alias: Send Weather SMS
