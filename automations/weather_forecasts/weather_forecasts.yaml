@@ -1,0 +1,164 @@
+# Name: weather_forecast_sms.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to control comfort settings in UI. Enforcing rules utilizing blueprint Control comfort settings.
+#
+# Warning: Correct entity formatting is important otherwise automations will run into errors!
+
+
+
+- id: send_weather_sms
+  alias: Send Weather SMS
+  trigger: 
+  - platform: time
+    at: 08:00:00
+  action:
+  - variables:
+      today: '{{ now().strftime(''%Y-%m-%d'') }}'
+      weather_translations:
+        sunny: Aurinkoista
+        rainy: Sateista
+        cloudy: Pilvistä
+        clear-night: Pouta sää
+        partlycloudy: Puolipilvistä
+      tracker: false
+      rain: false
+      tracker2: false
+      forecast_json: '{{ state_attr(''weather.met_no_next_6_hours_forecast_home'',
+        ''forecast_json'') }}'
+  - variables:
+      forecast1: '{{ forecast_json[0] }}'
+      forecast2: '{{ forecast_json[1] }}'
+      forecast3: '{{ forecast_json[2] }}'
+      forecast4: '{{ forecast_json[3] }}'
+  - service: system_log.write
+    data:
+      message: 'Forecast1: {{ forecast1 }}'
+  - service: system_log.write
+    data:
+      message: 'Forecast1: {{ forecast2 }}'
+  - service: system_log.write
+    data:
+      message: 'Forecast1: {{ forecast3 }}'
+  - service: system_log.write
+    data:
+      message: 'Forecast1: {{ forecast4 }}'
+  - service: notify.mobile_app_sebastians_iphone
+    data:
+      message: "{% set weather_state = None %} {% if forecast1.datetime[:10] == today
+        %}\n  {% if forecast1.condition == 'sunny' %}\n    {% set weather_state =
+        'sunny' %}\n  {% elif forecast1.condition == 'rainy' %}\n    {% set weather_state
+        = 'rainy' %}\n  {% elif forecast1.condition == 'cloudy' %}\n    {% set weather_state
+        = 'cloudy' %}\n  {% elif forecast1.condition == 'partlycloudy' %}\n    {%
+        set weather_state = 'partlycloudy' %}\n  {% elif forecast1.condition == 'clear-night'
+        %}\n    {% set weather_state = 'clear-night' %}\n  {% endif %}\n{% endif %}\n{%
+        set next_weather = None %} {% set next_weather_time = None %}\n{% if forecast2.datetime[:10]
+        == today %}\n  {% if forecast2.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast2.condition %}\n    {% set next_weather_time
+        = forecast2.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if forecast3.datetime[:10]
+        == today %}\n  {% if forecast3.condition == 'rainy' %}\n    {% set rain_start_time
+        = forecast3.datetime[11:13] %}\n    {% set tracker = true %}\n    {% set rain
+        = true %}\n  {% elif forecast3.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast3.condition %}\n    {% set next_weather_time
+        = forecast3.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if forecast4.datetime[:10]
+        == today %}\n  {% if forecast4.condition == 'rainy' %}\n    {% set rain_start_time
+        = forecast4.datetime[11:13] %}\n    {% set tracker = true %}\n    {% set rain
+        = true %}\n  {% elif forecast4.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast4.condition %}\n    {% set next_weather_time
+        = forecast4.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if is_full_day_weather
+        is not defined %}\n  {% set is_full_day_weather = true %}\n{% endif %}\n{%
+        if next_weather == 'rainy' %}\n  {% set rain = true %}\n  {% set rain_start_time
+        = next_weather_time %}\n{% elif forecast1.condition == 'rainy' %}\n  {% set
+        tracker2 = true %}\n{% endif %}\n{% if is_full_day_weather %} Tänään on koko
+        päivän {{ weather_translations[weather_state] }}. {% elif rain %} Tänään on
+        {{ weather_translations[weather_state] }}, mutta kello {{ next_weather_time
+        }} sää muuttuu ja on siitä eteenpäin {{ weather_translations[next_weather]
+        }}.   Tiedoksi, että {{ rain_start_time }} aikaan alkaa satamaan! {% elif
+        not rain and not tracker2 %} Tänään on {{ weather_translations[weather_state]
+        }}, mutta kello {{ next_weather_time }} sää muuttuu ja on siitä eteenpäin
+        {{ weather_translations[next_weather] }}.   Lisätiedot: tänään ei sada ollenkaan!
+        {% elif not rain and tracker2 %} Tänään on {{ weather_translations[weather_state]
+        }}, mutta kello {{ next_weather_time }} sää muuttuu ja on siitä eteenpäin
+        {{ weather_translations[next_weather] }}. {% endif %}\n"
+  - service: notify.mobile_app_iphone_isabel
+    data:
+      message: "{% set weather_state = None %} {% if forecast1.datetime[:10] == today
+        %}\n  {% if forecast1.condition == 'sunny' %}\n    {% set weather_state =
+        'sunny' %}\n  {% elif forecast1.condition == 'rainy' %}\n    {% set weather_state
+        = 'rainy' %}\n  {% elif forecast1.condition == 'cloudy' %}\n    {% set weather_state
+        = 'cloudy' %}\n  {% elif forecast1.condition == 'partlycloudy' %}\n    {%
+        set weather_state = 'partlycloudy' %}\n  {% elif forecast1.condition == 'clear-night'
+        %}\n    {% set weather_state = 'clear-night' %}\n  {% endif %}\n{% endif %}\n{%
+        set next_weather = None %} {% set next_weather_time = None %}\n{% if forecast2.datetime[:10]
+        == today %}\n  {% if forecast2.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast2.condition %}\n    {% set next_weather_time
+        = forecast2.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if forecast3.datetime[:10]
+        == today %}\n  {% if forecast3.condition == 'rainy' %}\n    {% set rain_start_time
+        = forecast3.datetime[11:13] %}\n    {% set tracker = true %}\n    {% set rain
+        = true %}\n  {% elif forecast3.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast3.condition %}\n    {% set next_weather_time
+        = forecast3.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if forecast4.datetime[:10]
+        == today %}\n  {% if forecast4.condition == 'rainy' %}\n    {% set rain_start_time
+        = forecast4.datetime[11:13] %}\n    {% set tracker = true %}\n    {% set rain
+        = true %}\n  {% elif forecast4.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast4.condition %}\n    {% set next_weather_time
+        = forecast4.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if is_full_day_weather
+        is not defined %}\n  {% set is_full_day_weather = true %}\n{% endif %}\n{%
+        if next_weather == 'rainy' %}\n  {% set rain = true %}\n  {% set rain_start_time
+        = next_weather_time %}\n{% elif forecast1.condition == 'rainy' %}\n  {% set
+        tracker2 = true %}\n{% endif %}\n{% if is_full_day_weather %} Tänään on koko
+        päivän {{ weather_translations[weather_state] }}. {% elif rain %} Tänään on
+        {{ weather_translations[weather_state] }}, mutta kello {{ next_weather_time
+        }} sää muuttuu ja on siitä eteenpäin {{ weather_translations[next_weather]
+        }}.   Tiedoksi, että {{ rain_start_time }} aikaan alkaa satamaan! {% elif
+        not rain and not tracker2 %} Tänään on {{ weather_translations[weather_state]
+        }}, mutta kello {{ next_weather_time }} sää muuttuu ja on siitä eteenpäin
+        {{ weather_translations[next_weather] }}.   Lisätiedot: tänään ei sada ollenkaan!
+        {% elif not rain and tracker2 %} Tänään on {{ weather_translations[weather_state]
+        }}, mutta kello {{ next_weather_time }} sää muuttuu ja on siitä eteenpäin
+        {{ weather_translations[next_weather] }}. {% endif %}\n"
+  - service: notify.mobile_app_iphone_simo
+    data:
+      message: "{% set weather_state = None %} {% if forecast1.datetime[:10] == today
+        %}\n  {% if forecast1.condition == 'sunny' %}\n    {% set weather_state =
+        'sunny' %}\n  {% elif forecast1.condition == 'rainy' %}\n    {% set weather_state
+        = 'rainy' %}\n  {% elif forecast1.condition == 'cloudy' %}\n    {% set weather_state
+        = 'cloudy' %}\n  {% elif forecast1.condition == 'partlycloudy' %}\n    {%
+        set weather_state = 'partlycloudy' %}\n  {% elif forecast1.condition == 'clear-night'
+        %}\n    {% set weather_state = 'clear-night' %}\n  {% endif %}\n{% endif %}\n{%
+        set next_weather = None %} {% set next_weather_time = None %}\n{% if forecast2.datetime[:10]
+        == today %}\n  {% if forecast2.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast2.condition %}\n    {% set next_weather_time
+        = forecast2.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if forecast3.datetime[:10]
+        == today %}\n  {% if forecast3.condition == 'rainy' %}\n    {% set rain_start_time
+        = forecast3.datetime[11:13] %}\n    {% set tracker = true %}\n    {% set rain
+        = true %}\n  {% elif forecast3.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast3.condition %}\n    {% set next_weather_time
+        = forecast3.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if forecast4.datetime[:10]
+        == today %}\n  {% if forecast4.condition == 'rainy' %}\n    {% set rain_start_time
+        = forecast4.datetime[11:13] %}\n    {% set tracker = true %}\n    {% set rain
+        = true %}\n  {% elif forecast4.condition != weather_state and not tracker
+        %}\n    {% set next_weather = forecast4.condition %}\n    {% set next_weather_time
+        = forecast4.datetime[11:13] %}\n    {% set is_full_day_weather = false %}\n
+        \   {% set tracker = true %}\n  {% endif %}\n{% endif %}\n{% if is_full_day_weather
+        is not defined %}\n  {% set is_full_day_weather = true %}\n{% endif %}\n{%
+        if next_weather == 'rainy' %}\n  {% set rain = true %}\n  {% set rain_start_time
+        = next_weather_time %}\n{% elif forecast1.condition == 'rainy' %}\n  {% set
+        tracker2 = true %}\n{% endif %}\n{% if is_full_day_weather %} Tänään on koko
+        päivän {{ weather_translations[weather_state] }}. {% elif rain %} Tänään on
+        {{ weather_translations[weather_state] }}, mutta kello {{ next_weather_time
+        }} sää muuttuu ja on siitä eteenpäin {{ weather_translations[next_weather]
+        }}.   Tiedoksi, että {{ rain_start_time }} aikaan alkaa satamaan! {% elif
+        not rain and not tracker2 %} Tänään on {{ weather_translations[weather_state]
+        }}, mutta kello {{ next_weather_time }} sää muuttuu ja on siitä eteenpäin
+        {{ weather_translations[next_weather] }}.   Lisätiedot: tänään ei sada ollenkaan!
+        {% elif not rain and tracker2 %} Tänään on {{ weather_translations[weather_state]
+        }}, mutta kello {{ next_weather_time }} sää muuttuu ja on siitä eteenpäin
+        {{ weather_translations[next_weather] }}. {% endif %}\n"
