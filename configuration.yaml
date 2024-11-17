@@ -7,7 +7,9 @@ frontend:
 
 automation: !include_dir_merge_list automations/
 
-
+logger:
+  logs:
+    custom_components.extended_openai_conversation: info
 
 
 climate: !include_dir_merge_list  configurations/climate/
