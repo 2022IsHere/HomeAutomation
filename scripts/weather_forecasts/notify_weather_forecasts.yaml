@@ -1,0 +1,40 @@
+# Name: notify_weather_forecasts.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This script sends weather forecast notifications to all users via mobile. The weather forecast message is dynamically retrieved from the AI's response stored in the `response_variable`.
+#
+# Usage: This script is called by an automation or function to notify users with the weather forecast at a specified time or event. IT will be possible to run this whenever asked to as well through voice audio interactions with AI.
+#
+# Warning: Ensure that the `response_variable` is correctly defined in the automation and contains valid weather data before triggering the script.
+
+
+
+notify_all:
+  alias: Notify All Users With Weather Forecast
+  sequence:
+    - alias: Send Weather Forecast to All Users
+      repeat:
+        for_each: 
+          - mobile_app_sebastians_iphone
+          - mobile_app_iphone_isabel
+          - mobile_app_iphone_simo
+        sequence:
+          - service: notify.{{ repeat.item }}
+            data:
+              title: "{{ title }}"
+              message: "{{ message }}"
+  fields:
+    title:
+      selector:
+        text: null
+      name: Title
+      description: This is a title of the notification.
+      required: true
+    message:
+      selector:
+        text: null
+      name: Message
+      description: This is the message of the notification.
+      required: true
+  description: >-
+    This script provides functionality to dynamically provide a title and message,
+    then notify all specified users with the provided message.

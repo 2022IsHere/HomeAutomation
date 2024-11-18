@@ -30,9 +30,9 @@
 # Use coversation.process or conversation.reload
 #triggers:
 #  - trigger: state
-    entity_id:
-      - input_boolean.central_heating_system_interface
-    to: "on"
+#    entity_id:
+#      - input_boolean.central_heating_system_interface
+#    to: "on"
 #conditions: []
 #actions:
 #  - action: weather.get_forecasts
