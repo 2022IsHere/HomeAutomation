@@ -1,0 +1,38 @@
+# Name: weather_forecast_sms.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the automations to provide weather forecasts by AI!
+# 
+### PIPELINE
+#
+# Automation trigger
+# Conversation entity integration
+# Prompt to Conversation entity
+# AI searches database for appropriate integrations
+# AI parses data
+# AI provides weather forecast via mobile by running script with new configured function calling feature
+#
+# Warning: Correct entity formatting is important otherwise automations will run into errors!
+
+
+
+# ------------------------------------------------------------------------------------------
+# - Send Weather Forecast Using AI data parsing and new AI feature called Function calling -
+# ------------------------------------------------------------------------------------------
+- id: send_raw_weather_data_to_extended_openai
+  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
+  trigger:
+    - platform: time
+      at: "08:00:00"
+  action:
+    - service: conversation.process
+      metadata: {}
+      data:
+        text: >
+          Can you provide me weather forecast for today in finnish? Notify All Users With Weather Forecast script to send the forecast via mobile to all users. Provide title and forecast to message field. Start with "Huomenta! Tänään taas uudet kujeet. Smile emoji" as 
+          the first step in the response to make it feel more personal. 
+          A short summary that provides the key forecast in a simple, casual tone. 
+          Explicit times for sunrise and sunset. general idea of temperature changes and the overall conditions. 
+          Focus on most suitable activities. Any significant weather condition? Activity suggestion for the day.
+        language: en
+        agent_id: 01J4S9N392D1GFQQSGN295AH7G #Extended OpenAI Weather Agent Default is conversation.home_assistant
+      response_variable: conversation_response

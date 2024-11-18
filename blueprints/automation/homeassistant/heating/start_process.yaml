@@ -8,6 +8,7 @@ blueprint:
   name: Start heating process
   description: Start process which evaluates rooms conditions, financial conditions, heating strategy and performs actions if needed
   domain: automation
+  author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
   input:    
     room_information:
       name: Room information

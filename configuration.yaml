@@ -7,7 +7,9 @@ frontend:
 
 automation: !include_dir_merge_list automations/
 
-
+logger:
+  logs:
+    custom_components.extended_openai_conversation: info
 
 
 climate: !include_dir_merge_list  configurations/climate/
@@ -19,6 +21,8 @@ input_text: !include_dir_merge_named configurations/input_text/
 rest_command: !include_dir_merge_named configurations/rest_command/
 sensor: !include_dir_merge_list  configurations/sensor/
 switch: !include_dir_merge_list  configurations/switch/
+script: !include_dir_merge_named scripts/weather_forecasts/
+
 
  
 
