@@ -15,6 +15,7 @@ logger:
 climate: !include_dir_merge_list  configurations/climate/
 counter: !include_dir_merge_named  configurations/counter/
 input_boolean: !include_dir_merge_named configurations/input_boolean/
+input_button: !include_dir_merge_named configurations/input_button/
 input_datetime: !include_dir_merge_named configurations/input_datetime/
 input_number: !include_dir_merge_named configurations/input_number/
 input_text: !include_dir_merge_named configurations/input_text/
