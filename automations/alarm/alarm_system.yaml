@@ -1,7 +1,52 @@
-# Name: Door Open Message
-# INFO: Send message that door is left open and/or ring alert bell
-# WARNING: - 
-# RESTRICTION: -
+# Name: alarm_system.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file contains the automations to provide alarm message portal through UI and notify upon left doors open, etc.
+#
+# Warning: Correct entity formatting is important otherwise automations will run into errors!
+
+
+
+# ------------------------------------------------
+# - Notify All Users Of Any Emergency Through UI -
+# ------------------------------------------------
+- id: notify_all_with_alarm_message
+  alias: Notify All Users In The Household of Any Emergency
+  trigger:
+    - platform: state
+      entity_id: input_button.send_alarm_message
+  condition:
+    # Step 1: Ensure alarm message body is populated
+    - condition: template
+      value_template: "{{ states('input_text.alarm_message_body') != '' }}"
+  action:
+    # Step 2: Read input_text.alarm_message_title & input_text.alarm_message_body
+    - variables:
+        alarm_title: "{{ states('input_text.alarm_message_title') }}"
+        alarm_body: "{{ states('input_text.alarm_message_body') }}"
+    # Step 3: Call the script and pass variables
+    - service: script.notify_all
+      data:
+        title: "{{ alarm_title }}"
+        message: "{{ alarm_body }}"
+    # Step 4: Clean title and body entities
+    - service: input_text.set_value
+      data:
+        value: ""
+      target:
+        entity_id:
+          - input_text.alarm_message_title
+          - input_text.alarm_message_body
+
+
+
+
+
+
+
+
+# -
+# -
+# -
 - id: door_open_message
   alias: Door Open Message
   trigger:

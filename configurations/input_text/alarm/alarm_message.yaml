@@ -1,0 +1,21 @@
+# Name: alarm_message.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration to provide configurable alarm messages to all household occupants at once through UI. 
+
+
+
+alarm_message_title:
+  name: "Provide Alarm Message Title"
+  min: 0
+  max: 255
+  initial: ""
+  icon: mdi:chat-alert
+  mode: text
+
+alarm_message_body:
+  name: "Provide Alarm Message Body"
+  min: 0
+  max: 255
+  initial: ""
+  icon: mdi:chat-alert
+  mode: text
