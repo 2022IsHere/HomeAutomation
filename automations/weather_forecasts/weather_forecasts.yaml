@@ -8,12 +8,21 @@
 # -
 # - IN PROGRESS: CONFIGURING AI: 
 # -
-#- id: send_raw_weather_data_to_extended_openai
-#  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
-#  trigger:
-#    - platform: time_pattern
-#      at: "08:00:00"
-#  action:
+- id: send_raw_weather_data_to_extended_openai
+  alias: Send Raw Weather Data To Extended OpenAI integration for data processing
+  trigger:
+    - platform: time
+      at: "08:00:00"
+  action:
+    - service: converstation.process
+      data:
+        message: >
+          Can you provide me weather forecast for today in finnish? Notify All Users With Weather Forecast script to send the forecast via mobile to all users. Provide title and forecast to message field. Start with "Huomenta! Tänään taas uudet kujeet. Smile emoji" as 
+          the first step in the response to make it feel more personal. 
+          A short summary that provides the key forecast in a simple, casual tone. 
+          Explicit times for sunrise and sunset. general idea of temperature changes and the overall conditions. 
+          Focus on most suitable activities. Any significant weather condition? Activity suggestion for the day.
+
     # Step 1: Call homeassistant service to start chat converstation with a hardcoded promt
       # Use coversation.process or conversation.reload
 
