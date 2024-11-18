@@ -1,0 +1,9 @@
+# Name: alarm_message.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration to provide configurable button to send alarm messages to all household occupants at once through UI. 
+
+
+
+send_alarm_message:
+  name: "Send Alarm Message"
+  icon: mdi:gesture-tap-button
