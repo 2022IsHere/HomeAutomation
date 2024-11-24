@@ -1,0 +1,36 @@
+# File: weather_forecast_data_sensor.yaml
+# Author: Sebastian Sopola
+# LinkedIn: https://www.linkedin.com/in/sebastiansopola/
+#
+# Description:
+# Defines a template sensor weather and sun forecast sensors, including temperature, humidity, wind speed, 
+# forecast in JSON format, sun rising, etc.
+#
+# Disclaimer:
+# Ensure correct formatting and verify the source weather integrations are functional.
+
+
+
+- platform: template
+  sensors:
+    weather_forecast_data:
+      friendly_name: "Weather Forecast Data"
+      value_template: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'temperature') }}"
+      attribute_templates:
+        temperature: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'temperature') }}"
+        temperature_unit: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'temperature_unit') }}"
+        humidity: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'humidity') }}"
+        wind_speed: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'wind_speed') }}"
+        wind_speed_unit: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'wind_speed_unit') }}"
+        forecast_json: "{{ state_attr('weather.met_no_next_6_hours_forecast_home', 'forecast_json') }}"
+    sun_data:
+      friendly_name: "Sun forecast data"
+      value_template: "{{ states('sun.sun') }}"
+      attribute_templates:
+        rising: "{{ state_attr('sun.sun', 'rising') }}"
+        next_dawn: "{{ state_attr('sun.sun', 'next_dawn') }}"
+        next_dusk: "{{ state_attr('sun.sun', 'next_dusk') }}"
+        next_midnight: "{{ state_attr('sun.sun', 'next_midnight') }}"
+      
+
+
