@@ -160,12 +160,12 @@ action:
       heat_transfer_time_factor: "{{ states(heat_transfer_time_factor) | float }}"
 
 
-      price_category_expensive: "{{ state_attr(nordpool_sensor, 'current_price') | float > state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
+      #price_category_expensive: "{{ state_attr(nordpool_sensor, 'current_price') | float > state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
       price_category_average: "{{ state_attr(nordpool_sensor, 'current_price') | float == state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
       price_category_cheap: "{{ state_attr(nordpool_sensor, 'current_price') | float < state_attr(electricity_stock_market_price_information, 'average_price') | float }}"
       
       
-      price_trend_expensive: "{{ price_trend == 'expensive' }}"
+      #price_trend_expensive: "{{ price_trend == 'expensive' }}"
       price_trend_average: "{{ price_trend == 'average' }}"
       price_trend_cheap: "{{ price_trend == 'cheap' }}"
 
@@ -174,6 +174,11 @@ action:
       minimum_heat: "{{ 'input_boolean.' + room_name | lower + '_minimum_heat' }}"
       maintain_heat: "{{ 'input_boolean.' + room_name | lower + '_maintain_heat' }}"
       preheat_maximum: "{{ 'input_boolean.' + room_name | lower + '_preheat_maximum' }}"
+
+
+      room_at_or_below_minimum_temperature: true
+      price_category_expensive: true
+      price_trend_expensive: true
 
   
   - choose:
@@ -203,9 +208,6 @@ action:
               - conditions:
                   - condition: template
                     value_template: "{{ price_category_expensive }}"
-
-
-
                 # --------------------------------------------------------------
                 # - Send confirm and dismiss notification to user -
                 # --------------------------------------------------------------
@@ -224,15 +226,21 @@ action:
                         Huone {{ room_name }} on {{ room_temperature }}°C. 
                         Laske lämmitysrajaa? Nykyinen minimi: {{ room_minimum_temperature }}°C. 
                         Reagoi 5 minuutin sisällä.
-                  #- delay: "00:05:00"  # 5 minutes # 
-                  - delay: '00:00:10' # DELAY IS NOT WORKING SO DELAY IS NOT WORKING AT ALL!!!!!!!!!
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 10
+                  - service: system_log.write
+                    data:
+                      message: >
+                        Delay has passed.
                   - choose:
-                      # -------------------------------------------------------------
-                      # - User response; minimum temperature level has been lowered -
-                      # -------------------------------------------------------------
+                      # ----------------------------------------
+                      # - User has lowered minimum temperature -
+                      # ----------------------------------------
                       - conditions:
                           - condition: template
-                            value_template: "{{ room_minimum_temperature < room_temperature }}"
+                            value_template: "{{ state_attr(room_information, 'room_minimum_temperature') | float < state_attr(room_information, 'room_temperature') | float }}" #reload entities therefore direct cast
                         sequence:
                           - service: input_boolean.turn_on
                             target:
@@ -242,23 +250,23 @@ action:
                             data:
                               message: >
                                 Heating has been delayed.
-                      # ---------------------------------------------------------
-                      # - User response; turned off automated heating --> Delay -
-                      # ---------------------------------------------------------
+                      # ---------------------------------------------------
+                      # - User has turned off automated heating --> Delay -
+                      # ---------------------------------------------------
                       - conditions:
                           - condition: template
-                            value_template: "{{ room_interface_status }}" 
+                            value_template: "{{ 'input_boolean.' + room_name | lower + '_heating_system_interface' }}" #reload entities therefore direct cast
                         sequence:
                           - service: input_boolean.turn_on
                             target:
                               entity_id: >
                                 {{ delay_heat }}  
-                      # ------------------------------------------
-                      # - User response; Nada --> therefore heat -
-                      # ------------------------------------------
+                      # ---------------------------------
+                      # - User did not respond --> heat -
+                      # ---------------------------------
                       - conditions:
                           - condition: template
-                            value_template: "{{ state_attr(room_information, 'room_minimum_temperature') | float >= state_attr(room_information, 'room_temperature') | float }}" # Re-evaluate
+                            value_template: "{{ state_attr(room_information, 'room_minimum_temperature') | float >= state_attr(room_information, 'room_temperature') | float }}" #reload entities therefore direct cast
                         sequence:
                           - service: input_boolean.turn_on
                             target:
