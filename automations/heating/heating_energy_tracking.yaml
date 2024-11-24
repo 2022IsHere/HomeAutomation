@@ -1,5 +1,8 @@
 
 
+# -----------------------------------------------------------------
+# - Calculate price trend of specified period based on price data -
+# -----------------------------------------------------------------
 - id: electric_price_trend_analyzer
   alias: Analyze Electric Price Calculations
   description: Analyze and classify upcoming electricity price trends for the next 8 hours using Nordpool data, enabling smarter energy decisions based on cost efficiency.
@@ -14,6 +17,9 @@
       below_average_counter: counter.electric_price_trend_cheap
 
 
+# ------------------------------------------------------------------------------
+# - Reset to 0 all cumulative electricity prize vs. energy relationship models -
+# ------------------------------------------------------------------------------
 - id: reset_energy_cost_tracking
   alias: Reset Energy Cost Tracking At The Beginning Of Each Year
   trigger:
@@ -171,7 +177,7 @@
       value_template: >
         {{ api_response_energy.content is not none and api_response_energy.status == 200 }}
     
-    # Filter and process energy data for a single room
+    # Filter and process energy data for a single room - main bedroom
     - variables:
         room_id: 2151523  
         single_room_energyWh: >
@@ -186,3 +192,42 @@
         value: '{{ single_room_energyWh }}'
       target:
         entity_id: input_number.hourly_main_bedroom_energy_tracking
+
+
+
+# --------------------------------------------
+# - Update daily energy consumption tracking -
+# --------------------------------------------
+- id: update_daily_energy_tracking
+  alias: Update daily Energy Tracking
+  trigger:
+    - platform: state 
+      entity_id: input_number.hourly_heating_energy_tracking
+  action:
+    # ---------------------------------------------------------------------
+    # - Update daily energy tracker by new hourly energy soncumption data -
+    # ---------------------------------------------------------------------
+    - service: input_number.set_value
+      data:
+        value: >
+          {% set convert_kwh_to_wh = states('input_number.daily_energy_tracking') | float(0) * 1000 %}
+          {% set sum_both = convert_kwh_to_wh + states('sensor.hourly_heating_energy_tracking_sensor') | float(0) %}
+          {% set convert_wh_to_kwh = sum_both / 1000 %}
+          {{ convert_wh_to_kwh }}
+      target:
+        entity_id: input_number.daily_energy_tracking
+
+# -------------------------------
+# - Reset daily energy Tracking -
+# -------------------------------
+- id: reset_daily_energy_tracking
+  alias: Reset Daily Energy Tracking
+  trigger:
+    - platform: time
+      at: '00:00:00'
+  action:
+    - service: input_number.set_value
+      data:
+        value: 0
+      target:
+        entity_id: input_number.daily_energy_tracking

@@ -17,6 +17,7 @@
       nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
       electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      heat_transfer_time_factor: sensor.heat_transfer_time_factor
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: bedroom_financial_conditions
@@ -32,6 +33,7 @@
       nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
       electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      heat_transfer_time_factor: sensor.heat_transfer_time_factor
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: living_room_financial_conditions
@@ -47,6 +49,7 @@
       nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
       electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      heat_transfer_time_factor: sensor.heat_transfer_time_factor
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: main_bedroom_financial_conditions
@@ -62,6 +65,7 @@
       nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
       electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      heat_transfer_time_factor: sensor.heat_transfer_time_factor
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature
 
 - id: guest_bedroom_financial_conditionse
@@ -77,4 +81,5 @@
       nordpool_sensor: sensor.nordpool_kwh_fi_eur_2_10_0255
       electricity_stock_market_price_information: sensor.electricity_stock_market_price_information
       heat_transfer_coefficient: sensor.heat_transfer_coefficient
+      heat_transfer_time_factor: sensor.heat_transfer_time_factor
       outdoor_temperature: sensor.outdoor_temperature_and_humidity_sensor_temperature

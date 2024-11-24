@@ -87,6 +87,69 @@
 
 
 
+# ------------------------------------------------------------------------------
+# - Turn ON and Off room thermostats based on central home thermostat HVAC mode-
+# ------------------------------------------------------------------------------
+- id: synchronize_thermostats_hvac_modes
+  alias: Synchronize thermostats to follow central home thermostat's HVAC modes
+  trigger:
+    - platform: state
+      entity_id: climate.central_home_thermostat
+  action:
+    - choose:
+      # ---------------------------------------
+      # - Update all thermostats to heat mode -
+      # ---------------------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ is_state('climate.central_home_thermostat', 'heat') }}"
+        sequence:
+          - service: climate.set_hvac_mode 
+            target: 
+              entity_id: 
+                - climate.olohuone_vasen 
+                - climate.olohuone_oikea 
+                - climate.keittio 
+                - climate.vierashuone 
+                - climate.makuuhuone 
+                - climate.paamakuuhuone 
+            data: 
+              hvac_mode: "heat" 
+          # -----------------------------------------------------------------------
+          # - Update thermostat temperature to correspond central home thermostat -
+          # -----------------------------------------------------------------------
+          - service: climate.set_temperature
+            target:
+              entity_id:
+                - climate.olohuone_vasen 
+                - climate.olohuone_oikea 
+                - climate.keittio 
+                - climate.vierashuone 
+                - climate.makuuhuone 
+                - climate.paamakuuhuone 
+            data:
+              temperature: "{{ state_attr('climate.central_home_thermostat', 'temperature') | float }}"
+      # --------------------------------------
+      # - Update all thermostats to off mode -
+      # --------------------------------------
+      - conditions:
+          - condition: template
+            value_template: "{{ is_state('climate.central_home_thermostat', 'off') }}"
+        sequence:
+          - service: climate.set_hvac_mode 
+            target: 
+              entity_id: 
+                - climate.olohuone_vasen 
+                - climate.olohuone_oikea 
+                - climate.keittio 
+                - climate.vierashuone 
+                - climate.makuuhuone 
+                - climate.paamakuuhuone 
+            data: 
+              hvac_mode: "off" 
+
+
+
 
 # --------------------------------------------------------------------------------
 # - Enable room specific automated heating only if central controller is not off -

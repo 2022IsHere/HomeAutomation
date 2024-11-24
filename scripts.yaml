@@ -1,2 +1,38 @@
-
- 
+confirmable_notification_script_2:
+  alias: Confirmable notification | Script
+  use_blueprint:
+    path: homeassistant/confirmable_notification.yaml
+    input:
+      notify_device: f5ca0ac4ebed399c2799690b859f22ed
+      title: This is a title.
+      message: This is a message.
+      confirm_action:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.kitchen_control_thermostats
+        data: {}
+      dismiss_action:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.kitchen_control_thermostats
+        data: {}
+  description: This is a test.
+confirmable_notification_2:
+  alias: Confirmable Notification
+  use_blueprint:
+    path: homeassistant/confirmable_notification.yaml
+    input:
+      notify_service: mobile_app_sebastians_iphone
+      title: This is a title.
+      message: This is a message
+      confirm_action:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.kitchen_control_thermostats
+        data: {}
+      dismiss_action:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.kitchen_control_thermostats
+        data: {}
+  description: This is a test to do actionable notification message.

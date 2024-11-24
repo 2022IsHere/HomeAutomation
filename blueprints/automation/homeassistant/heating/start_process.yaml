@@ -47,9 +47,16 @@ variables:
 # --------------------------------------
 # - Trigger at the start of every hour -
 # --------------------------------------
+#trigger:
+#  - platform: time_pattern
+#    minutes: 0 
+#trigger:
+#  - platform: time_pattern
+#    seconds: "/10"
 trigger:
   - platform: time_pattern
-    minutes: 0 
+    seconds: "/30"
+
 
 condition:
 
@@ -115,6 +122,21 @@ condition:
         {% endif %}
       {% endif %}
 action:
+  # --------------
+  # - Update log -
+  # --------------
+  - service: system_log.write
+    data:
+      message: >
+        Heating service start process has started.
+
+  # FOR DEBUGGING
+  - service: system_log.write
+    data:
+      message: >
+        Entity: {{ 'sensor.' + room_name | lower + '_heating_system_interface' }}
+        Trigger: {{ is_state('sensor.' + room_name | lower + '_heating_system_interface', 'on') }}
+
   # ---------------------------------------
   # - Initialize heating system interface -
   # ---------------------------------------
@@ -140,3 +162,11 @@ action:
     target:
       entity_id: >
         {{ 'input_boolean.' + room_name | lower + '_start_heating_process' }}
+
+  # --------------
+  # - Update log -
+  # --------------
+  - service: system_log.write
+    data:
+      message: >
+        Heating service start process has finished.

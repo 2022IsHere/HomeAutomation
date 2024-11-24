@@ -1,0 +1,45 @@
+# Name: coefficients.yaml
+# Author: Sebastian Sopola @ https://www.linkedin.com/in/sebastiansopola/
+# Description: This file containts the configuration providing heat transfer coefficient for heating calculations
+# Warning: Its RECOMMENDED to use same formatting. Otherwise the program will run into errors!
+
+
+
+- platform: template
+  sensors:
+
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    # - This sensor provides coefficient, which is used to calculate heat loss, heat requirement, etc which allow more robust automated heating solutions -
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------
+    heat_transfer_coefficient:
+      friendly_name: "Heat transfer coefficient"
+      value_template: >
+        {% set month = now().month %}
+        {% if month >= 5 and month <= 9 %}
+          {{ 0.35 }}
+        {% else %}
+          {{ 0.75 }}
+        {% endif %}
+
+    # ------------------------------------------------------------------------------------------------------------
+    # - This sensor provides time factor variable to adjust heat loss calculations based on outdoor temperatures -
+    # ------------------------------------------------------------------------------------------------------------
+    ### Range
+    #
+    # ~0.125°C drop per hour in 0 C to 14 C
+    # ~0.25°C drop per hour in 0 C to -10 C
+    # ~1.25°C drop per hour in -10 C to -25 C
+    # Fallback is ~0.25°C
+    heat_transfer_time_factor:
+        friendly_name: "Heat Transfer Time Factor"
+        value_template: >
+          {% set outdoor_temperature = states('sensor.outdoor_temperature_and_humidity_sensor_temperature') | float %}
+          {% if outdoor_temperature >= 0 and outdoor_temperature <= 14 %} 
+            0.0035  
+          {% elif outdoor_temperature > -10 and outdoor_temperature < 0 %}
+            0.007  
+          {% elif outdoor_temperature >= -25 and outdoor_temperature <= -10 %}
+            0.0175
+          {% else %}
+            0.007  
+          {% endif %}

@@ -8,7 +8,7 @@
 - platform: template
   sensors:
     kitchen_heating_system_interface:
-      friendly_name: "Heating System Interface for Kitchen"
+      friendly_name: "Kitchen Heating System Interface"
       value_template: "{{ states('input_boolean.kitchen_heating_system_interface') }}"
       attribute_templates:
         start_heating_process: "{{ states('input_boolean.kitchen_start_heating_process') }}"
@@ -29,7 +29,7 @@
         control_thermostats: "{{ states('input_boolean.kitchen_control_thermostats') }}"
 
     bedroom_heating_system_interface:
-      friendly_name: "Heating System Interface for Bedroom"
+      friendly_name: "Bedroom Heating System Interface"
       value_template: "{{ states('input_boolean.bedroom_heating_system_interface') }}"
       attribute_templates:
         start_heating_process: "{{ states('input_boolean.bedroom_start_heating_process') }}"
@@ -50,7 +50,7 @@
         control_thermostats: "{{ states('input_boolean.bedroom_control_thermostats') }}"
 
     living_room_heating_system_interface:
-      friendly_name: "Heating System Interface for Living Room"
+      friendly_name: "Living Room Heating System Interface"
       value_template: "{{ states('input_boolean.living_room_heating_system_interface') }}"
       attribute_templates:
         start_heating_process: "{{ states('input_boolean.living_room_start_heating_process') }}"
@@ -71,7 +71,7 @@
         control_thermostats: "{{ states('input_boolean.living_room_control_thermostats') }}"
 
     main_bedroom_heating_system_interface:
-      friendly_name: "Heating System Interface for Main Bedroom"
+      friendly_name: "Main Bedroom Heating System Interface"
       value_template: "{{ states('input_boolean.main_bedroom_heating_system_interface') }}"
       attribute_templates:
         start_heating_process: "{{ states('input_boolean.main_bedroom_start_heating_process') }}"
@@ -92,7 +92,7 @@
         control_thermostats: "{{ states('input_boolean.main_bedroom_control_thermostats') }}"
 
     guest_bedroom_heating_system_interface:
-      friendly_name: "Heating System Interface for Guest Bedroom"
+      friendly_name: "Guest Bedroom Heating System Interface"
       value_template: "{{ states('input_boolean.guest_bedroom_heating_system_interface') }}"
       attribute_templates:
         start_heating_process: "{{ states('input_boolean.guest_bedroom_start_heating_process') }}"

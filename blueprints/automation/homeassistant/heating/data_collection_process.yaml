@@ -78,12 +78,6 @@ max_exceeded: silent
 
 variables:
   room_name: !input room_name
-
-
-# ---------------------------------------------------
-# - Define all necessary variables to trigger scope -
-# ---------------------------------------------------
-trigger_variables:
   room_information: !input room_information
   heating_system_interface: !input heating_system_interface
   nordpool_sensor: !input nordpool_sensor
@@ -91,15 +85,30 @@ trigger_variables:
   heat_transfer_coefficient: !input heat_transfer_coefficient
   outdoor_temperature: !input outdoor_temperature
 
-# ---------------------
-# - Check data access -
-# ---------------------
+
+# ---------------------------------------------------
+# - Define all necessary variables to trigger scope -
+# ---------------------------------------------------
+trigger_variables:
+  heating_system_interface: !input heating_system_interface
+
+# ---------------------------------
+# - Check heating system progress -
+# ---------------------------------
 trigger:
   - platform: template
     value_template: >
+      {{ state_attr(heating_system_interface, 'start_heating_process') == 'on' }}
+
+# ----------------------------------------------------
+# - Check that necessary data is accessible -
+# ----------------------------------------------------
+condition:
+  - condition: template
+    value_template: >
       {% set invalid_states = ['unknown', 'unavailable', None] %}
 
-      {% set room_information_valid = states(room_information) not in invalid_states %}
+      {% set room_information_valid = room_information not in invalid_states %}
       {% set heating_system_interface_valid = states(heating_system_interface) not in invalid_states %}
       {% set nordpool_sensor_valid = states(nordpool_sensor) not in invalid_states %}
       {% set electricity_stock_market_price_information_valid = states(electricity_stock_market_price_information) not in invalid_states %}
@@ -108,20 +117,24 @@ trigger:
 
       {{ room_information_valid and heating_system_interface_valid and nordpool_sensor_valid and electricity_stock_market_price_information_valid and heat_transfer_coefficient_valid and outdoor_temperature_valid }}
 
-# ----------------------------------------------------
-# - Check that heating system has run without errors -
-# ----------------------------------------------------
-condition:
-  - condition: template
-    value_template: >
-      {{ state_attr(heating_system_interface, 'start_heating_process') == 'on' }}
-
 # -------------------------------------------------------------------
 # - Allow heating system to proceed further if there were no issues -
 # -------------------------------------------------------------------
 action:
+  - service: system_log.write
+    data:
+      message: >
+        Heating service data collection process has started.
 
   - service: input_boolean.turn_on
     target:
       entity_id: >
         {{ 'input_boolean.' + room_name | lower + '_data_collection_process' }}
+
+  # -----------------------------------
+  # - Update heating system interface -
+  # -----------------------------------
+  - service: system_log.write
+    data:
+      message: >
+        Heating service data collection process has finished.
