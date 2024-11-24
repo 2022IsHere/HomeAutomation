@@ -1,0 +1,26 @@
+- id: '1732039663327'
+  alias: Actionable notifications
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.kitchen_start_heating_process
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: notify.mobile_app_sebastians_iphone
+    data:
+      message: This is a message.
+      title: 'This is a title. '
+  mode: single
+- id: '1732370116149'
+  alias: Start heating process
+  description: 'This is a stest to see why the manually created automation doesnt
+    trigger. '
+  use_blueprint:
+    path: homeassistant/heating/start_process.yaml
+    input:
+      room_name: Bedroom
+      room_information: sensor.bedroom_room_information
+      heating_system_interface: sensor.bedroom_heating_system_interface

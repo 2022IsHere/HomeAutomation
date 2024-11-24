@@ -52,6 +52,12 @@ trigger:
       {{ data_collection_process_status not in ['unknown', 'undefined', '', None] and data_collection_process_status }}
 
 action:
+  - service: system_log.write
+    data:
+      message: >
+        Heating service room conditions process has started.
+
+
   # ------------------
   # - INIT VARIABLES -
   # ------------------
@@ -98,3 +104,9 @@ action:
             target:
               entity_id: >
                 {{ 'input_boolean.' + room_name | lower + '_between_minimum_and_maximum_temperature' }}
+
+
+  - service: system_log.write
+    data:
+      message: >
+        Heating service room conditions process has finished.

@@ -18,7 +18,7 @@
         room_living_space: "{{ states('input_number.kitchen_living_space') }}"
         room_heating_schedule_start_time: "{{ states('input_datetime.kitchen_heating_schedule_start_time') }}"
         room_heating_schedule_end_time: "{{ states('input_datetime.kitchen_heating_schedule_end_time') }}"
-        room_thermostat: "{{ states('climate.keittio') }}"
+        room_thermostat: "climate.keittio"
 
     bedroom_room_information:
       friendly_name: "Bedroom Room Information Sensor"
@@ -31,7 +31,7 @@
         room_living_space: "{{ states('input_number.bedroom_living_space') }}"
         room_heating_schedule_start_time: "{{ states('input_datetime.bedroom_heating_schedule_start_time') }}"
         room_heating_schedule_end_time: "{{ states('input_datetime.bedroom_heating_schedule_end_time') }}"
-        room_thermostat: "{{ states('climate.makuuhuone') }}"
+        room_thermostat: "climate.makuuhuone"
 
     living_room_room_information:
       friendly_name: "Living Room Information Sensor"
@@ -47,8 +47,8 @@
         room_thermostat: >
           {{
             {
-              "olohuone_oikea": states('climate.olohuone_oikea'),
-              "olohuone_vasen": states('climate.olohuone_vasen')
+              "olohuone_oikea": "climate.olohuone_oikea",
+              "olohuone_vasen": "climate.olohuone_vasen"
             }
           }}
     main_bedroom_room_information:
@@ -62,7 +62,7 @@
         room_living_space: "{{ states('input_number.main_bedroom_living_space') }}"
         room_heating_schedule_start_time: "{{ states('input_datetime.main_bedroom_heating_schedule_start_time') }}"
         room_heating_schedule_end_time: "{{ states('input_datetime.main_bedroom_heating_schedule_end_time') }}"
-        room_thermostat: "{{ states('climate.paamakuuhuone') }}"
+        room_thermostat: "climate.paamakuuhuone"
 
     guest_bedroom_room_information:
       friendly_name: "Guest Bedroom Room Information Sensor"
@@ -75,4 +75,4 @@
         room_living_space: "{{ states('input_number.guest_bedroom_living_space') }}"
         room_heating_schedule_start_time: "{{ states('input_datetime.guest_bedroom_heating_schedule_start_time') }}"
         room_heating_schedule_end_time: "{{ states('input_datetime.guest_bedroom_heating_schedule_end_time') }}"
-        room_thermostat: "{{ states('climate.vierashuone') }}"
+        room_thermostat: "climate.vierashuone"
